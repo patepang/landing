@@ -1,0 +1,119 @@
+/*
+ * Shared pieces of the prototype previews, translated from the app's design-system components
+ * (Surface, Badge, Avatar, Divider). Previews are pictures of the app: nothing in them is
+ * interactive, and each sits inside a figure labelled "Pratinjau prototipe — data fiktif".
+ */
+
+/* Surface variant="raised": warm white, hairline, very soft shadow (tone alone in dark). */
+.surface {
+  overflow: hidden;
+  border: var(--border-hairline) solid var(--color-border-subtle);
+  border-radius: var(--shape-card);
+  background: var(--color-surface-raised);
+  box-shadow: var(--elevation-raised);
+  color: var(--color-text-primary);
+}
+
+/* The label every preview carries. */
+.label {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--space-6);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--shape-chip);
+  background: var(--color-surface-raised);
+  color: var(--color-text-secondary);
+  font-size: var(--type-caption-size);
+  line-height: var(--type-caption-line);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--type-caption-tracking);
+  text-align: center;
+}
+
+/* Badge: a short, non-interactive status label; the words carry the meaning. */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: var(--space-1);
+  min-height: var(--space-6);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--shape-chip);
+  font-size: var(--type-caption-size);
+  line-height: var(--type-caption-line);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--type-caption-tracking);
+}
+
+.badge[data-tone='neutral'] {
+  background: var(--color-surface-sunken);
+  color: var(--color-text-secondary);
+}
+
+.badge[data-tone='brand'] {
+  background: var(--color-brand-subtle);
+  color: var(--color-brand-on-subtle);
+}
+
+.badge[data-tone='success'] {
+  background: var(--color-success-subtle);
+  color: var(--color-success-text);
+}
+
+/*
+ * Avatar: initials on one of four measured tone pairs. The circle is a fixed-size graphic, so its
+ * initials do not follow the reader's text size (allowFontScaling={false} in the app).
+ */
+.avatar {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: var(--avatar-size);
+  height: var(--avatar-size);
+  border-radius: var(--radius-full);
+  font-weight: var(--weight-semibold);
+  line-height: 1;
+}
+
+.avatar[data-size='sm'] {
+  --avatar-size: var(--space-8);
+  font-size: var(--type-caption-size-fixed);
+  font-weight: var(--weight-medium);
+}
+
+.avatar[data-size='md'] {
+  --avatar-size: var(--space-10);
+  font-size: var(--type-label-small-size-fixed);
+}
+
+.avatar[data-size='lg'] {
+  --avatar-size: calc(var(--space-12) + var(--space-2));
+  font-size: var(--type-headline-size-fixed);
+}
+
+.avatar[data-tone='0'] {
+  background: var(--avatar-1-bg);
+  color: var(--avatar-1-fg);
+}
+
+.avatar[data-tone='1'] {
+  background: var(--avatar-2-bg);
+  color: var(--avatar-2-fg);
+}
+
+.avatar[data-tone='2'] {
+  background: var(--avatar-3-bg);
+  color: var(--avatar-3-fg);
+}
+
+.avatar[data-tone='3'] {
+  background: var(--avatar-4-bg);
+  color: var(--avatar-4-fg);
+}
+
+/* Divider inset={4}: a decorative hairline. */
+.divider {
+  height: var(--border-hairline);
+  margin-left: var(--space-4);
+  background: var(--color-border-subtle);
+}

@@ -1,0 +1,161 @@
+.section {
+  padding-block: var(--space-section);
+  border-top: var(--border-hairline) solid var(--color-border-subtle);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: var(--content-reading);
+}
+
+/*
+ * Narrow and medium screens: the three stops share one forest-mist band, edge to edge, words and
+ * components together, so no panel wraps the app's cards. The band is a pseudo-element widened by
+ * a spread shadow clipped to its own height, so it never causes horizontal scrolling.
+ */
+.exhibits {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  margin-top: var(--space-12);
+  padding-block: var(--space-10);
+}
+
+.exhibits::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--color-brand-subtle);
+  box-shadow: 0 0 0 100vmax var(--color-brand-subtle);
+  clip-path: inset(0 -100vmax);
+}
+
+.exhibit {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-width: var(--content-reading);
+}
+
+/* Where an app component stands on the stage, with its label beneath. */
+.plinth {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.leftOut {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  margin-top: var(--space-section);
+}
+
+.leftOutList {
+  display: grid;
+  gap: 0;
+}
+
+.leftOutItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding-block: var(--space-4);
+  border-top: var(--border-hairline) solid var(--color-border-subtle);
+}
+
+.leftOutItem dd {
+  margin: 0;
+}
+
+@media (min-width: 600px) {
+  .exhibits {
+    padding-block: var(--space-12);
+  }
+
+  .leftOutList {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--space-8);
+  }
+}
+
+/*
+ * Wide screens: one continuous stage runs down the right half and each exhibit's words sit level
+ * with its component, so the three read as stops on one tour rather than three cards.
+ */
+@media (min-width: 1024px) {
+  .exhibits {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-rows: repeat(3, auto);
+    column-gap: var(--space-8);
+    margin-top: var(--space-16);
+    padding-block: 0;
+  }
+
+  .exhibits::before {
+    position: static;
+    grid-column: 7 / span 6;
+    grid-row: 1 / span 3;
+    border-radius: var(--shape-dialog);
+    box-shadow: none;
+    clip-path: none;
+  }
+
+  .exhibit {
+    display: contents;
+  }
+
+  .exhibit:nth-child(1) > * {
+    grid-row: 1;
+  }
+
+  .exhibit:nth-child(2) > * {
+    grid-row: 2;
+  }
+
+  .exhibit:nth-child(3) > * {
+    grid-row: 3;
+  }
+
+  .text {
+    grid-column: 1 / span 5;
+    align-self: center;
+  }
+
+  .plinth {
+    grid-column: 7 / span 6;
+    padding: var(--space-12) var(--space-10);
+    border-radius: 0;
+    background: none;
+  }
+
+  .exhibit:first-child .plinth {
+    padding-top: var(--space-16);
+  }
+
+  .leftOut {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--space-8);
+  }
+
+  .leftOut h3 {
+    grid-column: 1 / span 4;
+  }
+
+  .leftOutList {
+    grid-column: 5 / span 8;
+  }
+}

@@ -1,0 +1,152 @@
+'use client';
+
+import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
+
+import { TwoDots, type DotsPhase } from '@/components/brand/TwoDots';
+import button from '@/components/ui/button.module.css';
+
+import styles from './TempelDemo.module.css';
+
+type Phase = 'idle' | 'scan' | 'shake' | 'done';
+export type TempelStepId = Exclude<Phase, 'idle'>;
+
+/** Timeline of the app's TapRitualPreview, in ms from the press. It plays once per press. */
+const TIMELINE = { shakeAt: 900, doneAt: 1900 } as const;
+
+const order: Record<Phase, number> = { idle: -1, scan: 0, shake: 1, done: 2 };
+
+/** As on the app's shake screen (ShakeScreen.tsx): apart until shaking, near while shaking, met. */
+const dots: Record<Phase, DotsPhase> = {
+  idle: 'apart',
+  scan: 'apart',
+  shake: 'near',
+  done: 'meet',
+};
+
+/** Nothing to subscribe to: the value below only changes from the server's to the browser's. */
+const subscribe = () => () => undefined;
+
+/**
+ * False in the exported HTML and while the page hydrates, true once React runs here. Until then
+ * the button would not respond (the script may still be loading, or may never load), so it is
+ * not offered; its space stays reserved.
+ */
+function useHydrated() {
+  return useSyncExternalStore(
+    subscribe,
+    () => true,
+    () => false,
+  );
+}
+
+/** Shown under the button and read by screen readers as the walk-through moves on. */
+const status: Record<Phase, string> = {
+  idle: 'Siap diputar.',
+  scan: 'Langkah 1 dari 3: pindai kode.',
+  shake: 'Langkah 2 dari 3: goyang bersama.',
+  done: 'Langkah 3 dari 3: terhubung. Koneksi dan momen pertama tercatat di kedua HP.',
+};
+
+export interface TempelDemoProps {
+  /** Section heading and intro, rendered on the server. */
+  intro: ReactNode;
+  steps: readonly { id: TempelStepId; title: string; body: string }[];
+  /** Icons rendered on the server, so no icon code ships to the browser. */
+  icons: Record<'phone' | 'scan' | 'shake' | 'check' | 'stepCheck' | 'play' | 'replay', ReactNode>;
+  caption: string;
+}
+
+/**
+ * A visual walk-through of tempel, after the app's TapRitualPreview. It uses no camera, no QR code
+ * and no motion sensor: two phones move together, shake, and a check mark lands. It plays once
+ * per press and never loops. Pressing "Putar lagi" while it plays starts it over; the button
+ * stays enabled, so keyboard focus never drops to the page. Under reduced motion the CSS keeps
+ * every step but drops the travel and the shake.
+ */
+export function TempelDemo({ intro, steps, icons, caption }: TempelDemoProps) {
+  const [phase, setPhase] = useState<Phase>('idle');
+  const timers = useRef<number[]>([]);
+  const hydrated = useHydrated();
+
+  useEffect(() => {
+    const pending = timers.current;
+    return () => {
+      for (const id of pending) window.clearTimeout(id);
+    };
+  }, []);
+
+  function play() {
+    for (const id of timers.current) window.clearTimeout(id);
+    timers.current.length = 0;
+    setPhase('scan');
+    timers.current.push(
+      window.setTimeout(() => {
+        setPhase('shake');
+      }, TIMELINE.shakeAt),
+      window.setTimeout(() => {
+        setPhase('done');
+      }, TIMELINE.doneAt),
+    );
+  }
+
+  const current = order[phase];
+
+  return (
+    <div className={styles.demo} data-phase={phase}>
+      <div className={styles.intro}>{intro}</div>
+
+      {/* role="list": Safari drops list semantics from a list without markers outside a nav. */}
+      <ol className={styles.steps} role="list">
+        {steps.map((step, index) => {
+          const state = current > index ? 'past' : current === index ? 'current' : 'next';
+          const checked = state === 'past' || (state === 'current' && step.id === 'done');
+          return (
+            <li
+              key={step.id}
+              className={styles.step}
+              data-state={state}
+              aria-current={state === 'current' ? 'step' : undefined}
+            >
+              <span className={styles.marker} aria-hidden="true">
+                {checked ? icons.stepCheck : index + 1}
+              </span>
+              <span className={styles.stepText}>
+                <span className="type-body-strong">{step.title}</span>
+                <span className="type-body-small tone-secondary">{step.body}</span>
+              </span>
+            </li>
+          );
+        })}
+      </ol>
+
+      <div className={styles.player}>
+        <div className={styles.stage} aria-hidden="true">
+          <div className={styles.phones}>
+            <span className={`${styles.phone} ${styles.left}`}>{icons.phone}</span>
+            <span className={styles.center}>
+              {phase === 'done' ? (
+                <span className={styles.check}>{icons.check}</span>
+              ) : phase === 'shake' ? (
+                icons.shake
+              ) : (
+                icons.scan
+              )}
+            </span>
+            <span className={`${styles.phone} ${styles.right}`}>{icons.phone}</span>
+          </div>
+          <TwoDots phase={dots[phase]} size="lg" />
+        </div>
+        <div className={styles.controls} data-hydrating={hydrated ? undefined : ''}>
+          <button type="button" className={`${button.button} ${button.primary}`} onClick={play}>
+            {phase === 'idle' ? icons.play : icons.replay}
+            {phase === 'idle' ? 'Putar cara tempel' : 'Putar lagi'}
+          </button>
+          <p className={`type-body-small ${styles.status}`} role="status">
+            {status[phase]}
+          </p>
+        </div>
+        <p className="type-body-small tone-tertiary">{caption}</p>
+      </div>
+    </div>
+  );
+}

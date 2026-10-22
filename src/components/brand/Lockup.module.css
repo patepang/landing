@@ -1,0 +1,21 @@
+.lockup {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+/* titleLarge for the small lockup, display for the large one, both bold in the brand colour. */
+.wordmark {
+  color: var(--color-brand-text);
+  font-size: var(--type-title-large-size);
+  line-height: var(--type-title-large-line);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--type-title-large-tracking);
+}
+
+.lockup[data-size='lg'] .wordmark {
+  font-size: var(--type-display-size);
+  line-height: var(--type-display-line);
+  letter-spacing: var(--type-display-tracking);
+}

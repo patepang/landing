@@ -1,0 +1,125 @@
+/*
+ * The phone screen: the app's canvas at phone width (compact gutter 20px), floating on the stage
+ * with the overlay shadow and the dialog radius. Its bottom edge is square and flush with the
+ * stage, so the screen reads as rising from it. Heights follow the content; only the code pattern
+ * is cropped, so no text is ever cut.
+ */
+.screen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: 100%;
+  max-width: var(--content-message);
+  padding-inline: var(--gutter-compact);
+  border-radius: var(--shape-dialog) var(--shape-dialog) 0 0;
+  background: var(--color-canvas);
+  box-shadow: var(--elevation-overlay);
+  color: var(--color-text-primary);
+  cursor: default;
+  user-select: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .screen {
+    border: var(--border-hairline) solid var(--color-border-subtle);
+    border-bottom: 0;
+  }
+}
+
+/* AppHeader: title on the left, two raised icon buttons on the right. */
+.appHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-1);
+  min-height: calc(var(--touch-target) + var(--space-2));
+  padding-top: var(--space-2);
+  padding-bottom: var(--space-2);
+}
+
+.appTitle {
+  padding-top: var(--space-2);
+}
+
+.headerActions {
+  display: flex;
+  gap: var(--space-1);
+}
+
+/* IconButton variant="raised", visual 40px inside a 48px hit area. */
+.iconButton {
+  display: grid;
+  place-items: center;
+  width: var(--space-10);
+  height: var(--space-10);
+  margin: var(--space-1);
+  border: var(--border-hairline) solid var(--color-border-subtle);
+  border-radius: var(--shape-button);
+  background: var(--color-surface-raised);
+  box-shadow: var(--elevation-raised);
+  color: var(--color-text-primary);
+}
+
+/* Surface variant="brand" padding={5}: the unborn-account invitation. */
+.unborn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-5);
+  border-radius: var(--shape-card);
+  background: var(--color-brand-subtle);
+  color: var(--color-brand-on-subtle);
+}
+
+.unbornIcon {
+  color: var(--color-brand-text);
+}
+
+.code {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+/* Balanced so a short last word ("dulu") never hangs alone on the web. */
+.codeTitle {
+  text-align: center;
+  text-wrap: balance;
+}
+
+.unbornTitle {
+  text-wrap: balance;
+}
+
+/* The picture ends here: about the top half of the code card shows above the stage edge. */
+.codeCrop {
+  display: block;
+  width: 100%;
+  max-height: calc(var(--space-16) * 2 + var(--space-6));
+  overflow: hidden;
+}
+
+/* QrCodeView: dark on light in both themes, on a card with a hairline. */
+.codeCard {
+  display: block;
+  width: fit-content;
+  max-width: calc(100% - var(--space-8) * 2);
+  margin-inline: auto;
+  padding: var(--space-4);
+  border: var(--border-hairline) solid var(--color-code-border);
+  border-radius: var(--shape-card);
+  background: var(--color-code-surface);
+}
+
+.codeSvg {
+  display: block;
+  width: calc(var(--space-16) * 3 + var(--space-12));
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+}
+
+.codeInk {
+  fill: var(--color-code-ink);
+}

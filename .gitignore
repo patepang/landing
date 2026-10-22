@@ -1,6 +1,16 @@
 # Dependencies
 node_modules/
 
+# Next.js build output (static export lands in out/)
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+
+# Playwright output (curated screenshots live in docs/screenshots/)
+playwright-report/
+test-results/
+
 # Machine-local tool settings (never commit)
 .claude/settings.local.json
 .venv/

@@ -1,0 +1,261 @@
+.hero {
+  padding-top: var(--space-8);
+}
+
+.intro {
+  display: grid;
+  gap: var(--space-6);
+  padding-bottom: var(--space-12);
+}
+
+.aside {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  max-width: var(--content-reading);
+}
+
+.emphasis {
+  color: var(--color-text-primary);
+  font-weight: var(--weight-semibold);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+}
+
+.status {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  color: var(--color-text-secondary);
+}
+
+.statusIcon {
+  color: var(--color-text-secondary);
+}
+
+/*
+ * ---- The stage ----
+ * Forest mist, full bleed, drawn behind the label and the phone only, so on narrow screens the
+ * notes can follow the screen they describe, on the canvas below. The phone rises from the
+ * stage's bottom edge. The band is a pseudo-element stretched edge to edge with a spread shadow
+ * that is clipped to its own height, so it never causes horizontal scrolling.
+ */
+.exhibit {
+  --leader: calc(var(--space-16) + var(--space-8));
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    'label'
+    'phone'
+    'born'
+    'code'
+    'face';
+  justify-items: center;
+  row-gap: var(--space-6);
+  padding-top: var(--space-10);
+}
+
+.exhibit::before {
+  content: '';
+  z-index: -1;
+  grid-column: 1 / -1;
+  grid-row: label-start / phone-end;
+  /* An empty grid item: it must stretch, whatever the grid aligns its other items to. */
+  align-self: stretch;
+  margin-top: calc(-1 * var(--space-10));
+  background: var(--color-brand-subtle);
+  box-shadow: 0 0 0 100vmax var(--color-brand-subtle);
+  clip-path: inset(0 -100vmax);
+}
+
+/* Narrow and medium screens lay the three notes out as their own grid items. */
+.notesStart,
+.notesEnd {
+  display: contents;
+}
+
+.noteBorn {
+  grid-area: born;
+  margin-top: var(--space-4);
+}
+
+.noteCode {
+  grid-area: code;
+}
+
+.noteFace {
+  grid-area: face;
+}
+
+.label {
+  grid-area: label;
+}
+
+/* The screen continues below the stage: its shadow is cut at the bottom edge, not spilled. */
+.phone {
+  grid-area: phone;
+  clip-path: inset(calc(-1 * var(--space-16)) calc(-1 * var(--space-16)) 0);
+}
+
+.note {
+  position: relative;
+  justify-self: stretch;
+  max-width: var(--content-reading);
+  color: var(--color-brand-on-subtle);
+}
+
+.noteTitle {
+  display: block;
+  color: var(--color-text-primary);
+  font-weight: var(--weight-semibold);
+}
+
+/* Leader lines: a forest hairline from the note's first line to the edge of the screen. */
+.note::after {
+  position: absolute;
+  top: calc(var(--type-body-line) / 2);
+  width: calc(var(--leader) - var(--space-4));
+  height: var(--border-hairline);
+  background: var(--color-stage-line);
+}
+
+@media (max-width: 599.98px) {
+  /* Both actions take the full width on phones, so the text link lines up under the button. */
+  .actions > * {
+    flex: 1 1 100%;
+  }
+}
+
+@media (min-width: 600px) {
+  .exhibit {
+    padding-top: var(--space-12);
+  }
+
+  .exhibit::before {
+    margin-top: calc(-1 * var(--space-12));
+  }
+}
+
+/* Medium screens: the notes stand to the right of the screen, top to bottom as on the screen. */
+@media (min-width: 720px) {
+  .exhibit {
+    --leader: var(--space-12);
+    grid-template-columns: var(--content-message) minmax(0, 1fr);
+    grid-template-rows: auto auto auto auto;
+    grid-template-areas:
+      'label .'
+      'phone born'
+      'phone face'
+      'phone code';
+    column-gap: var(--leader);
+    row-gap: var(--space-6);
+    align-items: start;
+  }
+
+  .exhibit::before {
+    grid-row: 1 / -1;
+  }
+
+  .noteBorn {
+    margin-top: calc(var(--space-16) + var(--space-4));
+  }
+
+  .note {
+    justify-self: start;
+    max-width: calc(var(--space-16) * 5);
+  }
+
+  .note::after {
+    content: '';
+    right: calc(100% + var(--space-4));
+  }
+}
+
+/*
+ * Wide screens: the headline and its aside sit side by side, and the notes move to both sides of
+ * the phone.
+ */
+@media (min-width: 1280px) {
+  .intro {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--space-8);
+    align-items: end;
+    padding-bottom: var(--space-16);
+  }
+
+  .title {
+    grid-column: 1 / span 7;
+  }
+
+  .aside {
+    grid-column: 8 / span 5;
+  }
+
+  .exhibit {
+    --leader: calc(var(--space-16) + var(--space-8));
+    grid-template-columns: minmax(0, 1fr) var(--content-message) minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    grid-template-areas:
+      'start label end'
+      'start phone end';
+    padding-top: var(--space-16);
+  }
+
+  .exhibit::before {
+    margin-top: calc(-1 * var(--space-16));
+  }
+
+  .notesStart,
+  .notesEnd {
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+  }
+
+  /* The note columns hug the screen, so each leader line reaches it. */
+  .notesStart {
+    grid-area: start;
+    justify-self: end;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-8);
+    padding-top: calc(var(--space-16) * 2);
+    padding-bottom: var(--space-12);
+  }
+
+  .notesEnd {
+    grid-area: end;
+    justify-self: start;
+    align-items: flex-start;
+    padding-top: calc(var(--space-16) * 4 + var(--space-8));
+  }
+
+  .noteBorn {
+    margin-top: 0;
+  }
+
+  .note {
+    max-width: calc(var(--space-16) * 4 + var(--space-8));
+  }
+
+  /* Notes left of the screen hug their leader line, as callouts do. */
+  .notesStart .note {
+    text-align: end;
+  }
+
+  .notesStart .note::after {
+    right: auto;
+    left: calc(100% + var(--space-4));
+  }
+
+  .notesEnd .note::after {
+    right: calc(100% + var(--space-4));
+  }
+}

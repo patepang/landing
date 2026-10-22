@@ -1,13 +1,18 @@
 # Desain landing patepang.com
 
-- **Status:** menunggu persetujuan pemilik. Belum ada kode produk, scaffolding, maupun dependensi
-  yang dipasang (gerbang brief §6, Superpowers HARD-GATE).
+- **Status:** diimplementasikan dengan struktur A pada 22 Oktober 2026. Keputusan, penyimpangan,
+  versi yang benar-benar dipasang, dan hasil verifikasi ada di `docs/landing-implementation.md`.
+  Dokumen ini tetap menjadi rencana yang mendasarinya.
 - **Tanggal:** 22 Oktober 2026.
 - **Sumber kebenaran:** `PRODUCT.md` (product truth), `DESIGN.md` dan `.impeccable/design.json`
   (dunia visual Patepang yang sudah ada), `docs/product-understanding.md` (riset `patepang/app` @
   `262202f`), dan `docs/tooling-status.md`.
 - **Keputusan pemilik yang sudah diterima:** CTA hanya navigasi di halaman; status prototipe disebut
-  secara eksplisit; alat dipakai lewat repo; hasil di-push hanya ke `claude/new-session-4506kf`.
+  secara eksplisit; alat dipakai lewat repo.
+- **Keputusan pemilik di brief implementasi (22 Oktober 2026), menjawab §16:** struktur A; favicon
+  kosong `data:,`; "Dua Titik Bertemu" hanya arahan kerja internal; tanya jawab asal nama tidak
+  dimuat; `metadataBase` `https://patepang.com` tanpa berarti deployment. Tidak ada commit, push,
+  PR, atau deployment tanpa izin terpisah; catatan push lama di atas tidak berlaku lagi.
 
 ## 1. Maksud
 
@@ -322,6 +327,10 @@ Perubahan lain hanya boleh masuk dengan bukti. `DESIGN.md` diperbarui di akhir b
 documenter Impeccable.
 
 ## 13. Stack dan dependensi
+
+> Tabel ini adalah kandidat saat perencanaan. Versi yang akhirnya dipasang berbeda (antara lain
+> `next` 16.4.2 karena advisory keamanan, ESLint 9, dan Playwright Node, bukan Python); lihat
+> `docs/landing-implementation.md` §3.
 
 | Paket | Kandidat hari ini | Alasan |
 |---|---|---|

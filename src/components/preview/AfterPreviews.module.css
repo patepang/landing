@@ -1,0 +1,149 @@
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: 100%;
+  max-width: var(--content-message);
+  cursor: default;
+  user-select: none;
+}
+
+.centerDots {
+  align-self: center;
+}
+
+.mutedIcon {
+  color: var(--color-text-tertiary);
+}
+
+/* DayCompleteCard: Surface raised padding={2} around StateView kind="done". */
+.dayComplete {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  padding: calc(var(--space-2) + var(--space-6)) calc(var(--space-2) + var(--space-4));
+  text-align: center;
+}
+
+.stateBadge {
+  display: grid;
+  place-items: center;
+  width: var(--space-16);
+  height: var(--space-16);
+  border-radius: var(--radius-full);
+  background: var(--color-success-subtle);
+  color: var(--color-success-text);
+}
+
+.stateText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-width: var(--content-message);
+}
+
+/* MomenCard: Surface raised padding={5}, stack gap 16. */
+.momen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: 100%;
+  max-width: var(--content-message);
+  padding: var(--space-5);
+  cursor: default;
+  user-select: none;
+}
+
+.titleBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.place {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.people {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.photo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border: var(--border-hairline) solid var(--color-border-subtle);
+  border-radius: var(--shape-input);
+  background: var(--color-surface-sunken);
+}
+
+/* ConnectionCard */
+.connectionHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-1) var(--space-3) var(--space-4);
+}
+
+.identity {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding-top: var(--space-1);
+  padding-right: var(--space-3);
+}
+
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: var(--space-6);
+  row-gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+}
+
+.fact {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* The fading warning: warning tone, words first; the hourglass only reinforces them. */
+.fading {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-warning-subtle);
+  color: var(--color-warning-text);
+}
+
+/* ListGroup with one ListItem: title block and status badge, then the chevron at the end. */
+.planRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: calc(var(--touch-target) + var(--space-2));
+  padding: var(--space-3) var(--space-4);
+}
+
+.planMain {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+}
+
+.planText {
+  display: flex;
+  flex: 1 1 calc(var(--space-16) * 3);
+  flex-direction: column;
+  gap: var(--space-1);
+}

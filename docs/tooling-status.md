@@ -109,4 +109,21 @@ Bundle `example-skills` dari `anthropics/skills` sengaja tidak dipasang, karena 
 | Perencanaan | Superpowers (`brainstorming`) | Desain tertulis di `docs/superpowers/specs/2026-10-22-landing-design.md`. *Builder check* oleh subagent baru sedang berjalan saat commit ini; hasilnya akan dipilah ke §16 dokumen desain. HARD-GATE dipatuhi (belum ada kode produk). |
 | Perencanaan | Pengganti Context7 | Catatan rilis resmi React 19.3.1 dan Next.js 16.4.2 (GitHub) untuk keputusan versi |
 
-Baris berikutnya ditambahkan seiring pekerjaan berjalan.
+### Sesi implementasi (22 Oktober 2026)
+
+Sesi cloud baru dengan dua repo: `patepang/landing` dan clone baca-saja `patepang/app` @ `262202f`
+(di luar repo landing). Di sesi ini Frontend Design dan Superpowers sudah termuat sebagai skill dari
+`.claude/skills/`, sehingga bisa dipanggil lewat tool Skill.
+
+| Fase | Alat | Bukti |
+|---|---|---|
+| Komposisi | Frontend Design (tool Skill) | Rencana dua lintasan. Warna dan huruf tetap dari DESIGN.md. Revisi terhadap default: hero "H1 + mockup HP" menjadi panggung beranotasi; kartu fitur menjadi pameran berlabel; di desktop tiga pameran berdiri di satu panggung. |
+| Kode React | vercel-react-best-practices (tool Skill) | Diterapkan `bundle-barrel-imports` (ikon diimpor per file), `server-serialization` (ikon dirender di server lalu dikirim sebagai elemen ke satu-satunya pulau klien), dan `rendering-animate-svg-wrapper` (animasi pada `span` pembungkus, bukan SVG). |
+| Bukti browser | webapp-testing (tool Skill) | Pola rekon-lalu-aksi dan `scripts/with_server.py` dipakai untuk inspeksi ad hoc. Playwright Python tidak terpasang di container, jadi tes permanen ditulis dengan `@playwright/test` 1.56.1 (Node). |
+| Kritik dan polish | Impeccable (tool Skill) | `impeccable context`; critique dengan dua sub-agen terisolasi (A: tinjauan desain, B: `impeccable detect` + overlay di browser): 29/36, P0 0, P1 1, snapshot di `.impeccable/critique/`. Lalu polish atas kelima isu prioritas, diperiksa di browser. `impeccable detect` diulang pada build final (1280×800 dan 390×844, Chromium terpasang lewat pembungkus `--no-sandbox` karena container berjalan sebagai root): hanya `cream-palette`, yaitu kanvas merek dari token app. |
+| Review | Superpowers `requesting-code-review` dan `receiving-code-review` (tool Skill) | Reviewer sub-agen baca-saja atas working tree (belum ada commit): "siap dengan perbaikan", tanpa temuan kritis. Setiap temuan dicek dulu terhadap kode, brief, dan spec; yang valid diperbaiki dan diuji (rincian di `docs/landing-implementation.md` §6). |
+| Verifikasi akhir | Superpowers `verification-before-completion` (tool Skill) | Sebelum laporan akhir: `pnpm check` dijalankan ulang (exit 0; 27/27 e2e, 62/62 kontras), `pnpm dev` dicoba (HTTP 200, H1 benar), clone app dicek tanpa perubahan, dan tidak ada commit di repo landing. |
+| API Next.js | Pengganti Context7 | Context7 tidak tersedia di sesi ini. Dipakai dokumentasi resmi yang ikut terpasang (`node_modules/next/dist/docs`, versi yang sama), registry npm, dan database advisory npm. |
+| Tipe | TypeScript LSP | Tidak tersedia di sesi ini; diganti `tsc --noEmit` (`pnpm typecheck`). |
+| Browser | Playwright MCP | Tidak dipakai; diganti `@playwright/test` dan DevTools Protocol langsung (screenshot zoom). |
+

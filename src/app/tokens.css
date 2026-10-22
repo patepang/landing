@@ -1,0 +1,289 @@
+/*
+ * Design tokens for the landing, translated one to one from the Patepang app design system:
+ * patepang/app @ 262202f, src/design-system/tokens/*.ts (palette, color, typography, spacing,
+ * shape, elevation, motion, layout, opacity). One app dp is one CSS px here.
+ *
+ * Components read these custom properties and never raw values. Colour roles keep the app's
+ * names (canvas, surface, text, border, brand, accent, ...) so a role can move to another
+ * primitive without touching components. The theme follows the operating system.
+ *
+ * Web-only extensions (type steps for wide screens, page width, section rhythm) are at the end
+ * and marked; everything above that marker is the app's own value.
+ */
+
+:root {
+  color-scheme: light dark;
+
+  /* ---- color.ts, light theme ---- */
+  --color-canvas: #f7f5f0; /* sand.50 */
+  --color-surface-raised: #fffefb; /* sand.0 */
+  --color-surface-sunken: #efece5; /* sand.100 */
+  --color-surface-overlay: #fffefb; /* sand.0 */
+  --color-surface-pressed: #efece5; /* sand.100 */
+  --color-text-primary: #22201c; /* sand.900 */
+  --color-text-secondary: #57524a; /* sand.700 */
+  --color-text-tertiary: #6e685e; /* sand.600 */
+  --color-border-subtle: #e3dfd6; /* sand.200: decorative separation, no contrast requirement */
+  --color-border-strong: #8a8378; /* sand.500: control boundaries, >= 3:1 */
+  --color-border-focus: #245c8f; /* blue.700: keyboard focus only */
+  --color-brand-solid: #1f5f4f; /* forest.700 */
+  --color-brand-solid-pressed: #184b3e; /* forest.850 */
+  --color-brand-on-solid: #ffffff; /* white */
+  --color-brand-text: #1f5f4f; /* forest.700 */
+  --color-brand-subtle: #e2eee9; /* forest.100 */
+  --color-brand-on-subtle: #1a5244; /* forest.800 */
+  --color-accent-text: #a0461e; /* apricot.600: memory only */
+  --color-accent-subtle: #fbe8db; /* apricot.100 */
+  --color-accent-on-subtle: #86391a; /* apricot.700 */
+  --color-accent-decor: #e7956c; /* apricot.400: the second dot, never carries text */
+  --color-success-text: #2c6936; /* green.700 */
+  --color-success-subtle: #e3f0e4; /* green.100 */
+  --color-warning-text: #7a5200; /* amber.700 */
+  --color-warning-subtle: #fbefd3; /* amber.100 */
+  --color-danger-solid: #b0261d; /* red.700 */
+  --color-danger-solid-pressed: #951f18; /* red.800 */
+  --color-danger-on-solid: #ffffff; /* white */
+  --color-danger-text: #b0261d; /* red.700 */
+  --color-danger-subtle: #fbe7e4; /* red.100 */
+  --color-danger-on-subtle: #951f18; /* red.800 */
+  --color-info-text: #245c8f; /* blue.700 */
+  --color-info-subtle: #e2ecf5; /* blue.100 */
+  --color-scrim: rgb(20 18 14 / 0.48);
+
+  /* avatarTones.light: initials avatars rotate through these measured pairs. */
+  --avatar-1-bg: #e2eee9; /* forest.100 */
+  --avatar-1-fg: #1a5244; /* forest.800 */
+  --avatar-2-bg: #fbe8db; /* apricot.100 */
+  --avatar-2-fg: #86391a; /* apricot.700 */
+  --avatar-3-bg: #e2ecf5; /* blue.100 */
+  --avatar-3-fg: #245c8f; /* blue.700 */
+  --avatar-4-bg: #efece5; /* sand.100 */
+  --avatar-4-fg: #57524a; /* sand.700 */
+
+  /*
+   * QrCodeView: a code is dark on light in both themes, as scanners expect, so it always uses the
+   * light theme's surface, ink and hairline roles.
+   */
+  --color-code-surface: #fffefb; /* light surface.raised */
+  --color-code-ink: #22201c; /* light text.primary */
+  --color-code-border: #e3dfd6; /* light border.subtle */
+
+  /* ---- elevation.ts, light ---- */
+  --elevation-raised: 0px 1px 2px rgb(34 32 28 / 0.06), 0px 4px 12px rgb(34 32 28 / 0.04);
+  --elevation-overlay: 0px 2px 6px rgb(20 18 14 / 0.08), 0px 16px 40px rgb(20 18 14 / 0.16);
+
+  /* ---- spacing.ts: 4-point scale; the key is the multiple of 4 ---- */
+  --space-0: 0px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* ---- shape.ts ---- */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-xxl: 28px;
+  --radius-full: 9999px;
+  --shape-button: var(--radius-full);
+  --shape-chip: var(--radius-full);
+  --shape-input: var(--radius-md);
+  --shape-checkbox: var(--radius-xs);
+  --shape-card: var(--radius-xl);
+  --shape-banner: var(--radius-lg);
+  --shape-toast: var(--radius-lg);
+  --shape-dialog: var(--radius-xxl);
+  --shape-sheet: var(--radius-xxl);
+  --shape-skeleton: var(--radius-sm);
+  --border-hairline: 1px;
+  --border-thin: 1px;
+  --border-thick: 2px;
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+
+  /*
+   * ---- typography.ts: one family, eleven steps ----
+   * Sizes are in rem (16px = 1rem) so the reader's own text size still applies, as
+   * `allowFontScaling` does in the app. Line heights are multiples of 4px at the base size.
+   * Tracking is the app's px value divided by the size, so it scales with the text.
+   */
+  /* `--font-jakarta` is set by next/font (src/app/fonts.ts) and carries a metric-matched fallback. */
+  --font-sans:
+    var(--font-jakarta, system-ui), system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, sans-serif;
+  --type-display-size: 2.25rem; /* 36 */
+  --type-display-line: 2.75rem; /* 44 */
+  --type-display-tracking: -0.02em; /* -0.72px */
+  --type-title-large-size: 1.75rem; /* 28 */
+  --type-title-large-line: 2.25rem; /* 36 */
+  --type-title-large-tracking: -0.015em; /* -0.42px */
+  --type-title-size: 1.375rem; /* 22 */
+  --type-title-line: 1.75rem; /* 28 */
+  --type-title-tracking: -0.01em; /* -0.22px */
+  --type-headline-size: 1.125rem; /* 18 */
+  --type-headline-line: 1.5rem; /* 24 */
+  --type-headline-tracking: -0.005em; /* -0.09px */
+  --type-body-large-size: 1.125rem; /* 18 */
+  --type-body-large-line: 1.75rem; /* 28 */
+  --type-body-size: 1rem; /* 16 */
+  --type-body-line: 1.5rem; /* 24 */
+  --type-body-small-size: 0.875rem; /* 14 */
+  --type-body-small-line: 1.25rem; /* 20 */
+  --type-label-size: 1rem; /* 16 */
+  --type-label-line: 1.25rem; /* 20 */
+  --type-label-small-size: 0.875rem; /* 14 */
+  --type-label-small-line: 1.25rem; /* 20 */
+  --type-label-small-tracking: 0.005em; /* 0.07px */
+  --type-caption-size: 0.75rem; /* 12 */
+  --type-caption-line: 1rem; /* 16 */
+  --type-caption-tracking: 0.01em; /* 0.12px */
+  /*
+   * Glyphs inside fixed-size graphics (avatar initials) keep their size whatever the reader's
+   * text size, as the app does with allowFontScaling={false}; these are the same steps in px.
+   */
+  --type-caption-size-fixed: 12px;
+  --type-label-small-size-fixed: 14px;
+  --type-headline-size-fixed: 18px;
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* ---- motion.ts: under 300ms, exits faster than entrances, no ease-in, no loops ---- */
+  --duration-instant: 0ms;
+  --duration-press: 120ms;
+  --duration-selection: 160ms;
+  --duration-enter: 220ms;
+  --duration-exit: 180ms;
+  --duration-move: 240ms;
+  --duration-overlay-enter: 300ms;
+  --duration-overlay-exit: 240ms;
+  --duration-reduced-fade: 120ms;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-sheet: cubic-bezier(0.32, 0.72, 0, 1);
+  --motion-enter-rise: 8px;
+  --motion-press-scale: 0.97;
+  --motion-icon-press-scale: 0.92;
+  --motion-overlay-scale: 0.96;
+  --motion-pop-scale: 0.9;
+
+  /* ---- layout.ts (breakpoints 600px and 1024px are written in the media queries) ---- */
+  --gutter-compact: 20px;
+  --gutter-medium: 32px;
+  --gutter-expanded: 40px;
+  --content-reading: 680px;
+  --content-page: 760px;
+  --content-message: 360px;
+  --touch-target: 48px;
+  --control-sm: 36px;
+  --control-md: 48px;
+  --control-lg: 56px;
+
+  /* ---- opacity.ts ---- */
+  --opacity-disabled: 0.4;
+
+  /* ==== Web-only extensions for the landing (see docs/landing-implementation.md) ==== */
+
+  /* The app has no wide layout; the page gets a 12-column grid capped at this width. */
+  --page-max: 1360px;
+  --gutter: var(--gutter-compact);
+  /* Space between sections: 64, then 96, then 128 (multiples of the 64 step). */
+  --space-section: var(--space-16);
+  /*
+   * Hero and section headings for wide screens. Same family, weight and tracking logic as
+   * `display`; line heights stay on the 4px grid.
+   */
+  --type-hero-size: 2.5rem; /* 40 */
+  --type-hero-line: 3rem; /* 48 */
+  --type-section-size: 1.75rem; /* 28, = titleLarge */
+  --type-section-line: 2.25rem; /* 36 */
+  --type-section-tracking: -0.015em;
+  /* Hairline drawn on the forest stage (annotation leaders and row dividers). */
+  --color-stage-line: var(--color-brand-solid);
+}
+
+@media (min-width: 600px) {
+  :root {
+    --gutter: var(--gutter-medium);
+    --space-section: calc(var(--space-16) + var(--space-8));
+    --type-hero-size: 3.5rem; /* 56 */
+    --type-hero-line: 4rem; /* 64 */
+    --type-section-size: 2rem; /* 32 */
+    --type-section-line: 2.5rem; /* 40 */
+    --type-section-tracking: -0.02em;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --gutter: var(--gutter-expanded);
+    --space-section: calc(var(--space-16) * 2);
+    --type-hero-size: 4.5rem; /* 72 */
+    --type-hero-line: 5rem; /* 80 */
+    --type-section-size: 2.5rem; /* 40 */
+    --type-section-line: 3rem; /* 48 */
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* ---- color.ts, dark theme ---- */
+    --color-canvas: #141513; /* night.900: warm, faintly green charcoal, never pure black */
+    --color-surface-raised: #1c1e1b; /* night.800 */
+    --color-surface-sunken: #0f100e; /* night.950 */
+    --color-surface-overlay: #242723; /* night.700 */
+    --color-surface-pressed: #30332f; /* night.600 */
+    --color-text-primary: #f2efe8; /* night.50 */
+    --color-text-secondary: #c5c0b5; /* night.200 */
+    --color-text-tertiary: #a39e93; /* night.300 */
+    --color-border-subtle: #30332f; /* night.600 */
+    --color-border-strong: #74786f; /* night.400 */
+    --color-border-focus: #8dbdeb; /* blue.300 */
+    --color-brand-solid: #7fcdb4; /* forest.400: mint */
+    --color-brand-solid-pressed: #9ad9c5; /* forest.300 */
+    --color-brand-on-solid: #0c2620; /* forest.950 */
+    --color-brand-text: #7fcdb4; /* forest.400 */
+    --color-brand-subtle: #1c3029; /* forest.900 */
+    --color-brand-on-subtle: #a5ddcb; /* forest.200 */
+    --color-accent-text: #f1a47c; /* apricot.300 */
+    --color-accent-subtle: #3a2920; /* apricot.900 */
+    --color-accent-on-subtle: #f6c2a5; /* apricot.200 */
+    --color-accent-decor: #e7956c; /* apricot.400 */
+    --color-success-text: #8fd09b; /* green.300 */
+    --color-success-subtle: #1c2b1f; /* green.900 */
+    --color-warning-text: #f0c468; /* amber.300 */
+    --color-warning-subtle: #2e2716; /* amber.900 */
+    --color-danger-solid: #ff9c90; /* red.300 */
+    --color-danger-solid-pressed: #ffb4aa; /* red.200 */
+    --color-danger-on-solid: #2a0d0a; /* red.950 */
+    --color-danger-text: #ff9c90; /* red.300 */
+    --color-danger-subtle: #3a1e1b; /* red.900 */
+    --color-danger-on-subtle: #ffb4aa; /* red.200 */
+    --color-info-text: #8dbdeb; /* blue.300 */
+    --color-info-subtle: #18273a; /* blue.900 */
+    --color-scrim: rgb(0 0 0 / 0.64);
+
+    /* avatarTones.dark */
+    --avatar-1-bg: #1c3029; /* forest.900 */
+    --avatar-1-fg: #a5ddcb; /* forest.200 */
+    --avatar-2-bg: #3a2920; /* apricot.900 */
+    --avatar-2-fg: #f6c2a5; /* apricot.200 */
+    --avatar-3-bg: #18273a; /* blue.900 */
+    --avatar-3-fg: #8dbdeb; /* blue.300 */
+    --avatar-4-bg: #242723; /* night.700 */
+    --avatar-4-fg: #c5c0b5; /* night.200 */
+
+    /* ---- elevation.ts, dark: raised surfaces rely on their lighter tone instead ---- */
+    --elevation-raised: none;
+    --elevation-overlay: 0px 16px 40px rgb(0 0 0 / 0.48);
+  }
+}

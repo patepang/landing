@@ -1,0 +1,52 @@
+.section {
+  padding-bottom: var(--space-section);
+}
+
+/* A sunken panel: the one place on the page that is about the state of things, not the design. */
+.panel {
+  display: grid;
+  gap: var(--space-6);
+  padding: var(--space-8) var(--space-6);
+  border-radius: var(--shape-dialog);
+  background: var(--color-surface-sunken);
+}
+
+/* Anchored from "Tentang prototipe": land with the whole panel in view, not its top cut off. */
+.title {
+  scroll-margin-top: var(--space-8);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: var(--content-reading);
+}
+
+@media (min-width: 600px) {
+  .panel {
+    padding: var(--space-12) var(--space-10);
+  }
+
+  .title {
+    scroll-margin-top: var(--space-12);
+  }
+}
+
+@media (min-width: 1024px) {
+  .panel {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--space-8);
+    padding: var(--space-16) var(--space-12);
+  }
+
+  .title {
+    grid-column: 1 / span 5;
+    scroll-margin-top: var(--space-16);
+  }
+
+  .body {
+    grid-column: 7 / span 6;
+    padding-top: var(--space-2);
+  }
+}

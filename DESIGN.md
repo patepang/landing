@@ -180,8 +180,8 @@ components:
 <!-- Sumber: design system patepang/app @ 262202fa7866d268ba1f74258d47e7b19515df89
      (src/design-system/tokens/*.ts, DESIGN_SYSTEM.md, docs/adr/0002-arah-visual-dan-gerak.md).
      File ini mendokumentasikan sistem yang sudah ada untuk dipakai di web; ia tidak menggantinya.
-     Nilai dp di aplikasi = px CSS. Perluasan khusus landing dicatat di docs/landing-plan.md dan baru
-     masuk ke sini setelah dibangun dan disetujui. -->
+     Nilai dp di aplikasi = px CSS. Perluasan khusus landing dicatat di docs/landing-implementation.md
+     dan baru masuk ke sini setelah dibangun dan disetujui. -->
 
 ## Overview
 

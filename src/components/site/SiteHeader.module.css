@@ -1,0 +1,70 @@
+.header {
+  padding-block: var(--space-4);
+}
+
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: var(--space-6);
+  row-gap: var(--space-2);
+}
+
+.home {
+  display: inline-flex;
+  padding: var(--space-1);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: var(--space-1);
+  list-style: none;
+}
+
+/* Text links with a 48px hit area; the hover tint reuses the pressed surface. */
+.link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-target);
+  padding-inline: var(--space-3);
+  border-radius: var(--shape-button);
+  color: var(--color-text-secondary);
+  font-size: var(--type-label-small-size);
+  line-height: var(--type-label-small-line);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--type-label-small-tracking);
+  text-decoration: none;
+  transition: background-color var(--duration-press) var(--ease-out);
+}
+
+.link:active {
+  background: var(--color-surface-pressed);
+  color: var(--color-text-primary);
+}
+
+@media (hover: hover) {
+  .link:hover {
+    background: var(--color-surface-pressed);
+    color: var(--color-text-primary);
+  }
+}
+
+/*
+ * Narrow screens keep the lockup and one link, as the design spec sets for phones. The page is
+ * read top to bottom from there, and the hero's two buttons lead to the demo and the status.
+ */
+@media (max-width: 767.98px) {
+  .wideOnly {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link {
+    transition: none;
+  }
+}

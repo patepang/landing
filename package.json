@@ -1,0 +1,43 @@
+{
+  "name": "patepang-landing",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@10.34.6+sha512.7e1ae66a83a9143c118cc1944f37cc4f2b8acddeda4b001cfa78908f6e46e45e15292739ca6c9d026426cc757e9318cc98c5551d6a16c165097b0028ba87b4e6",
+  "engines": {
+    "node": "^22.13.0 || ^24.3.0"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "preview": "node scripts/serve-out.mjs",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --max-warnings 0",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check:contrast": "node scripts/check-contrast.mjs",
+    "test": "pnpm run check:contrast && pnpm run test:e2e",
+    "test:e2e": "next build && playwright test --project=e2e",
+    "screenshots": "next build && playwright test --project=screenshots",
+    "check": "pnpm run typecheck && pnpm run lint && pnpm run format:check && pnpm run test"
+  },
+  "dependencies": {
+    "@phosphor-icons/react": "2.1.10",
+    "next": "16.4.2",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.56.1",
+    "@types/node": "22.20.5",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "axe-core": "4.14.0",
+    "eslint": "9.39.5",
+    "eslint-config-next": "16.4.0",
+    "prettier": "3.9.9",
+    "typescript": "6.0.3"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": []
+  }
+}

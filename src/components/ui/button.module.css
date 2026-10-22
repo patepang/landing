@@ -1,0 +1,81 @@
+/*
+ * Buttons from the app (src/design-system/components/Button.tsx): capsules with a 48px hit area,
+ * press feedback of tint plus a 3% scale, and labels that wrap instead of truncating. The web adds
+ * a hover state for pointers, using the existing pressed colours.
+ */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--control-md);
+  min-width: var(--touch-target);
+  padding: var(--space-3) var(--space-6);
+  border: var(--border-thin) solid transparent;
+  border-radius: var(--shape-button);
+  background: transparent;
+  font-family: inherit;
+  font-size: var(--type-label-size);
+  line-height: var(--type-label-line);
+  font-weight: var(--weight-semibold);
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color var(--duration-press) var(--ease-out),
+    transform var(--duration-press) var(--ease-out);
+}
+
+.large {
+  min-height: var(--control-lg);
+  padding: var(--space-4) var(--space-8);
+}
+
+.primary {
+  background: var(--color-brand-solid);
+  color: var(--color-brand-on-solid);
+}
+
+.secondary {
+  border-color: var(--color-border-strong);
+  color: var(--color-text-primary);
+}
+
+.ghost {
+  color: var(--color-brand-text);
+}
+
+.primary:active {
+  background: var(--color-brand-solid-pressed);
+}
+
+.secondary:active,
+.ghost:active {
+  background: var(--color-surface-pressed);
+}
+
+.button:active {
+  transform: scale(var(--motion-press-scale));
+}
+
+@media (hover: hover) {
+  .primary:hover {
+    background: var(--color-brand-solid-pressed);
+  }
+
+  .secondary:hover,
+  .ghost:hover {
+    background: var(--color-surface-pressed);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    transition: none;
+  }
+
+  .button:active {
+    transform: none;
+  }
+}

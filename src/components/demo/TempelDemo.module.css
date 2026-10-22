@@ -1,0 +1,363 @@
+.demo {
+  display: grid;
+  grid-template-areas:
+    'intro'
+    'steps'
+    'player';
+  gap: var(--space-8);
+}
+
+.intro {
+  grid-area: intro;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: var(--content-reading);
+}
+
+/* ---- Steps: a real ordered list; the current one is tinted and marked aria-current ---- */
+
+.steps {
+  grid-area: steps;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  max-width: var(--content-reading);
+  list-style: none;
+}
+
+.step {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  transition: background-color var(--duration-selection) var(--ease-out);
+}
+
+/* The pressed surface reads in both themes (sunken is darker than the night canvas). */
+.step[data-state='current'] {
+  background: var(--color-surface-pressed);
+}
+
+/* 24px at the default text size; grows with the reader's text size so the number stays inside. */
+.marker {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: calc(var(--type-caption-line) + var(--space-2));
+  height: calc(var(--type-caption-line) + var(--space-2));
+  border-radius: var(--radius-full);
+  background: var(--color-brand-solid);
+  color: var(--color-brand-on-solid);
+  font-size: var(--type-caption-size);
+  line-height: var(--type-caption-line);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--type-caption-tracking);
+}
+
+.step[data-state='next'] .marker {
+  border: var(--border-thin) solid var(--color-border-strong);
+  background: transparent;
+  color: var(--color-text-secondary);
+}
+
+.stepText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+/* ---- Player: the stage, the button and what is happening, in words ---- */
+
+.player {
+  grid-area: player;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/*
+ * Geometry of TapRitualPreview: 64px phones, a 40px centre, 16px gaps, a 24px approach, a 5°
+ * shake of 70ms steps (three cycles). Wide screens scale the same picture by 1.5. Below the
+ * phones, the brand's two dots move as on the app's shake screen: apart, near, met.
+ */
+.stage {
+  --phone: var(--space-16);
+  --center: var(--space-10);
+  --gap: var(--space-4);
+  --approach: var(--space-6);
+  --shake-angle: 5deg;
+  --shake-step: 70ms;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-8);
+  padding-block: var(--space-10);
+  border-radius: var(--shape-card);
+  background: var(--color-brand-subtle);
+}
+
+.phones {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap);
+}
+
+/* Raised like the app's raised IconButton: tone, hairline and the soft shadow (light only). */
+.phone {
+  display: grid;
+  place-items: center;
+  width: var(--phone);
+  height: var(--phone);
+  border: var(--border-hairline) solid var(--color-border-subtle);
+  border-radius: var(--radius-full);
+  background: var(--color-surface-raised);
+  box-shadow: var(--elevation-raised);
+  color: var(--color-brand-text);
+}
+
+.phone svg {
+  width: 50%;
+  height: 50%;
+}
+
+/* Above both phones, so the check mark lands where they meet. */
+.center {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: var(--center);
+  height: var(--center);
+  color: var(--color-text-tertiary);
+}
+
+.center svg {
+  width: 60%;
+  height: 60%;
+}
+
+.demo[data-phase='scan'] .center,
+.demo[data-phase='shake'] .center {
+  color: var(--color-brand-text);
+}
+
+.check {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-full);
+  background: var(--color-brand-solid);
+  color: var(--color-brand-on-solid);
+  animation: pop var(--duration-overlay-enter) var(--ease-in-out) both;
+}
+
+/* Approach (sequence: 300ms ease-in-out), then three shakes of 70ms each way, then settle. */
+.demo[data-phase='shake'] .left {
+  animation: tempel-left
+    calc(var(--duration-overlay-enter) + 6 * var(--shake-step) + var(--duration-press)) linear both;
+}
+
+.demo[data-phase='shake'] .right {
+  animation: tempel-right
+    calc(var(--duration-overlay-enter) + 6 * var(--shake-step) + var(--duration-press)) linear both;
+}
+
+.demo[data-phase='done'] .left {
+  transform: translateX(var(--approach));
+}
+
+.demo[data-phase='done'] .right {
+  transform: translateX(calc(-1 * var(--approach)));
+}
+
+/* Keyframe stops: 300/840, then every 70ms up to 720/840, then the 120ms settle. */
+@keyframes tempel-left {
+  0% {
+    transform: translateX(0) rotate(0deg);
+    animation-timing-function: var(--ease-in-out);
+  }
+  35.714% {
+    transform: translateX(var(--approach)) rotate(0deg);
+    animation-timing-function: var(--ease-out);
+  }
+  44.048% {
+    transform: translateX(var(--approach)) rotate(calc(-1 * var(--shake-angle)));
+    animation-timing-function: var(--ease-out);
+  }
+  52.381% {
+    transform: translateX(var(--approach)) rotate(var(--shake-angle));
+    animation-timing-function: var(--ease-out);
+  }
+  60.714% {
+    transform: translateX(var(--approach)) rotate(calc(-1 * var(--shake-angle)));
+    animation-timing-function: var(--ease-out);
+  }
+  69.048% {
+    transform: translateX(var(--approach)) rotate(var(--shake-angle));
+    animation-timing-function: var(--ease-out);
+  }
+  77.381% {
+    transform: translateX(var(--approach)) rotate(calc(-1 * var(--shake-angle)));
+    animation-timing-function: var(--ease-out);
+  }
+  85.714% {
+    transform: translateX(var(--approach)) rotate(var(--shake-angle));
+    animation-timing-function: var(--ease-out);
+  }
+  100% {
+    transform: translateX(var(--approach)) rotate(0deg);
+  }
+}
+
+@keyframes tempel-right {
+  0% {
+    transform: translateX(0) rotate(0deg);
+    animation-timing-function: var(--ease-in-out);
+  }
+  35.714% {
+    transform: translateX(calc(-1 * var(--approach))) rotate(0deg);
+    animation-timing-function: var(--ease-out);
+  }
+  44.048% {
+    transform: translateX(calc(-1 * var(--approach))) rotate(calc(-1 * var(--shake-angle)));
+    animation-timing-function: var(--ease-out);
+  }
+  52.381% {
+    transform: translateX(calc(-1 * var(--approach))) rotate(var(--shake-angle));
+    animation-timing-function: var(--ease-out);
+  }
+  60.714% {
+    transform: translateX(calc(-1 * var(--approach))) rotate(calc(-1 * var(--shake-angle)));
+    animation-timing-function: var(--ease-out);
+  }
+  69.048% {
+    transform: translateX(calc(-1 * var(--approach))) rotate(var(--shake-angle));
+    animation-timing-function: var(--ease-out);
+  }
+  77.381% {
+    transform: translateX(calc(-1 * var(--approach))) rotate(calc(-1 * var(--shake-angle)));
+    animation-timing-function: var(--ease-out);
+  }
+  85.714% {
+    transform: translateX(calc(-1 * var(--approach))) rotate(var(--shake-angle));
+    animation-timing-function: var(--ease-out);
+  }
+  100% {
+    transform: translateX(calc(-1 * var(--approach))) rotate(0deg);
+  }
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(var(--motion-pop-scale));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  column-gap: var(--space-4);
+}
+
+/*
+ * Room for two lines, so the last, longer step does not push the caption down. The top inset
+ * centres the first line on the button beside it (whose height follows the text size); when the
+ * status wraps under the button, the same inset is the gap between them.
+ */
+.status {
+  --button-height: max(
+    var(--control-md),
+    var(--type-label-line) + 2 * (var(--space-3) + var(--border-thin))
+  );
+  --inset: calc((var(--button-height) - var(--type-body-small-line)) / 2);
+  flex: 1 1 calc(var(--space-16) * 3);
+  min-height: calc(var(--inset) + var(--type-body-small-line) * 2);
+  padding-top: var(--inset);
+  color: var(--color-text-secondary);
+}
+
+/*
+ * The button works only once the page has hydrated, so it is not shown before then (or ever, if
+ * the script fails to load); its space is kept, so nothing moves when it appears. Without
+ * JavaScript at all the steps are all on the page, and the button and its status take no space.
+ */
+.controls[data-hydrating] {
+  visibility: hidden;
+}
+
+@media (scripting: none) {
+  .controls {
+    display: none;
+  }
+}
+
+/* Reduced motion: every step still shows, with no travel, shake or scale; the check fades in. */
+@media (prefers-reduced-motion: reduce) {
+  .step {
+    transition: none;
+  }
+
+  .demo[data-phase] .left,
+  .demo[data-phase] .right {
+    animation: none;
+    transform: none;
+  }
+
+  .check {
+    animation: fade var(--duration-reduced-fade) var(--ease-out) both;
+  }
+}
+
+@media (min-width: 1024px) {
+  .demo {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-areas: none;
+    column-gap: var(--space-8);
+    row-gap: var(--space-8);
+    align-items: start;
+  }
+
+  .intro {
+    grid-column: 1 / span 5;
+    grid-row: 1;
+  }
+
+  .steps {
+    grid-column: 1 / span 5;
+    grid-row: 2;
+  }
+
+  .player {
+    grid-column: 7 / span 6;
+    grid-row: 1 / span 2;
+    align-self: center;
+  }
+
+  .stage {
+    --phone: calc(var(--space-16) + var(--space-8));
+    --center: calc(var(--space-12) + var(--space-3));
+    --gap: var(--space-6);
+    --approach: calc(var(--space-8) + var(--space-1));
+    padding-block: var(--space-16);
+  }
+}

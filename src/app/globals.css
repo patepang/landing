@@ -1,0 +1,200 @@
+@import './tokens.css';
+
+/* ---- Base ---- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  /* Anchored sections land with a little air above them; the header does not stick. */
+  scroll-padding-top: var(--space-6);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--color-canvas);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
+  font-weight: var(--weight-regular);
+  overflow-wrap: break-word;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+ul,
+ol,
+dl,
+dd,
+figure,
+blockquote {
+  margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-weight: var(--weight-bold);
+  text-wrap: balance;
+}
+
+p,
+li,
+dd {
+  text-wrap: pretty;
+}
+
+ul,
+ol {
+  padding: 0;
+}
+
+a {
+  color: var(--color-brand-text);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+svg {
+  flex-shrink: 0;
+}
+
+::selection {
+  background: var(--color-brand-subtle);
+  color: var(--color-brand-on-subtle);
+}
+
+/* Keyboard focus: a 2px focus-blue ring, offset by 2px, on everything interactive. */
+:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-border-focus);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/*
+ * Targets of in-page links and the skip link take focus so keyboard and screen-reader users keep
+ * their place. They are reading positions, not controls, so they show no ring.
+ */
+[tabindex='-1']:focus {
+  outline: none;
+}
+
+/*
+ * ---- Type steps (typography.ts) in use on the page ----
+ * Components set the same size, line and tracking tokens directly where a step has to sit on
+ * their own element (buttons, links, step markers, the previews).
+ */
+
+.type-title-large {
+  font-size: var(--type-title-large-size);
+  line-height: var(--type-title-large-line);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--type-title-large-tracking);
+}
+
+.type-title {
+  font-size: var(--type-title-size);
+  line-height: var(--type-title-line);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--type-title-tracking);
+}
+
+.type-headline {
+  font-size: var(--type-headline-size);
+  line-height: var(--type-headline-line);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--type-headline-tracking);
+}
+
+.type-body-large {
+  font-size: var(--type-body-large-size);
+  line-height: var(--type-body-large-line);
+  font-weight: var(--weight-regular);
+}
+
+.type-body {
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
+  font-weight: var(--weight-regular);
+}
+
+.type-body-strong {
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
+  font-weight: var(--weight-semibold);
+}
+
+.type-body-small {
+  font-size: var(--type-body-small-size);
+  line-height: var(--type-body-small-line);
+  font-weight: var(--weight-regular);
+}
+
+/* Landing steps for wide screens (web-only extension of the scale). */
+.type-hero {
+  font-size: var(--type-hero-size);
+  line-height: var(--type-hero-line);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--type-display-tracking);
+}
+
+.type-section {
+  font-size: var(--type-section-size);
+  line-height: var(--type-section-line);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--type-section-tracking);
+}
+
+.tone-secondary {
+  color: var(--color-text-secondary);
+}
+
+.tone-tertiary {
+  color: var(--color-text-tertiary);
+}
+
+/* ---- Layout ---- */
+
+/* The page column: full width up to --page-max, with the window class's gutter. */
+.page {
+  width: 100%;
+  max-width: calc(var(--page-max) + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* The skip link stays out of sight until it receives keyboard focus. */
+.skip-link {
+  position: absolute;
+  top: var(--space-2);
+  left: var(--space-2);
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-target);
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--shape-button);
+  background: var(--color-surface-overlay);
+  color: var(--color-brand-text);
+  font-size: var(--type-label-size);
+  line-height: var(--type-label-line);
+  font-weight: var(--weight-semibold);
+  text-decoration: none;
+  transform: translateY(calc(-100% - var(--space-4)));
+}
+
+/* The shadow is only drawn while the link is on screen, so nothing peeks out at rest. */
+.skip-link:focus {
+  box-shadow: var(--elevation-overlay);
+  transform: none;
+}

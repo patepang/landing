@@ -1,0 +1,58 @@
+/*
+ * Geometry from the app: dot 12 / 16 / 28 and gap 24 / 40 / 64 for sm / md / lg. The box is as
+ * wide as the dots apart; `--distance` is the space between them (gap, one dot, or none).
+ */
+.dots {
+  --dot: var(--space-4);
+  --gap: var(--space-10);
+  --distance: var(--gap);
+  position: relative;
+  display: block;
+  flex: none;
+  width: calc(var(--gap) + var(--dot) * 2);
+  height: var(--dot);
+}
+
+.dots[data-size='sm'] {
+  --dot: calc(var(--space-2) + var(--space-1));
+  --gap: var(--space-6);
+}
+
+.dots[data-size='lg'] {
+  --dot: calc(var(--space-6) + var(--space-1));
+  --gap: var(--space-16);
+}
+
+.dots[data-phase='near'] {
+  --distance: var(--dot);
+}
+
+.dots[data-phase='meet'] {
+  --distance: 0px;
+}
+
+.dot {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: var(--dot);
+  height: var(--dot);
+  border-radius: var(--radius-full);
+  transition: transform var(--duration-overlay-enter) var(--ease-in-out);
+}
+
+.first {
+  background: var(--color-brand-solid);
+  transform: translateX(calc(-1 * (var(--distance) / 2 + var(--dot))));
+}
+
+.second {
+  background: var(--color-accent-decor);
+  transform: translateX(calc(var(--distance) / 2));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dot {
+    transition: none;
+  }
+}
