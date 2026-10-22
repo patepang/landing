@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Sketsa C: Kalender pertemuan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1440px; height: 900px; overflow: hidden; }
+  body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; background: #F7F5F0; color: #22201C; }
+  .nav { height: 80px; padding: 0 40px; display: flex; align-items: center; justify-content: space-between; }
+  .brand { display: flex; align-items: center; gap: 12px; color: #1F5F4F; font-weight: 700; font-size: 22px; letter-spacing: -0.22px; }
+  .bd { position: relative; width: 36px; height: 12px; }
+  .bd i { position: absolute; top: 0; width: 12px; height: 12px; border-radius: 9999px; }
+  .bd i:first-child { left: 6px; background: #1F5F4F; } .bd i:last-child { left: 18px; background: #E7956C; }
+  .links { display: flex; gap: 32px; font-weight: 600; font-size: 14px; color: #57524A; }
+  .top { padding: 40px 40px 0; display: grid; grid-template-columns: 1fr 400px; gap: 64px; align-items: end; }
+  h1 { font-size: 72px; line-height: 80px; letter-spacing: -1.44px; font-weight: 700; max-width: 820px; }
+  .lede { font-size: 18px; line-height: 28px; color: #57524A; }
+  .cta { margin-top: 20px; display: flex; align-items: center; gap: 16px; }
+  .btn { display: inline-flex; align-items: center; min-height: 56px; padding: 16px 32px; border-radius: 9999px; background: #1F5F4F; color: #FFFFFF; font-weight: 600; font-size: 16px; }
+  .ghost { font-weight: 600; font-size: 16px; color: #1F5F4F; }
+  .planner { position: absolute; left: 40px; right: 40px; top: 492px; display: grid; grid-template-columns: repeat(12, 1fr); gap: 8px; }
+  .month { position: relative; height: 196px; padding: 12px; border-radius: 20px; background: #FFFEFB; border: 1px solid #E3DFD6; }
+  .month h3 { font-size: 14px; line-height: 20px; font-weight: 600; letter-spacing: 0.07px; color: #57524A; }
+  .days { margin-top: 8px; height: 104px; background-image: radial-gradient(circle, #E3DFD6 2.5px, transparent 3px); background-size: 14px 26px; }
+  .month.quiet { background: transparent; }
+  .month.warn { background: #FBEFD3; border-color: #F0C468; }
+  .month.warn h3, .month.warn .w { color: #7A5200; }
+  .w { position: absolute; left: 12px; right: 12px; bottom: 12px; font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0.12px; }
+  .pair { position: absolute; width: 32px; height: 16px; }
+  .pair i { position: absolute; top: 0; width: 16px; height: 16px; border-radius: 9999px; }
+  .pair .a { left: 0; background: #1F5F4F; } .pair .b { left: 16px; background: #E7956C; }
+  .k { position: absolute; width: 8px; height: 8px; border-radius: 9999px; background: #1F5F4F; opacity: 0.45; }
+  .legend { position: absolute; left: 40px; bottom: 28px; display: flex; gap: 32px; font-size: 14px; line-height: 20px; color: #57524A; }
+  .legend span { display: inline-flex; align-items: center; gap: 8px; }
+  .lg-pair { position: relative; width: 24px; height: 12px; } .lg-pair i { position: absolute; top: 0; width: 12px; height: 12px; border-radius: 9999px; }
+  .lg-pair i:first-child { left: 0; background: #1F5F4F; } .lg-pair i:last-child { left: 12px; background: #E7956C; }
+  .lg-k { width: 8px; height: 8px; border-radius: 9999px; background: #1F5F4F; opacity: 0.45; }
+  .lg-w { width: 16px; height: 12px; border-radius: 4px; background: #FBEFD3; border: 1px solid #F0C468; }
+  .tag { position: absolute; right: 40px; bottom: 28px; font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0.12px; color: #6E685E; }
+</style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="brand"><span class="bd" aria-hidden="true"><i></i><i></i></span>patepang</div>
+    <div class="links"><span>Cara tempel</span><span>Setelah bertemu</span><span>Prototipe</span><span>Tanya jawab</span></div>
+  </nav>
+  <header class="top">
+    <h1>Hanya orang yang pernah kamu temui.</h1>
+    <div>
+      <p class="lede">Satu koneksi, satu tahun. Kabar boleh datang setiap hari, tetapi yang menjaga kalian tetap terhubung adalah bertemu lagi.</p>
+      <div class="cta"><span class="btn">Lihat cara tempel</span><span class="ghost">Tentang prototipe</span></div>
+    </div>
+  </header>
+  <section class="planner" aria-label="Kalender satu koneksi selama setahun">
+    <div class="month"><h3>Bulan 1</h3><div class="days"></div><span class="pair" style="left: 31px; top: 71px"><i class="a"></i><i class="b"></i></span></div>
+    <div class="month quiet"><h3>Bulan 2</h3><div class="days"></div><i class="k" style="left: 29px; top: 101px"></i><i class="k" style="left: 71px; top: 127px"></i></div>
+    <div class="month quiet"><h3>Bulan 3</h3><div class="days"></div><i class="k" style="left: 57px; top: 49px"></i></div>
+    <div class="month quiet"><h3>Bulan 4</h3><div class="days"></div><i class="k" style="left: 43px; top: 101px"></i></div>
+    <div class="month quiet"><h3>Bulan 5</h3><div class="days"></div></div>
+    <div class="month quiet"><h3>Bulan 6</h3><div class="days"></div><i class="k" style="left: 85px; top: 75px"></i></div>
+    <div class="month quiet"><h3>Bulan 7</h3><div class="days"></div></div>
+    <div class="month quiet"><h3>Bulan 8</h3><div class="days"></div></div>
+    <div class="month quiet"><h3>Bulan 9</h3><div class="days"></div><i class="k" style="left: 29px; top: 127px"></i></div>
+    <div class="month quiet"><h3>Bulan 10</h3><div class="days"></div></div>
+    <div class="month warn"><h3>Bulan 11</h3><div class="days"></div><span class="w">Mulai memudar.</span></div>
+    <div class="month"><h3>Bulan 12</h3><div class="days"></div><span class="pair" style="left: 31px; top: 71px"><i class="a"></i><i class="b"></i></span><span class="w" style="color: #1A5244">Bertemu lagi.</span></div>
+  </section>
+  <div class="legend"><span><i class="lg-pair"><i></i><i></i></i>Bertemu dan tempel</span><span><i class="lg-k"></i>Kabar</span><span><i class="lg-w"></i>Peringatan memudar, saatnya ajak ketemu</span></div>
+  <p class="tag">Ilustrasi rancangan, bukan data pengguna. Patepang masih prototipe.</p>
+</body>
+</html>

@@ -1,0 +1,150 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-22T20:10:00Z",
+  "title": "Design System: Patepang",
+  "extensions": {
+    "source": "patepang/app @ 262202fa7866d268ba1f74258d47e7b19515df89 (src/design-system/tokens/*.ts)",
+    "colorMeta": {
+      "forest-teal": { "role": "primary", "displayName": "Forest Teal", "canonical": "#1F5F4F", "tonalRamp": ["#0C2620", "#1C3029", "#184B3E", "#1F5F4F", "#7FCDB4", "#A5DDCB", "#E2EEE9", "#EEF5F2"] },
+      "apricot-dot": { "role": "secondary", "displayName": "Apricot Dot", "canonical": "#E7956C", "tonalRamp": ["#3A2920", "#86391A", "#A0461E", "#E7956C", "#F1A47C", "#F6C2A5", "#FBE8DB"] },
+      "focus-blue": { "role": "tertiary", "displayName": "Focus Blue", "canonical": "#245C8F", "tonalRamp": ["#18273A", "#245C8F", "#8DBDEB", "#E2ECF5"] },
+      "ivory-canvas": { "role": "neutral", "displayName": "Ivory Canvas", "canonical": "#F7F5F0", "tonalRamp": ["#22201C", "#3B3833", "#57524A", "#6E685E", "#8A8378", "#CFC9BD", "#E3DFD6", "#EFECE5", "#F7F5F0", "#FFFEFB"] },
+      "night-canvas": { "role": "neutral", "displayName": "Night Canvas", "canonical": "#141513", "tonalRamp": ["#0F100E", "#141513", "#1C1E1B", "#242723", "#30332F", "#74786F", "#A39E93", "#C5C0B5", "#F2EFE8"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Judul layar besar." },
+      "title-large": { "displayName": "Title Large", "purpose": "Judul bagian." },
+      "title": { "displayName": "Title", "purpose": "Judul dialog." },
+      "headline": { "displayName": "Headline", "purpose": "Nama dan judul kartu." },
+      "body-large": { "displayName": "Body Large", "purpose": "Bacaan panjang; lebar baca maksimum 680px." },
+      "body": { "displayName": "Body", "purpose": "Teks utama." },
+      "body-strong": { "displayName": "Body Strong", "purpose": "Judul baris." },
+      "body-small": { "displayName": "Body Small", "purpose": "Pendukung dan deskripsi." },
+      "label": { "displayName": "Label", "purpose": "Label tombol." },
+      "label-small": { "displayName": "Label Small", "purpose": "Chip dan label bidang." },
+      "caption": { "displayName": "Caption", "purpose": "Keterangan dan lencana." }
+    },
+    "shadows": [
+      { "name": "raised", "value": "0px 1px 2px rgba(34, 32, 28, 0.06), 0px 4px 12px rgba(34, 32, 28, 0.04)", "purpose": "Kartu di atas kanvas; hanya tema terang." },
+      { "name": "overlay", "value": "0px 2px 6px rgba(20, 18, 14, 0.08), 0px 16px 40px rgba(20, 18, 14, 0.16)", "purpose": "Dialog, sheet, toast (terang)." },
+      { "name": "overlay-dark", "value": "0px 16px 40px rgba(0, 0, 0, 0.48)", "purpose": "Dialog, sheet, toast (gelap)." }
+    ],
+    "motion": [
+      { "name": "ease-out", "value": "cubic-bezier(0.23, 1, 0.32, 1)", "purpose": "Kurva bawaan: masuk, keluar, umpan balik." },
+      { "name": "ease-in-out", "value": "cubic-bezier(0.77, 0, 0.175, 1)", "purpose": "Sesuatu yang berpindah dari satu tempat ke tempat lain di layar." },
+      { "name": "ease-sheet", "value": "cubic-bezier(0.32, 0.72, 0, 1)", "purpose": "Dialog dan sheet." },
+      { "name": "duration-press", "value": "120ms", "purpose": "Umpan balik tekan; skala 0,97 (ikon 0,92)." },
+      { "name": "duration-selection", "value": "160ms", "purpose": "Nilai yang berganti: sakelar, centang, chip." },
+      { "name": "duration-enter", "value": "220ms", "purpose": "Elemen kecil muncul; naik 8px + fade." },
+      { "name": "duration-exit", "value": "180ms", "purpose": "Elemen kecil pergi; lebih cepat dari masuk." },
+      { "name": "duration-move", "value": "240ms", "purpose": "Indikator yang berpindah." },
+      { "name": "duration-overlay-enter", "value": "300ms", "purpose": "Dialog dan sheet datang; dialog membesar dari 0,96." },
+      { "name": "duration-overlay-exit", "value": "240ms", "purpose": "Dialog dan sheet pergi." },
+      { "name": "duration-reduced-fade", "value": "120ms", "purpose": "Pengganti semua gerak saat gerak dikurangi." },
+      { "name": "stagger", "value": "40ms, maksimal 6 item", "purpose": "Hanya untuk konten yang diminta pengguna." },
+      { "name": "pulse", "value": "900ms per setengah siklus, maksimal 8 siklus", "purpose": "Kerangka memuat; tidak pernah abadi." }
+    ],
+    "breakpoints": [
+      { "name": "medium", "value": "600px" },
+      { "name": "expanded", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Satu aksi utama per tampilan; kapsul hijau hutan.",
+      "html": "<button class=\"ds-btn-primary\" type=\"button\">Lihat cara tempel</button>",
+      "css": ".ds-btn-primary { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-weight: 600; font-size: 16px; line-height: 20px; min-height: 48px; padding: 12px 24px; border: 0; border-radius: 9999px; background: #1F5F4F; color: #FFFFFF; cursor: pointer; transition: background-color 120ms cubic-bezier(0.23, 1, 0.32, 1), transform 120ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-btn-primary:hover { background: #184B3E; } .ds-btn-primary:active { background: #184B3E; transform: scale(0.97); } .ds-btn-primary:focus-visible { outline: 2px solid #245C8F; outline-offset: 2px; } @media (prefers-reduced-motion: reduce) { .ds-btn-primary { transition: none; } .ds-btn-primary:active { transform: none; } }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Aksi kedua; kapsul transparan bergaris batu.",
+      "html": "<button class=\"ds-btn-secondary\" type=\"button\">Putar pratinjau</button>",
+      "css": ".ds-btn-secondary { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-weight: 600; font-size: 16px; line-height: 20px; min-height: 48px; padding: 12px 24px; border: 1px solid #8A8378; border-radius: 9999px; background: transparent; color: #22201C; cursor: pointer; transition: background-color 120ms cubic-bezier(0.23, 1, 0.32, 1), transform 120ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-btn-secondary:hover { background: #EFECE5; } .ds-btn-secondary:active { background: #EFECE5; transform: scale(0.97); } .ds-btn-secondary:focus-visible { outline: 2px solid #245C8F; outline-offset: 2px; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Aksi ketiga; teks hijau tanpa bingkai.",
+      "html": "<button class=\"ds-btn-ghost\" type=\"button\">Cara tempel</button>",
+      "css": ".ds-btn-ghost { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-weight: 600; font-size: 16px; line-height: 20px; min-height: 48px; padding: 12px 24px; border: 0; border-radius: 9999px; background: transparent; color: #1F5F4F; cursor: pointer; transition: background-color 120ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-btn-ghost:hover, .ds-btn-ghost:active { background: #EFECE5; } .ds-btn-ghost:focus-visible { outline: 2px solid #245C8F; outline-offset: 2px; }"
+    },
+    {
+      "name": "Chip",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Filter; kapsul bergaris, centang saat terpilih.",
+      "html": "<span class=\"ds-chip\">Memudar</span> <span class=\"ds-chip ds-chip-selected\" aria-checked=\"true\" role=\"radio\"><svg class=\"ds-chip-check\" aria-hidden=\"true\" viewBox=\"0 0 256 256\" fill=\"currentColor\"><path d=\"M232.49,80.49l-128,128a12,12,0,0,1-17,0l-56-56a12,12,0,1,1,17-17L96,183,215.51,63.51a12,12,0,0,1,17,17Z\"/></svg>Semua</span>",
+      "css": ".ds-chip { display: inline-flex; align-items: center; gap: 4px; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-weight: 600; font-size: 14px; line-height: 20px; letter-spacing: 0.07px; min-height: 36px; padding: 8px 12px; border: 1px solid #8A8378; border-radius: 9999px; color: #57524A; background: transparent; } .ds-chip-selected { background: #E2EEE9; border-color: #1F5F4F; color: #1A5244; } .ds-chip-check { width: 16px; height: 16px; flex: none; }"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Permukaan putih hangat, hairline, bayangan sangat lembut.",
+      "html": "<article class=\"ds-card\"><h3>Raka Pratama</h3><p>Pertama bertemu 3 Mar 2025 di Bandung</p></article>",
+      "css": ".ds-card { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; background: #FFFEFB; color: #22201C; border: 1px solid #E3DFD6; border-radius: 20px; padding: 16px; box-shadow: 0px 1px 2px rgba(34, 32, 28, 0.06), 0px 4px 12px rgba(34, 32, 28, 0.04); } .ds-card h3 { margin: 0 0 4px; font-size: 18px; line-height: 24px; font-weight: 600; letter-spacing: -0.09px; } .ds-card p { margin: 0; font-size: 14px; line-height: 20px; color: #57524A; }"
+    },
+    {
+      "name": "Brand Card",
+      "kind": "card",
+      "refersTo": "card-brand",
+      "description": "Ajakan dan panggung ritual tempel di atas hijau kabut.",
+      "html": "<section class=\"ds-card-brand\"><h3>Sedang bersama seseorang?</h3><p>Tempel saat kalian berhadapan, sebelum berpisah.</p></section>",
+      "css": ".ds-card-brand { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; background: #E2EEE9; color: #1A5244; border-radius: 20px; padding: 20px; } .ds-card-brand h3 { margin: 0 0 8px; font-size: 18px; line-height: 24px; font-weight: 600; } .ds-card-brand p { margin: 0; font-size: 16px; line-height: 24px; }"
+    },
+    {
+      "name": "Two Dots Lockup",
+      "kind": "custom",
+      "refersTo": "two-dots",
+      "description": "Motif merek: dua titik bertemu sekali di atas wordmark huruf kecil.",
+      "html": "<div class=\"ds-lockup\" role=\"img\" aria-label=\"Patepang\"><span class=\"ds-dots\" aria-hidden=\"true\"><span class=\"ds-dot ds-dot-a\"></span><span class=\"ds-dot ds-dot-b\"></span></span><span class=\"ds-wordmark\">patepang</span></div>",
+      "css": ".ds-lockup { display: inline-flex; flex-direction: column; align-items: center; gap: 16px; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; } .ds-dots { position: relative; display: block; width: 56px; height: 28px; } .ds-dot { position: absolute; top: 0; width: 28px; height: 28px; border-radius: 9999px; transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-dot-a { left: 0; background: #1F5F4F; } .ds-dot-b { right: 0; background: #E7956C; } .ds-wordmark { font-weight: 700; font-size: 36px; line-height: 44px; letter-spacing: -0.72px; color: #1F5F4F; } @media (prefers-reduced-motion: reduce) { .ds-dot { transition: none; } }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Dua Titik Bertemu",
+    "overview": "Patepang tampil seperti pertemuan yang tenang: ruang lega di atas kanvas ivory hangat, tinta charcoal yang hangat, dan satu hijau hutan yang dalam untuk apa pun yang bisa dilakukan. Bentuknya presisi, dengan grid 4 titik, tinggi baris kelipatan 4, dan radius bertingkat. Hangatnya datang dari nada warna dan kalimat, bukan dari dekorasi. Motif intinya adalah dua titik, satu hijau dan satu apricot, yang bergerak saling mendekat lalu bertemu sekali dan tidak berulang. Itulah pertemuan yang menjadi alasan Patepang ada.\n\nSistem ini sengaja menolak mekanisme keterlibatan: tidak ada angka yang memancing, tidak ada feed tanpa akhir, dan gerak tidak pernah berputar tanpa akhir. Rasa betah datang dari rasa nyaman, bermakna, dan mudah dipahami. Sistem ini juga sengaja tidak memakai pasangan krem #F4F1EA dan terakota #D97757 yang kini menjadi ciri desain generik: mereknya hijau, dan apricot dijaga untuk kenangan.",
+    "keyCharacteristics": [
+      "Kanvas ivory hangat dan tinta charcoal hangat, bukan putih murni dan hitam murni.",
+      "Satu warna merek, hijau hutan, untuk aksi, tautan, dan kontrol aktif.",
+      "Apricot dan bata hanya untuk kenangan.",
+      "Satu keluarga huruf, Plus Jakarta Sans, dalam empat bobot.",
+      "Semua yang ditekan jari berbentuk kapsul.",
+      "Pemisahan lewat nada warna dan garis tipis; bayangan hanya untuk yang mengambang.",
+      "Gerak pendek yang menjelaskan, sekali jalan, dan menghormati gerak dikurangi."
+    ],
+    "rules": [
+      { "name": "The Memory-Only Apricot Rule", "body": "Apricot dan bata hanya untuk kenangan dan untuk titik kedua. Keduanya tidak pernah dipakai untuk tombol, tautan, peringatan biasa, atau hiasan. Kelangkaan itulah yang membuatnya bermakna.", "section": "colors" },
+      { "name": "The Measured Pair Rule", "body": "Setiap pasangan teks dan latar yang dipakai memenuhi WCAG 2.2 AA (4,5:1 untuk teks; 3:1 untuk batas kontrol, cincin fokus, dan isi kontrol aktif) di kedua tema, dan diukur, bukan diperkirakan.", "section": "colors" },
+      { "name": "The One Family Rule", "body": "Hanya Plus Jakarta Sans, dari empat file statis (400, 500, 600, 700). Di web, setiap bobot dideklarasikan dengan @font-face sendiri agar browser tidak membuat bold palsu.", "section": "typography" },
+      { "name": "The Baseline-of-Four Rule", "body": "Tinggi baris selalu kelipatan 4 supaya teks duduk di grid 4 titik. Tidak ada label huruf kapital semua.", "section": "typography" },
+      { "name": "The Readable-at-200% Rule", "body": "Skala teks dari pengguna tetap berlaku. Tinggi minimum dipakai, bukan tinggi tetap, sehingga tidak ada teks yang terpotong pada ukuran 200%.", "section": "typography" },
+      { "name": "The Tone-Before-Shadow Rule", "body": "Bila dua permukaan bisa dibedakan dengan nada dan garis tipis, jangan tambahkan bayangan.", "section": "elevation" },
+      { "name": "The Capsule Touch Rule", "body": "Apa pun yang bisa ditekan berbentuk kapsul dan punya area sentuh minimal 48px, walau bentuk visualnya lebih kecil.", "section": "shapes" }
+    ],
+    "dos": [
+      "Do memakai token untuk warna, jarak, radius, tipe, dan durasi. Nilai mentah di komponen adalah galat.",
+      "Do memakai forest-teal untuk aksi utama dan focus-blue 2px dengan offset 2px untuk fokus keyboard.",
+      "Do membuat setiap target sentuh minimal 48px dan setiap aksi yang bisa ditekan berbentuk kapsul.",
+      "Do menjaga gerak di bawah 300ms dengan kurva ease-out (0.23, 1, 0.32, 1). Keluar sekitar 20% lebih cepat daripada masuk. Saat gerak dikurangi, pakai fade 120ms tanpa translasi, skala, atau rotasi.",
+      "Do memakai Phosphor bobot regular untuk UI, fill untuk status aktif (selalu bersama isyarat lain), bold pada 16px, dan duotone hanya untuk ilustrasi status.",
+      "Do menulis dalam bahasa Indonesia, kalimat biasa, dan mengakui hal yang disimulasikan."
+    ],
+    "donts": [
+      "Don't memakai krem #F4F1EA dengan terakota #D97757, warna generik yang sengaja ditolak sistem ini.",
+      "Don't memakai apricot atau bata untuk aksi, tautan, atau hiasan.",
+      "Don't memakai hitam murni untuk tema gelap. Pakai night-canvas.",
+      "Don't memakai emoji sebagai ikon, set ikon kedua, atau Phosphor thin/light.",
+      "Don't memakai label huruf kapital semua, font monospace, atau bold palsu.",
+      "Don't menampilkan angka belum dibaca yang memancing, hitungan pengikut, urgensi palsu, atau feed tanpa akhir.",
+      "Don't membuat animasi yang berulang tanpa akhir, kurva ease-in, atau bounce dekoratif.",
+      "Don't menggambar simbol logo sendiri."
+    ]
+  }
+}

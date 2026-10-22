@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Sketsa B: Satu tahun di antara dua titik</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1440px; height: 900px; overflow: hidden; }
+  body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; background: #F7F5F0; color: #22201C; }
+  .nav { height: 80px; padding: 0 40px; display: flex; align-items: center; justify-content: space-between; }
+  .brand { display: flex; align-items: center; gap: 12px; color: #1F5F4F; font-weight: 700; font-size: 22px; letter-spacing: -0.22px; }
+  .bd { position: relative; width: 36px; height: 12px; }
+  .bd i { position: absolute; top: 0; width: 12px; height: 12px; border-radius: 9999px; }
+  .bd i:first-child { left: 6px; background: #1F5F4F; } .bd i:last-child { left: 18px; background: #E7956C; }
+  .links { display: flex; gap: 32px; font-weight: 600; font-size: 14px; color: #57524A; }
+  .top { padding: 40px 40px 0; display: grid; grid-template-columns: 1fr 400px; gap: 64px; align-items: end; }
+  h1 { font-size: 72px; line-height: 80px; letter-spacing: -1.44px; font-weight: 700; max-width: 820px; }
+  .lede { font-size: 18px; line-height: 28px; color: #57524A; }
+  .cta { margin-top: 20px; display: flex; align-items: center; gap: 16px; }
+  .btn { display: inline-flex; align-items: center; min-height: 56px; padding: 16px 32px; border-radius: 9999px; background: #1F5F4F; color: #FFFFFF; font-weight: 600; font-size: 16px; }
+  .ghost { font-weight: 600; font-size: 16px; color: #1F5F4F; }
+  .year { position: absolute; left: 40px; right: 40px; top: 440px; height: 380px; }
+  .line { position: absolute; left: 0; right: 0; top: 150px; height: 2px; background: #E3DFD6; }
+  .gap { position: absolute; top: 148px; height: 6px; border-radius: 9999px; background: #F0C468; opacity: 0.55; }
+  .tick { position: absolute; top: 176px; font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0.12px; color: #6E685E; transform: translateX(-50%); }
+  .tick::before { content: ''; position: absolute; left: 50%; top: -14px; width: 1px; height: 8px; background: #8A8378; }
+  .dot { position: absolute; top: 137px; width: 28px; height: 28px; border-radius: 9999px; transform: translateX(-50%); }
+  .a { background: #1F5F4F; } .b { background: #E7956C; }
+  .ghost-pair { position: absolute; top: 137px; width: 56px; height: 28px; transform: translateX(-50%); }
+  .ghost-pair i { position: absolute; top: 0; width: 28px; height: 28px; border-radius: 9999px; border: 2px dashed #8A8378; }
+  .ghost-pair i:last-child { left: 28px; }
+  .kabar { position: absolute; top: 147px; width: 8px; height: 8px; border-radius: 9999px; background: #1F5F4F; opacity: 0.4; transform: translateX(-50%); }
+  .phase { position: absolute; top: 24px; width: 280px; }
+  .phase b { display: block; font-size: 18px; line-height: 24px; font-weight: 600; letter-spacing: -0.09px; }
+  .phase span { display: block; margin-top: 4px; font-size: 14px; line-height: 20px; color: #57524A; }
+  .phase.mid { transform: translateX(-50%); } .phase.end { text-align: right; }
+  .warn { position: absolute; top: 216px; transform: translateX(-50%); padding: 8px 16px; border-radius: 16px; background: #FBEFD3; color: #7A5200; font-size: 14px; line-height: 20px; font-weight: 600; white-space: nowrap; }
+  .gaplabel { position: absolute; top: 104px; transform: translateX(-50%); font-size: 14px; line-height: 20px; font-weight: 600; color: #7A5200; white-space: nowrap; }
+  .tag { position: absolute; right: 40px; bottom: 24px; font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0.12px; color: #6E685E; }
+</style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="brand"><span class="bd" aria-hidden="true"><i></i><i></i></span>patepang</div>
+    <div class="links"><span>Cara tempel</span><span>Setelah bertemu</span><span>Prototipe</span><span>Tanya jawab</span></div>
+  </nav>
+  <header class="top">
+    <h1>Hanya orang yang pernah kamu temui.</h1>
+    <div>
+      <p class="lede">Di Patepang, koneksi lahir saat kalian bertemu langsung, dan tetap hidup karena kalian bertemu lagi.</p>
+      <div class="cta"><span class="btn">Lihat cara tempel</span><span class="ghost">Tentang prototipe</span></div>
+    </div>
+  </header>
+  <section class="year" aria-label="Satu koneksi selama setahun">
+    <div class="phase" style="left: 0"><b>Bertemu, lalu tempel</b><span>Titik hijau menandai pertemuan terakhir kalian.</span></div>
+    <div class="phase mid" style="left: 46%"><b>Kabar tetap datang</b><span>Tapi kabar tidak menggantikan bertemu.</span></div>
+    <div class="phase end" style="right: 0"><b>Bertemu lagi</b><span>Tempel lagi, dan kedua titik kembali bersatu.</span></div>
+    <div class="line"></div>
+    <div class="gap" style="left: 3%; width: 85.25%; background: linear-gradient(90deg, rgba(240,196,104,0) 0%, rgba(240,196,104,0.3) 70%, #F0C468 100%); opacity: 1"></div>
+    <span class="gaplabel" style="left: 70%">11 bulan sejak terakhir bertemu</span>
+    <i class="kabar" style="left: 8%"></i><i class="kabar" style="left: 13%"></i><i class="kabar" style="left: 21%"></i><i class="kabar" style="left: 30%"></i><i class="kabar" style="left: 37%"></i><i class="kabar" style="left: 46%"></i><i class="kabar" style="left: 55%"></i><i class="kabar" style="left: 62%"></i><i class="kabar" style="left: 77%"></i>
+    <i class="dot a" style="left: 3%"></i>
+    <i class="dot b" style="left: 88.25%"></i>
+    <span class="warn" style="left: 88.25%">Bulan ke-11: koneksi mulai memudar</span>
+    <div class="ghost-pair" style="left: 96%" aria-hidden="true"><i></i><i></i></div>
+    <p class="phase" style="left: 0; top: 284px; width: 720px"><span>Titik apricot adalah hari ini. Jaraknya ke titik hijau adalah waktu kalian tanpa bertemu.</span></p>
+    <span class="tick" style="left: 3%">Hari 1</span><span class="tick" style="left: 26.25%">Bulan 3</span><span class="tick" style="left: 49.5%">Bulan 6</span><span class="tick" style="left: 72.75%">Bulan 9</span><span class="tick" style="left: 88.25%">Bulan 11</span><span class="tick" style="left: 96%">12</span>
+  </section>
+  <p class="tag">Ilustrasi rancangan. Patepang masih prototipe dengan data fiktif.</p>
+</body>
+</html>
