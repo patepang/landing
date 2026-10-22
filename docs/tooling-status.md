@@ -106,7 +106,7 @@ Bundle `example-skills` dari `anthropics/skills` sengaja tidak dipasang, karena 
 | Perencanaan | Impeccable (tool Skill) | `context` → `init` (`PRODUCT.md`) → `document` (`DESIGN.md` + `.impeccable/design.json`) → `shape`: `concept-seed --scope surface --mode persuade` (`seed:1890326d8fad4b69`, kocokan 7/1/5) |
 | Perencanaan | webapp-testing (tool Skill) | Render tiga sketsa 1440×900 dengan cek font, console, dan overflow. Gambar diperiksa. Tiga cacat ditemukan dan diperbaiki: label terpotong dan skala waktu tidak proporsional di sketsa B; kelas `monthNone` dan makna warna yang tidak konsisten di sketsa C. |
 | Perencanaan | Frontend Design (`SKILL.md`) | Dua lintasan: rencana token dan wireframe, lalu tinjauan terhadap default (`docs/superpowers/specs/2026-10-22-landing-design.md` §15). Label bergaya template dihapus. |
-| Perencanaan | Superpowers (`brainstorming`) | Desain tertulis di `docs/superpowers/specs/2026-10-22-landing-design.md`. *Builder check* oleh subagent baru sedang berjalan saat commit ini; hasilnya akan dipilah ke §16 dokumen desain. HARD-GATE dipatuhi (belum ada kode produk). |
+| Perencanaan | Superpowers (`brainstorming`) | Desain tertulis di `docs/superpowers/specs/2026-10-22-landing-design.md`. *Builder check* oleh subagent baru menghasilkan 6 pertanyaan: 2 sudah terjawab oleh repo (warna peringatan dari `color.ts`, spesifikasi komponen di §17), 3 menjadi keputusan builder yang ditandai (gerak, wordmark di navigasi, copy tanpa klaim penyimpanan), dan 1 untuk pemilik (struktur). Detailnya di §16. HARD-GATE dipatuhi (belum ada kode produk). |
 | Perencanaan | Pengganti Context7 | Catatan rilis resmi React 19.3.1 dan Next.js 16.4.2 (GitHub) untuk keputusan versi |
 
 Baris berikutnya ditambahkan seiring pekerjaan berjalan.

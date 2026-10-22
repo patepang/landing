@@ -8,6 +8,7 @@
       "forest-teal": { "role": "primary", "displayName": "Forest Teal", "canonical": "#1F5F4F", "tonalRamp": ["#0C2620", "#1C3029", "#184B3E", "#1F5F4F", "#7FCDB4", "#A5DDCB", "#E2EEE9", "#EEF5F2"] },
       "apricot-dot": { "role": "secondary", "displayName": "Apricot Dot", "canonical": "#E7956C", "tonalRamp": ["#3A2920", "#86391A", "#A0461E", "#E7956C", "#F1A47C", "#F6C2A5", "#FBE8DB"] },
       "focus-blue": { "role": "tertiary", "displayName": "Focus Blue", "canonical": "#245C8F", "tonalRamp": ["#18273A", "#245C8F", "#8DBDEB", "#E2ECF5"] },
+      "amber-warning": { "role": "tertiary", "displayName": "Amber Warning", "canonical": "#7A5200", "tonalRamp": ["#2E2716", "#7A5200", "#F0C468", "#FBEFD3"] },
       "ivory-canvas": { "role": "neutral", "displayName": "Ivory Canvas", "canonical": "#F7F5F0", "tonalRamp": ["#22201C", "#3B3833", "#57524A", "#6E685E", "#8A8378", "#CFC9BD", "#E3DFD6", "#EFECE5", "#F7F5F0", "#FFFEFB"] },
       "night-canvas": { "role": "neutral", "displayName": "Night Canvas", "canonical": "#141513", "tonalRamp": ["#0F100E", "#141513", "#1C1E1B", "#242723", "#30332F", "#74786F", "#A39E93", "#C5C0B5", "#F2EFE8"] }
     },

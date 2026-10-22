@@ -19,6 +19,8 @@ colors:
   apricot-wash: "#FBE8DB"
   brick-on-wash: "#86391A"
   focus-blue: "#245C8F"
+  amber-warning: "#7A5200"
+  amber-wash: "#FBEFD3"
   white: "#FFFFFF"
   night-canvas: "#141513"
   night-surface: "#1C1E1B"
@@ -35,6 +37,9 @@ colors:
   night-mint-on: "#A5DDCB"
   night-apricot-text: "#F1A47C"
   night-focus-blue: "#8DBDEB"
+  night-amber-warning: "#F0C468"
+  night-amber-wash: "#2E2716"
+  night-hairline: "#30332F"
 typography:
   display:
     fontFamily: "Plus Jakarta Sans, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif"
@@ -173,6 +178,11 @@ components:
     textColor: "{colors.brick-on-wash}"
     rounded: "{rounded.xl}"
     padding: "16px"
+  fading-strip:
+    backgroundColor: "{colors.amber-wash}"
+    textColor: "{colors.amber-warning}"
+    typography: "{typography.body-small}"
+    padding: "12px 16px"
 ---
 
 # Design System: Patepang
@@ -232,6 +242,9 @@ Netral hangat dengan satu merek hijau dan satu aksen yang dijatah untuk kenangan
 
 - **Focus Blue** (`focus-blue`, gelap: `night-focus-blue`): hanya untuk cincin fokus keyboard, supaya
   tidak tertukar dengan status terpilih yang hijau.
+- **Amber Warning** (`amber-warning` di atas `amber-wash`; gelap: `night-amber-warning` di atas
+  `night-amber-wash`): peringatan, termasuk koneksi yang memudar. Di aplikasi ini adalah peran
+  `warning.text` dan `warning.subtle`. Statusnya selalu disertai ikon dan kata, tidak hanya warna.
 
 ### Neutral
 
@@ -242,7 +255,7 @@ Netral hangat dengan satu merek hijau dan satu aksen yang dijatah untuk kenangan
 - **Sand Well** (`sand-well`): sumur, trek, dan latar saat ditekan. Gelap: `night-pressed`.
 - **Charcoal Ink** (`charcoal-ink`), **Ink Secondary** (`ink-secondary`), **Ink Tertiary**
   (`ink-tertiary`): tiga tingkat teks. Gelap: `night-ink`, `night-ink-secondary`, `night-ink-tertiary`.
-- **Sand Hairline** (`sand-hairline`): pemisah dekoratif, tanpa syarat kontras.
+- **Sand Hairline** (`sand-hairline`, gelap: `night-hairline`): pemisah dekoratif, tanpa syarat kontras.
 - **Stone Border** (`stone-border`, gelap: `night-border`): batas kontrol yang harus ditemukan orang,
   dengan kontras ≥ 3:1.
 
@@ -356,6 +369,9 @@ Tegas dan tenang: satu aksi utama yang jelas, sisanya mundur.
 - **Shadow Strategy:** hanya kartu `raised` yang memakai bayangan Raised. Lihat Elevation & Depth.
 - **Border:** hairline `sand-hairline`.
 - **Internal Padding:** 16 sampai 20px.
+- **Strip peringatan memudar:** pita di dasar kartu koneksi, berlatar `amber-wash`, dengan ikon
+  Phosphor `HourglassMedium` dan teks Body Small `amber-warning`, misalnya "Memudar dalam 30 hari.
+  Bertemu dan tempel lagi untuk menyegarkan koneksi ini."
 
 ### Two Dots and Lockup
 
@@ -365,9 +381,11 @@ berjalan sekali per perubahan, selama sekitar 300ms dengan kurva `cubic-bezier(0
 dan tidak pernah berulang. Saat gerak dikurangi, posisinya langsung berubah. Motif ini dekoratif dan
 disembunyikan dari pembaca layar, karena maknanya dibawa kata-kata di sekitarnya.
 
-Lockup bertumpuk menaruh dua titik di atas wordmark huruf kecil `patepang` (Bold, warna merek), dibaca
-sebagai "Patepang". Simbol dua busur yang bersentuhan belum dibuat. Jangan menggambarnya sendiri;
-dua titik menggantikannya.
+Logo saat ini hanya wordmark tipografis: `patepang` huruf kecil, Bold, warna merek (ADR 0002). Lockup
+bertumpuk menaruh dua titik di atas wordmark itu, dibaca sebagai "Patepang". Di aplikasi lockup ini
+dipakai di splash dan layar Selamat datang. Simbol dua busur yang bersentuhan belum dibuat; jangan
+menggambarnya sendiri, karena dua titik yang menggantikannya. Varian lain, misalnya dua titik di
+samping wordmark, belum ada dan tidak boleh dibuat tanpa persetujuan pemilik.
 
 ## Do's and Don'ts
 

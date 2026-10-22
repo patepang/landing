@@ -66,15 +66,16 @@ Inggris, dan tombol ganti tema.
    kandidat lewat `impeccable concept-seed --scope surface --mode persuade`
    (`seed:1890326d8fad4b69`). Sketsa first viewport-nya ada di
    `.impeccable/mocks/decision/{tur-prototipe,satu-tahun,kalender}.html`. Lihat §8.
-4. **Lingkup.** Satu halaman, kualitas produksi, interaksi minimal: satu atau dua pulau interaktif
-   kecil. Yang tidak boleh berubah: logo (wordmark dan lockup dua titik), istilah produk, token, dan
-   nada.
+4. **Lingkup.** Satu halaman, kualitas produksi, interaksi minimal: satu pulau interaktif untuk
+   struktur A, dua untuk B dan C (§11). Yang tidak boleh berubah: logo (wordmark; lockup dua titik
+   bertumpuk), istilah produk, token, dan nada.
 5. **Keadaan.** Tema terang dan gelap mengikuti OS, gerak penuh dan gerak dikurangi, JavaScript mati
    (semua isi tetap terbaca dan tautan tetap bekerja), font gagal dimuat (fallback sistem dengan bobot
    yang sama), teks 200%, serta judul panjang yang membungkus tanpa terpotong.
-6. **Interaksi dan layout.** Navigasi atas berisi lockup dan tautan anchor. Section mengalir vertikal
-   dengan satu ritme jarak. Di mobile, layout menjadi satu kolom. Tanya jawab memakai `<details>`
-   bawaan. Satu momen gerak per halaman (lihat §11).
+6. **Interaksi dan layout.** Navigasi atas berisi wordmark dan tautan anchor. Section mengalir
+   vertikal dengan satu ritme jarak. Di mobile, layout menjadi satu kolom. Tanya jawab memakai
+   `<details>` bawaan. Tidak ada gerak otomatis; gerak hanya muncul saat pengguna menekan tombol demo
+   (§11).
 7. **Keputusan terbuka** untuk pemilik ada di §16.
 
 ## 5. Alur informasi
@@ -101,7 +102,9 @@ gabungan dengan titik tengah.
 **Head.** Title: "Patepang: hanya orang yang pernah kamu temui". Description: "Patepang adalah
 aplikasi untuk tetap dekat dengan orang yang pernah kamu temui langsung. Saat ini masih prototipe."
 
-**Navigasi.** Lockup `patepang` (kembali ke atas), lalu "Cara tempel", "Setelah bertemu",
+**Navigasi.** Wordmark `patepang` (kembali ke atas). Logo resmi saat ini hanya wordmark tipografis
+(ADR 0002), jadi navigasi tidak memakai dua titik di samping wordmark seperti di sketsa. Varian itu
+belum ada. Setelah wordmark: "Cara tempel", "Setelah bertemu",
 "Prototipe", dan "Tanya jawab". Ada skip link "Langsung ke isi".
 
 **1. Pembuka**
@@ -120,7 +123,9 @@ aplikasi untuk tetap dekat dengan orang yang pernah kamu temui langsung. Saat in
   1. "Pindai kode": "Satu HP menampilkan kode; HP lainnya memindainya." **(app)**
   2. "Goyang bersama": "Pegang kedua HP berdempetan, lalu goyangkan bersama selama dua detik."
      **(app)**
-  3. "Terhubung": "Koneksi kalian dan momen pertama tercatat di kedua HP." **(app)**
+  3. "Terhubung": "Koneksi kalian dan momen pertama tercatat untuk kalian berdua." **(app,
+     disesuaikan)**: "di kedua HP" diganti karena bisa terbaca sebagai klaim penyimpanan di perangkat,
+     yang dilarang `PRODUCT.md`.
 - Tombol demo: "Putar cara tempel", lalu "Putar lagi". Keterangan: "Pratinjau visual. Di prototipe,
   kamera, kode QR, dan sensor gerak masih disimulasikan."
 - Catatan: "Akunmu lahir saat tempel pertama. Tidak ada email atau nomor telepon yang diminta, dan
@@ -133,7 +138,7 @@ aplikasi untuk tetap dekat dengan orang yang pernah kamu temui langsung. Saat in
   yang membaca: semua koneksi, satu lingkaran, atau satu orang. Setelah semuanya terbaca, halamannya
   selesai." Ilustrasinya kartu "Selesai untuk hari ini. Kabar berikutnya datang besok; tidak ada yang
   perlu dikejar." **(app)**
-- "Momen dari setiap pertemuan": "Setiap tempel mencatat momen di HP kalian berdua. Foto dan nama
+- "Momen dari setiap pertemuan": "Setiap tempel mencatat momen untuk kalian berdua. Foto dan nama
   tempat boleh ditambahkan, boleh juga tidak."
 - "Riwayat kalian, bukan profil": "Patepang mengingat kapan kalian pertama bertemu, sudah berapa kali,
   dan kapan terakhir. Tidak ada pengikut dan tidak ada angka popularitas."
@@ -185,7 +190,8 @@ aplikasi untuk tetap dekat dengan orang yang pernah kamu temui langsung. Saat in
 **8. Penutup**
 
 - "Selesai. Tidak ada yang perlu dikejar." Kalimat ini menggemakan akhir halaman Kabar.
-- Lockup, kalimat status, dan tautan "Kembali ke atas".
+- Lockup bertumpuk (dua titik di atas wordmark, seperti layar Selamat datang di aplikasi), kalimat
+  status, dan tautan "Kembali ke atas".
 
 ## 7. CTA
 
@@ -212,8 +218,9 @@ diunggulkan.
 - First viewport: H1 besar di kiri atas, lede, CTA, dan status di kanan. Di bawahnya, panggung
   `forest-mist` selebar layar dengan layar Tempel ("sebelum pamit, tempel dulu", dua titik, pola kode
   demo) yang muncul dari tepi bawah, diberi tiga anotasi bergaris penunjuk.
-- Momen khas: menekan "Putar cara tempel" menghidupkan layar itu. Dua titik mendekat, goyang, lalu
-  centang mendarat (pola `TapRitualPreview` dari aplikasi).
+- Momen khas: di pembuka, layar Tempel diam. Section 2 memakai layar Tempel yang sama sebagai
+  panggung demo ritual. Menekan "Putar cara tempel" menghidupkannya: dua titik mendekat, goyang, lalu
+  centang mendarat (pola `TapRitualPreview`). Jadi A hanya punya satu pulau interaktif.
 - Risiko: tampilan aplikasi berisi data fiktif, jadi label harus selalu terlihat. Komposisi dengan
   ponsel juga dekat dengan kebiasaan kategori landing aplikasi.
 
@@ -252,7 +259,7 @@ lain asing bagi audiens.
 Desktop (≥ 1024px). Pembuka mengikuti struktur terpilih; section lain:
 
 ```
-┌ nav: ●● patepang ................. Cara tempel  Setelah bertemu  Prototipe  Tanya jawab ┐
+┌ nav: patepang .................... Cara tempel  Setelah bertemu  Prototipe  Tanya jawab ┐
 │ [pembuka: lihat §8]                                                                     │
 ├─ #cara-tempel ───────────────────────────────────────────────────────────────────────────┤
 │ H2 Sebelum pamit, tempel dulu.          ┌ panggung forest-mist ─────────────────┐        │
@@ -286,7 +293,7 @@ dengan nilai gelap di bawah `@media (prefers-color-scheme: dark)`.
 
 | Komponen app | Di landing | Catatan |
 |---|---|---|
-| `TwoDots`, `Lockup` (`features/system/Wordmark.tsx`) | Lockup navigasi dan penutup, motif momen khas | Warna, ukuran 12/16/28, sekali gerak |
+| `TwoDots`, `Lockup` (`features/system/Wordmark.tsx`) | Wordmark di navigasi; lockup bertumpuk di penutup; motif momen khas | Warna, ukuran 12/16/28, sekali gerak (§17) |
 | `Button` primary, secondary, ghost | CTA, tombol demo | Kapsul, 48/56px, fokus biru |
 | `TapRitualPreview` | Demo di section 2 | Tiga langkah, ±1,9 detik, pengumuman pembaca layar |
 | `DayCompleteCard` | Ilustrasi Kabar | Copy verbatim |
@@ -304,10 +311,17 @@ dengan nilai gelap di bawah `@media (prefers-color-scheme: dark)`.
 | Tekan tombol | Pointer atau keyboard | Umpan balik | Hanya warna, tanpa skala |
 | Anchor scroll | CTA | Arah | `scroll-behavior` otomatis jadi instan |
 
-- Gerak tidak berjalan sendiri saat halaman dimuat, kecuali satu kali lockup bila struktur A dipilih.
+- Tidak ada gerak otomatis saat halaman dimuat. Setiap gerak dipicu pengguna dan berjalan sekali per
+  tekan.
+- Satu momen khas per struktur, dan demo ritual di section 2 ada di ketiga struktur.
+  - **A:** momen khasnya adalah demo ritual itu sendiri (di layar Tempel), jadi hanya ada satu pulau
+    interaktif.
+  - **B dan C:** ada dua pulau, yaitu momen khas di pembuka (lintasan setahun atau kalender) dan demo
+    ritual (panggung dua HP gaya `TapRitualPreview`).
 - Tidak ada fade-in per section, parallax, scroll hijacking, atau loop.
-- Kurva dan durasi diambil dari token. Dibangun dengan CSS dan sedikit JavaScript di satu pulau
-  interaktif, tanpa library gerak.
+- Kurva dan durasi diambil dari token (§17). Dibangun dengan CSS dan sedikit JavaScript di pulau-pulau
+  itu, tanpa library gerak. Tanpa JavaScript, setiap demo tampil dalam keadaan akhirnya dengan semua
+  langkah terbaca.
 
 ## 12. Perubahan yang benar-benar diperlukan
 
@@ -317,6 +331,7 @@ dengan nilai gelap di bawah `@media (prefers-color-scheme: dark)`.
 | Status hover untuk pointer (`@media (hover: hover)`), memakai warna *pressed* yang sudah ada | Aplikasi native tidak punya hover, sedangkan web membutuhkannya | Konsisten tanpa warna baru |
 | Lebar halaman maksimum 1360px dengan grid 12 kolom; lebar baca 680px tetap | Aplikasi tidak punya tata letak desktop di luar showcase | Komposisi desktop yang tertib |
 | Istilah "tempel" di semua tempat, bukan "tepang" | Drift istilah di repo (`docs/product-understanding.md` §3) | Mengikuti `SCREENS-v1.md` |
+| Garis dekoratif amber `#F0C468` (palet `amber.300` aplikasi, yang di tema gelap adalah teks peringatan) untuk segmen jarak di B dan batas kartu bulan ke-11 di C | Di aplikasi, warna ini hanya dipakai sebagai teks peringatan tema gelap | Peringatan "memudar" tetap terbaca sebagai satu keluarga warna. Dekoratif saja, tanpa teks; maknanya dibawa kata dan ikon. |
 
 Perubahan lain hanya boleh masuk dengan bukti. `DESIGN.md` diperbarui di akhir build oleh
 documenter Impeccable.
@@ -364,7 +379,19 @@ Lighthouse hanya dilaporkan bila benar-benar diukur, dengan konteks lokal.
 | Nomor 01/02/03 sebagai hiasan | Nomor hanya dipakai untuk tiga langkah tempel, karena memang urutan. |
 | Fade-in per section | Diganti satu momen gerak yang dipicu pengguna. |
 
-## 16. Diserahkan ke builder dan keputusan pemilik
+## 16. Builder check dan keputusan
+
+*Builder check* Superpowers dijalankan oleh subagent baru yang membaca dokumen ini tanpa konteks
+percakapan. Enam pertanyaannya dipilah menjadi tiga kelompok:
+
+| # | Pertanyaan builder | Kelompok | Jawaban |
+|---|---|---|---|
+| 1 | Struktur A, B, atau C? | Pemilik | Ditanyakan di gerbang persetujuan |
+| 2 | Momen khas pembuka menggantikan demo ritual di section 2, atau berdampingan? | Keputusan builder (ditandai) | Berdampingan, tanpa gerak otomatis. A memakai satu pulau interaktif, B dan C dua (§11). |
+| 3 | Warna peringatan "memudar"? | Sudah terjawab oleh repo | Peran `warning.text` dan `warning.subtle` di `app/src/design-system/tokens/color.ts`. Kini dicatat di `DESIGN.md` sebagai `amber-warning` dan `amber-wash`, dengan nilai gelapnya. Garis dekoratif `#F0C468` dicatat di §12. |
+| 4 | Dua titik di samping wordmark di navigasi? | Keputusan builder (ditandai) | Tidak. Menurut ADR 0002 logo saat ini hanya wordmark. Lockup bertumpuk dipakai di penutup. Varian samping hanya dengan persetujuan pemilik. |
+| 5 | Apakah "tercatat di kedua HP" melanggar larangan klaim penyimpanan? | Keputusan builder (ditandai) | Diganti "tercatat untuk kalian berdua" (§6) |
+| 6 | Apakah builder punya akses ke `patepang/app` saat build? | Sudah terjawab | Nilai persis komponen yang diterjemahkan dicatat di §17. Akses baca ke `app` tetap dipakai untuk memeriksa ulang. |
 
 **Diserahkan ke builder:** struktur file, nama komponen, tata letak navigasi mobile secara detail,
 nama anchor, dan penyesuaian kecil jarak dalam token yang ada.
@@ -376,6 +403,48 @@ nama anchor, dan penyesuaian kecil jarak dalam token yang ada.
 3. Favicon. Tidak ada aset resmi. Pilihannya: (a) tanpa favicon, dengan `<link rel="icon" href="data:,">`
    agar tidak ada error 404; atau (b) favicon dua titik sebagai pengganti sementara, seperti lockup di
    aplikasi.
-4. Creative North Star "Dua Titik Bertemu" di `DESIGN.md`.
-5. Tanya jawab "Apa arti tepang?".
-6. Domain untuk metadata (`metadataBase`), yaitu `https://patepang.com` seperti di brief.
+4. Usulan kecil: Creative North Star "Dua Titik Bertemu", tanya jawab "Apa arti tepang?",
+   `metadataBase` `https://patepang.com`, dan kalimat penutup "Selesai. Tidak ada yang perlu dikejar."
+
+## 17. Lampiran: spesifikasi dari aplikasi yang diterjemahkan
+
+Diambil dari `patepang/app` @ `262202f` supaya build tidak bergantung pada pembacaan ulang sumber.
+
+**Demo ritual** (`src/design-system/patterns/TapRitualPreview.tsx`)
+
+- Fase: `idle` → `scan` (saat ditekan) → `shake` (pada 900ms) → `done` (pada 1.900ms). Berjalan sekali
+  per tekan. Tekan lagi memulai ulang, dan tombolnya tetap aktif.
+- Dua HP: lingkaran 64px (permukaan raised dengan bayangan Raised), berisi ikon `DeviceMobile` 32px.
+  Keduanya bergeser saling mendekat sejauh 24px, lalu bergoyang ±5° dengan langkah 70ms selama tiga
+  siklus, dan kembali ke 0°.
+- Tengah: ikon `Scan`, berganti `Vibrate` saat goyang. Pada `done` muncul lingkaran merek 40px dengan
+  ikon `Check` bold yang membesar dari skala 0,9.
+- Gerak: kebijakan `sequence` = 300ms ease-in-out `(0.77, 0, 0.175, 1)`; tekan 120ms ease-out. Saat
+  gerak dikurangi: tanpa translasi atau rotasi, dan centang hanya fade 120ms.
+- Daftar langkah memakai `role="list"`. Label tiap langkah: "Langkah 1 dari 2: Pindai kode. Satu HP
+  menampilkan kode; HP lainnya memindainya.", "Langkah 2 dari 2: …", dan "Hasil: Terhubung. …".
+  Langkah aktif mendapat tambahan "Sedang berlangsung." Penandanya lingkaran 24px berisi nomor atau
+  centang.
+- Pengumuman pembaca layar saat selesai: "Pratinjau selesai: kalian terhubung dan momen pertama
+  tercatat."
+- Panggung: latar `forest-mist`, radius 20px, padding vertikal 24px.
+
+**Dua titik** (`src/shared/TwoDots.tsx`): diameter 12, 16, atau 28px; jarak `apart` 24, 40, atau 64px;
+`near` sama dengan satu diameter; `meet` sama dengan 0. Titik pertama `forest-teal`, titik kedua
+`apricot-dot`. Memakai kebijakan `sequence` (300ms). Dekoratif dan `aria-hidden`.
+
+**Kartu koneksi** (`src/design-system/patterns/ConnectionCard.tsx`):
+
+- Avatar 56px dengan dua inisial (Headline), lalu nama (Headline) dan baris "Pertama bertemu 3 Mar
+  2025 di …" (Body Small, sekunder). Di bawahnya garis hairline.
+- Fakta: "Bertemu N kali" (ikon `Handshake`) dan "Terakhir …" (ikon `CalendarBlank`).
+- Strip memudar (`fading-strip`, ikon `HourglassMedium`): "Memudar dalam N hari." bila kurang dari 30
+  hari, selebihnya "dalam N bulan". Lalu "Bertemu dan tempel lagi untuk menyegarkan koneksi ini."
+- Tanggal yang hilang ditulis "tidak tercatat", tidak pernah diganti tanggal lain.
+
+**Kartu akhir hari** (`src/design-system/patterns/DayCompleteCard.tsx`): permukaan raised, ikon
+`CalendarCheck`, judul "Selesai untuk hari ini", dan pesan "Kamu sudah membaca kabar dari N orang.
+Kabar berikutnya datang besok; tidak ada yang perlu dikejar."
+
+**Nilai tema gelap yang dipakai:** hairline `night-hairline` `#30332F`; peringatan
+`night-amber-warning` `#F0C468` di atas `night-amber-wash` `#2E2716`.
