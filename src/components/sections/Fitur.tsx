@@ -5,9 +5,8 @@ import {
   MeetAgainPreview,
   MomenPreview,
 } from '@/components/preview/AfterPreviews';
-import { PreviewLabel } from '@/components/preview/parts';
 
-import styles from './SetelahBertemu.module.css';
+import styles from './Fitur.module.css';
 
 function Exhibit({
   title,
@@ -24,10 +23,7 @@ function Exhibit({
         <h3 className="type-title">{title}</h3>
         {children}
       </div>
-      <figure className={styles.plinth}>
-        {preview}
-        <PreviewLabel />
-      </figure>
+      <div className={styles.plinth}>{preview}</div>
     </div>
   );
 }
@@ -54,20 +50,20 @@ const leftOut = [
 ] as const;
 
 /**
- * The rest of the tour: what the design does after two people part. Each stop pairs a few words
- * with the app component that shows it; the section ends with what is left out on purpose.
+ * What Patepang does after two people part. Each feature pairs a few words with the app component
+ * that shows it; the section ends with what is left out on purpose.
  */
-export function SetelahBertemu() {
+export function Fitur() {
   return (
-    <section className={styles.section} aria-labelledby="setelah-bertemu">
+    <section className={styles.section} aria-labelledby="fitur">
       <div className="page">
         <div className={styles.header}>
-          <h2 id="setelah-bertemu" className="type-section" tabIndex={-1}>
-            Setelah kalian berpisah
+          <h2 id="fitur" className="type-section" tabIndex={-1}>
+            Setelah bertemu, hubungan tetap terjaga.
           </h2>
           <p className="type-body-large tone-secondary">
-            Prototipe Patepang punya empat tab: Tempel, Kabar, Orang, dan Momen. Tiga yang terakhir
-            dirancang untuk hal yang terjadi setelah tempel.
+            Patepang punya empat tab: Tempel, Kabar, Orang, dan Momen. Semuanya hanya berisi orang
+            yang pernah kamu temui.
           </p>
         </div>
 
@@ -90,9 +86,9 @@ export function SetelahBertemu() {
           <Exhibit title="Bertemu lagi menjaga koneksi" preview={<MeetAgainPreview />}>
             <p className="type-body-large tone-secondary">
               Di tab Orang, halaman seseorang berisi riwayat kalian berdua: kapan pertama bertemu,
-              berapa kali, dan kapan terakhir, bukan pengikut atau angka popularitas. Dalam
-              rancangannya, koneksi memudar setahun setelah pertemuan terakhir, dengan peringatan di
-              bulan ke-11.
+              berapa kali, dan kapan terakhir, bukan pengikut atau angka popularitas. Koneksi
+              memudar setahun setelah pertemuan terakhir, dengan peringatan di bulan{' '}
+              <span className="nowrap">ke-11</span>.
             </p>
             <p className="type-body-large tone-secondary">
               Ajak ketemu, buat rencana, atau simpan namanya di daftar pribadi “Ingin ketemu lagi”.
@@ -102,7 +98,7 @@ export function SetelahBertemu() {
         </div>
 
         <div className={styles.leftOut}>
-          <h3 className="type-title">Yang sengaja tidak ada</h3>
+          <h3 className="type-title">Yang sengaja tidak ada di Patepang</h3>
           <dl className={styles.leftOutList}>
             {leftOut.map((item) => (
               <div key={item.term} className={styles.leftOutItem}>

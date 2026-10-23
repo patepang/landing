@@ -62,11 +62,17 @@ produknya masih prototipe.
 - **Status (fakta).** Yang ada adalah prototipe aplikasi v0.1.0 dengan data fiktif lokal, mencakup
   115 ID layar. Tidak ada backend, akun sungguhan, pesan, panggilan, pembayaran, atau kriptografi.
   Kamera/QR, goyang, NFC, dan biometrik disimulasikan. Belum ada aplikasi yang bisa diunduh.
-  Pengguna memutuskan landing menyebut status prototipe secara eksplisit.
-- Fitur dijelaskan sebagai rancangan atau sebagai yang terlihat di prototipe, bukan sebagai layanan
-  yang sudah berjalan.
+- **Landing (keputusan pemilik, 23 Oktober 2026).** Landing tampil sebagai halaman produk
+  pra-rilis, bukan tur prototipe: fitur dijelaskan sebagai produk Patepang, tanpa label
+  "Pratinjau prototipe". Statusnya tetap disebut jujur sebagai "Segera hadir": belum ada tanggal
+  rilis dan belum bisa diunduh. Halaman tidak pernah menyatakan aplikasi sudah tersedia.
+  (Sebelumnya pemilik memilih status prototipe disebut eksplisit dan fitur ditulis sebagai
+  rancangan.)
 - Belum ada jalur konversi sungguhan: unduhan, akun, daftar tunggu, atau kanal kontak. Pengguna
-  memilih tanpa formulir dan tanpa pengumpulan data.
+  memilih tanpa formulir dan tanpa pengumpulan data; CTA landing hanya mengarah ke section di
+  halaman itu sendiri.
+- Karena belum ada pengguna, slot testimoni di landing diisi skenario pemakaian yang ditulis
+  sebagai contoh untuk pembaca ("kamu"), bukan kutipan orang.
 - Istilah: **Tempel** (aksinya ditulis huruf kecil di tengah kalimat dan kapital sebagai nama tab),
   **Kabar**, **Orang**, **Momen**, **lingkaran**, **titik lahir**. Menurut repo, "tepang" berarti
   "bertemu" dalam bahasa Sunda. Asal-usul nama "Patepang" belum dikonfirmasi.

@@ -2,15 +2,6 @@ import type { ReactNode } from 'react';
 
 import styles from './preview.module.css';
 
-/** The label on every prototype preview. Rendered as the figure's caption. */
-export function PreviewLabel({ className }: { className?: string }) {
-  return (
-    <figcaption className={className ? `${styles.label} ${className}` : styles.label}>
-      Pratinjau prototipe — data fiktif
-    </figcaption>
-  );
-}
-
 export type BadgeTone = 'neutral' | 'brand' | 'success';
 
 export function Badge({ label, tone, icon }: { label: string; tone: BadgeTone; icon?: ReactNode }) {

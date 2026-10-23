@@ -1,0 +1,47 @@
+/*
+ * The closing band: forest mist, full bleed, like the stages above it. The band is a
+ * pseudo-element widened by a spread shadow clipped to its own height, so it never causes
+ * horizontal scrolling.
+ */
+.cta {
+  position: relative;
+  isolation: isolate;
+  padding-block: var(--space-section);
+}
+
+.cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--color-brand-subtle);
+  box-shadow: 0 0 0 100vmax var(--color-brand-subtle);
+  clip-path: inset(0 -100vmax);
+}
+
+/* Centred, like the end-of-day state it echoes. */
+.inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-6);
+  text-align: center;
+}
+
+.title {
+  max-width: 14ch;
+}
+
+.inner > p {
+  max-width: var(--content-reading);
+  color: var(--color-brand-on-subtle);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2) var(--space-4);
+  margin-top: var(--space-2);
+}

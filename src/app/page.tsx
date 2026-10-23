@@ -1,14 +1,17 @@
-import { CaraTempel } from '@/components/sections/CaraTempel';
+import { Ajakan } from '@/components/sections/Ajakan';
+import { CaraKerja } from '@/components/sections/CaraKerja';
+import { Cerita } from '@/components/sections/Cerita';
+import { Fitur } from '@/components/sections/Fitur';
 import { Hero } from '@/components/sections/Hero';
-import { Penutup } from '@/components/sections/Penutup';
-import { SetelahBertemu } from '@/components/sections/SetelahBertemu';
-import { StatusPrototipe } from '@/components/sections/StatusPrototipe';
-import { Story } from '@/components/sections/Story';
+import { Masalah } from '@/components/sections/Masalah';
 import { TanyaJawab } from '@/components/sections/TanyaJawab';
 import { SiteFooter } from '@/components/site/SiteFooter';
 import { SiteHeader } from '@/components/site/SiteHeader';
 
-/** The whole landing: one story read from top to bottom, ending where it says it ends. */
+/**
+ * The whole landing, read top to bottom: what Patepang is, the problem, how it works, what it
+ * does after a meeting, situations it is made for, questions, and when it arrives.
+ */
 export default function HomePage() {
   return (
     <>
@@ -18,12 +21,12 @@ export default function HomePage() {
       <SiteHeader />
       <main id="isi" tabIndex={-1}>
         <Hero />
-        <Story />
-        <CaraTempel />
-        <SetelahBertemu />
-        <StatusPrototipe />
+        <Masalah />
+        <CaraKerja />
+        <Fitur />
+        <Cerita />
         <TanyaJawab />
-        <Penutup />
+        <Ajakan />
       </main>
       <SiteFooter />
     </>

@@ -127,3 +127,16 @@ Sesi cloud baru dengan dua repo: `patepang/landing` dan clone baca-saja `patepan
 | Tipe | TypeScript LSP | Tidak tersedia di sesi ini; diganti `tsc --noEmit` (`pnpm typecheck`). |
 | Browser | Playwright MCP | Tidak dipakai; diganti `@playwright/test` dan DevTools Protocol langsung (screenshot zoom). |
 
+
+### Versi produksi (23 Oktober 2026)
+
+Pemilik meminta landing tampil sebagai halaman produk. Keputusan atas isi yang tidak boleh
+dikarang ditanyakan dulu lewat satu set pertanyaan: testimoni diganti skenario pemakaian, CTA
+"Segera hadir" tanpa formulir, footer berisi navigasi dan hak cipta, dan hasilnya langsung di-merge
+ke `main`.
+
+| Fase | Alat | Bukti |
+|---|---|---|
+| Komposisi | Craft floor Impeccable (`reference/craft-floor.md`, dibaca ulang sebelum mengubah UI) dan panduan Frontend Design yang sudah termuat | Tanpa eyebrow atau kartu ikon berukuran sama. Masalah ditulis sebagai baris tipografi, dan skenario memakai dua titik merek sebagai penanda ketukan. Kata bertanda hubung dijaga utuh. |
+| Bukti browser | `@playwright/test` dan skrip Playwright sementara | Setiap section dipotret di 390/768/1440, terang dan gelap, plus menu terbuka, teks 200%, dan zoom 200%. Cacat yang ditemukan diperbaiki lalu dipotret ulang. |
+| Detektor | `impeccable detect` (Chromium terpasang, pembungkus `--no-sandbox`) | 1280×800 dan 390×844: hanya `cream-palette`, yaitu kanvas merek. |

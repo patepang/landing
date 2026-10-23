@@ -1,6 +1,6 @@
 /**
- * Fictional data shown in the prototype previews. Nothing here describes a real person, place,
- * plan or user; every preview that uses it carries the label "Pratinjau prototipe — data fiktif".
+ * Sample data shown in the app previews. Nothing here describes a real person, place, plan or
+ * user, and none of it is shown as evidence (no counts, quotes or testimonials).
  *
  * The strings are what the app's own formatters produce for these values (id-ID), and they are
  * consistent with each other for a reading date of 22 October 2026: the last meeting was 341 days

@@ -1,7 +1,6 @@
 /*
- * Shared pieces of the prototype previews, translated from the app's design-system components
- * (Surface, Badge, Avatar, Divider). Previews are pictures of the app: nothing in them is
- * interactive, and each sits inside a figure labelled "Pratinjau prototipe — data fiktif".
+ * Shared pieces of the app previews, translated from the app's design-system components (Surface,
+ * Badge, Avatar, Divider). Previews are pictures of the app: nothing in them is interactive.
  */
 
 /* Surface variant="raised": warm white, hairline, very soft shadow (tone alone in dark). */
@@ -12,22 +11,6 @@
   background: var(--color-surface-raised);
   box-shadow: var(--elevation-raised);
   color: var(--color-text-primary);
-}
-
-/* The label every preview carries. */
-.label {
-  display: inline-flex;
-  align-items: center;
-  min-height: var(--space-6);
-  padding: var(--space-1) var(--space-3);
-  border-radius: var(--shape-chip);
-  background: var(--color-surface-raised);
-  color: var(--color-text-secondary);
-  font-size: var(--type-caption-size);
-  line-height: var(--type-caption-line);
-  font-weight: var(--weight-medium);
-  letter-spacing: var(--type-caption-tracking);
-  text-align: center;
 }
 
 /* Badge: a short, non-interactive status label; the words carry the meaning. */

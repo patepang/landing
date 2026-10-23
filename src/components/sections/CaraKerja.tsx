@@ -8,7 +8,7 @@ import { VibrateIcon } from '@phosphor-icons/react/dist/ssr/Vibrate';
 import { TempelDemo, type TempelDemoProps } from '@/components/demo/TempelDemo';
 import { Icon } from '@/components/Icon';
 
-import styles from './CaraTempel.module.css';
+import styles from './CaraKerja.module.css';
 
 /** The three steps, worded as in the app's TapRitualPreview. */
 const steps: TempelDemoProps['steps'] = [
@@ -39,25 +39,26 @@ const icons: TempelDemoProps['icons'] = {
   replay: <Icon glyph={ArrowCounterClockwiseIcon} size="sm" />,
 };
 
-export function CaraTempel() {
+/** The answer to the problem: one way to connect, and only face to face. */
+export function CaraKerja() {
   return (
-    <section className={styles.section} aria-labelledby="cara-tempel">
+    <section className={styles.section} aria-labelledby="cara-kerja">
       <div className="page">
         <TempelDemo
           intro={
             <>
-              <h2 id="cara-tempel" className="type-section" tabIndex={-1}>
+              <h2 id="cara-kerja" className="type-section" tabIndex={-1}>
                 Sebelum pamit, tempel dulu.
               </h2>
               <p className="type-body-large tone-secondary">
-                Tempel hanya bisa dilakukan saat kalian berhadapan. Dalam rancangan Patepang, inilah
-                satu-satunya cara dua orang terhubung.
+                Patepang hanya menghubungkan orang yang <span className="nowrap">benar-benar</span>{' '}
+                bertemu. Caranya satu: tempel, saat kalian berhadapan. Tidak ada pencarian, dan
+                tidak ada permintaan pertemanan dari orang asing.
               </p>
             </>
           }
           steps={steps}
           icons={icons}
-          caption="Ini simulasi untuk menjelaskan alurnya. Halaman ini tidak memakai kamera atau sensor gerak, dan di prototipe pun kamera, kode QR, dan goyang masih disimulasikan."
         />
       </div>
     </section>

@@ -165,6 +165,11 @@ svg {
 
 /* ---- Layout ---- */
 
+/* Keeps a hyphenated word on one line (see KeepHyphenated). */
+.nowrap {
+  white-space: nowrap;
+}
+
 /* The page column: full width up to --page-max, with the window class's gutter. */
 .page {
   width: 100%;

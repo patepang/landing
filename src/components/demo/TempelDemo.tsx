@@ -1,6 +1,13 @@
 'use client';
 
-import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+  type ReactNode,
+} from 'react';
 
 import { TwoDots, type DotsPhase } from '@/components/brand/TwoDots';
 import button from '@/components/ui/button.module.css';
@@ -10,8 +17,11 @@ import styles from './TempelDemo.module.css';
 type Phase = 'idle' | 'scan' | 'shake' | 'done';
 export type TempelStepId = Exclude<Phase, 'idle'>;
 
-/** Timeline of the app's TapRitualPreview, in ms from the press. It plays once per press. */
+/** Timeline of the app's TapRitualPreview, in ms from the start. */
 const TIMELINE = { shakeAt: 900, doneAt: 1900 } as const;
+
+/** How much of the stage must be on screen before it plays by itself, once. */
+const AUTOPLAY_THRESHOLD = 0.6;
 
 const order: Record<Phase, number> = { idle: -1, scan: 0, shake: 1, done: 2 };
 
@@ -39,9 +49,9 @@ function useHydrated() {
   );
 }
 
-/** Shown under the button and read by screen readers as the walk-through moves on. */
+/** Shown beside the button and read by screen readers as the walk-through moves on. */
 const status: Record<Phase, string> = {
-  idle: 'Siap diputar.',
+  idle: '',
   scan: 'Langkah 1 dari 3: pindai kode.',
   shake: 'Langkah 2 dari 3: goyang bersama.',
   done: 'Langkah 3 dari 3: terhubung. Koneksi dan momen pertama tercatat di kedua HP.',
@@ -53,19 +63,19 @@ export interface TempelDemoProps {
   steps: readonly { id: TempelStepId; title: string; body: string }[];
   /** Icons rendered on the server, so no icon code ships to the browser. */
   icons: Record<'phone' | 'scan' | 'shake' | 'check' | 'stepCheck' | 'play' | 'replay', ReactNode>;
-  caption: string;
 }
 
 /**
- * A visual walk-through of tempel, after the app's TapRitualPreview. It uses no camera, no QR code
- * and no motion sensor: two phones move together, shake, and a check mark lands. It plays once
- * per press and never loops. Pressing "Putar lagi" while it plays starts it over; the button
- * stays enabled, so keyboard focus never drops to the page. Under reduced motion the CSS keeps
- * every step but drops the travel and the shake.
+ * An illustrated walk-through of tempel, after the app's TapRitualPreview: two phones move
+ * together, shake, and a check mark lands. It plays by itself once, the first time the stage is
+ * well on screen, and again on every press of the button; it never loops. Pressing the button
+ * while it plays starts it over, and the button stays enabled, so keyboard focus never drops to
+ * the page. Under reduced motion the CSS keeps every step but drops the travel and the shake.
  */
-export function TempelDemo({ intro, steps, icons, caption }: TempelDemoProps) {
+export function TempelDemo({ intro, steps, icons }: TempelDemoProps) {
   const [phase, setPhase] = useState<Phase>('idle');
   const timers = useRef<number[]>([]);
+  const stage = useRef<HTMLDivElement>(null);
   const hydrated = useHydrated();
 
   useEffect(() => {
@@ -75,7 +85,7 @@ export function TempelDemo({ intro, steps, icons, caption }: TempelDemoProps) {
     };
   }, []);
 
-  function play() {
+  const play = useCallback(() => {
     for (const id of timers.current) window.clearTimeout(id);
     timers.current.length = 0;
     setPhase('scan');
@@ -87,7 +97,24 @@ export function TempelDemo({ intro, steps, icons, caption }: TempelDemoProps) {
         setPhase('done');
       }, TIMELINE.doneAt),
     );
-  }
+  }, []);
+
+  useEffect(() => {
+    const target = stage.current;
+    if (!target || !('IntersectionObserver' in window)) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        observer.disconnect();
+        play();
+      },
+      { threshold: AUTOPLAY_THRESHOLD },
+    );
+    observer.observe(target);
+    return () => {
+      observer.disconnect();
+    };
+  }, [play]);
 
   const current = order[phase];
 
@@ -120,7 +147,7 @@ export function TempelDemo({ intro, steps, icons, caption }: TempelDemoProps) {
       </ol>
 
       <div className={styles.player}>
-        <div className={styles.stage} aria-hidden="true">
+        <div ref={stage} className={styles.stage} aria-hidden="true">
           <div className={styles.phones}>
             <span className={`${styles.phone} ${styles.left}`}>{icons.phone}</span>
             <span className={styles.center}>
@@ -139,13 +166,12 @@ export function TempelDemo({ intro, steps, icons, caption }: TempelDemoProps) {
         <div className={styles.controls} data-hydrating={hydrated ? undefined : ''}>
           <button type="button" className={`${button.button} ${button.primary}`} onClick={play}>
             {phase === 'idle' ? icons.play : icons.replay}
-            {phase === 'idle' ? 'Putar cara tempel' : 'Putar lagi'}
+            {phase === 'idle' ? 'Putar' : 'Putar lagi'}
           </button>
           <p className={`type-body-small ${styles.status}`} role="status">
             {status[phase]}
           </p>
         </div>
-        <p className="type-body-small tone-tertiary">{caption}</p>
       </div>
     </div>
   );

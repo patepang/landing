@@ -2,8 +2,9 @@ import { expect, test, type Browser, type Page } from '@playwright/test';
 
 import { openLanding, watchProblems } from './helpers';
 
-const DEMO = 'section[aria-labelledby="cara-tempel"]';
-/** The demo moves on at 0.9s and 1.9s; waits allow far more, since order is what is checked. */
+const DEMO = 'section[aria-labelledby="cara-kerja"]';
+const FAQ = 'section[aria-labelledby="tanya-jawab"]';
+/** The walk-through moves on at 0.9s and 1.9s; waits allow far more, since order is checked. */
 const STEP_TIMEOUT = 8000;
 
 const STEPS = [
@@ -47,6 +48,28 @@ function rgb(hex: string) {
   return `rgb(${String(r)}, ${String(g)}, ${String(b)})`;
 }
 
+/** Brings the walk-through's stage well on screen, which starts it the first time. */
+async function showStage(page: Page) {
+  await page
+    .locator(`${DEMO} div[aria-hidden="true"]`)
+    .first()
+    .evaluate((stage) => {
+      stage.scrollIntoView({ block: 'center' });
+    });
+}
+
+/**
+ * The text of every link inside `scope` that is drawn on screen. A closed <details> hides its
+ * content with content-visibility, which keeps layout boxes, so client rects are not enough.
+ */
+async function shownLinks(page: Page, scope: string) {
+  return page
+    .locator(`${scope} a`)
+    .evaluateAll((links) =>
+      links.filter((link) => link.checkVisibility()).map((link) => link.textContent),
+    );
+}
+
 async function newPage(browser: Browser, baseURL: string | undefined, options: object = {}) {
   const context = await browser.newContext({ baseURL, ...options });
   return { context, page: await context.newPage() };
@@ -67,12 +90,12 @@ test.describe('landing', () => {
       'Hanya orang yang pernah kamu temui.',
     );
     for (const name of [
-      'Pertemuan nyata tidak harus selesai saat kalian berpisah.',
+      'Setelah pamit, kabar sering berhenti begitu saja.',
       'Sebelum pamit, tempel dulu.',
-      'Setelah kalian berpisah',
-      'Patepang masih prototipe',
+      'Setelah bertemu, hubungan tetap terjaga.',
+      'Dibuat untuk pertemuan seperti ini.',
       'Tanya jawab',
-      'Selesai. Tidak ada yang perlu dikejar.',
+      'Patepang segera hadir.',
     ]) {
       await expect(page.getByRole('heading', { level: 2, name })).toBeVisible();
     }
@@ -92,7 +115,10 @@ test.describe('landing', () => {
   test('metadata describes the page without inventing assets', async ({ page }) => {
     await openLanding(page);
     const head = page.locator('head');
-    await expect(head.locator('meta[name="description"]')).toHaveAttribute('content', /prototipe/);
+    await expect(head.locator('meta[name="description"]')).toHaveAttribute(
+      'content',
+      /Segera hadir/,
+    );
     await expect(head.locator('link[rel="canonical"]')).toHaveAttribute(
       'href',
       'https://patepang.com',
@@ -103,20 +129,16 @@ test.describe('landing', () => {
     await expect(head.locator('link[rel="icon"]')).toHaveAttribute('href', 'data:,');
   });
 
-  test('says it is a prototype and makes no claims or offers it cannot keep', async ({ page }) => {
+  test('says it is not out yet and makes no claims or offers it cannot keep', async ({ page }) => {
     await openLanding(page);
-    await expect(
-      page.getByText('Masih prototipe dengan data fiktif. Belum tersedia untuk diunduh.'),
-    ).toBeVisible();
-    // Every preview of the app carries the label.
-    await expect(
-      page.locator('figcaption', { hasText: 'Pratinjau prototipe — data fiktif' }),
-    ).toHaveCount(4);
+    await expect(page.getByText('Segera hadir. Belum tersedia untuk diunduh.')).toBeVisible();
     for (const image of await page.locator('[role="img"]').all()) {
       await expect(image).toHaveAttribute('aria-label', /\S/);
     }
-    // No forms, downloads, waitlists, store badges, ratings, testimonials or security promises.
+    // No forms, downloads, waitlists, store badges, ratings, security promises, and no quotes:
+    // the situations in "Cerita" are examples told to the reader, not testimonials.
     await expect(page.locator('form, input, textarea, select')).toHaveCount(0);
+    await expect(page.locator('blockquote, q, cite')).toHaveCount(0);
     // Everything a reader or a screen reader can meet: closed FAQ answers, labels and metadata too.
     const text = await page.evaluate(() => {
       const body = document.body.cloneNode(true) as HTMLElement;
@@ -167,45 +189,65 @@ test.describe('landing', () => {
     }
   });
 
-  test('hero actions move to their sections and put focus on the heading', async ({ page }) => {
+  test('calls to action move to their sections and put focus on the heading', async ({ page }) => {
     await openLanding(page);
-    await page.getByRole('link', { name: 'Lihat cara tempel' }).first().click();
-    await expect(page).toHaveURL(/#cara-tempel$/);
-    await expect(page.locator('#cara-tempel')).toBeFocused();
-    await expect(page.locator('#cara-tempel')).toBeInViewport();
+    await page.getByRole('link', { name: 'Lihat cara kerja' }).first().click();
+    await expect(page).toHaveURL(/#cara-kerja$/);
+    await expect(page.locator('#cara-kerja')).toBeFocused();
+    await expect(page.locator('#cara-kerja')).toBeInViewport();
 
-    await page.getByRole('link', { name: 'Tentang prototipe' }).click();
-    await expect(page).toHaveURL(/#prototipe$/);
-    await expect(page.locator('#prototipe')).toBeFocused();
-    const top = await page.locator('#prototipe').evaluate((el) => el.getBoundingClientRect().top);
+    await page.getByRole('link', { name: 'Jelajahi fitur' }).first().click();
+    await expect(page).toHaveURL(/#fitur$/);
+    await expect(page.locator('#fitur')).toBeFocused();
+    const top = await page.locator('#fitur').evaluate((el) => el.getBoundingClientRect().top);
     expect(top).toBeGreaterThanOrEqual(0);
     expect(top).toBeLessThan(160);
+
+    // The closing call leads back into the page too.
+    await page.getByRole('link', { name: 'Lihat cara kerja' }).last().click();
+    await expect(page.locator('#cara-kerja')).toBeFocused();
   });
 
-  test('the header keeps one section link on phones and shows all four from 768px', async ({
+  test('the header shows the section links from 768px and a working menu below that', async ({
     browser,
     baseURL,
   }) => {
-    for (const [width, expected] of [
-      [390, ['Tanya jawab']],
-      [768, ['Cara tempel', 'Setelah bertemu', 'Prototipe', 'Tanya jawab']],
-    ] as const) {
-      const { context, page } = await newPage(browser, baseURL, {
-        viewport: { width, height: 900 },
-      });
-      await openLanding(page);
-      const nav = page.getByRole('navigation', { name: 'Utama' });
-      const shown = await nav
-        .locator('a')
-        .evaluateAll((links) =>
-          links.filter((link) => link.getClientRects().length > 0).map((link) => link.textContent),
-        );
-      expect(shown, `${String(width)}px`).toEqual(expected);
-      await nav.getByRole('link', { name: 'Tanya jawab' }).click();
-      await expect(page).toHaveURL(/#tanya-jawab$/);
-      await expect(page.locator('#tanya-jawab')).toBeFocused();
-      await context.close();
-    }
+    const all = ['Cara kerja', 'Fitur', 'Cerita', 'Tanya jawab'];
+    const nav = 'nav[aria-label="Utama"]';
+
+    const wide = await newPage(browser, baseURL, { viewport: { width: 768, height: 900 } });
+    await openLanding(wide.page);
+    expect(await shownLinks(wide.page, nav)).toEqual(all);
+    await expect(wide.page.locator(`${nav} summary`)).toBeHidden();
+    await wide.context.close();
+
+    const { context, page } = await newPage(browser, baseURL, {
+      viewport: { width: 390, height: 844 },
+    });
+    await openLanding(page);
+    const menu = page.locator(`${nav} details`);
+    const button = menu.locator('summary');
+    await expect(button).toHaveText('Menu');
+    expect(await shownLinks(page, nav)).toEqual([]);
+
+    // Choosing a link closes the menu and lands on the section, with focus on its heading.
+    await button.click();
+    expect(await shownLinks(page, nav)).toEqual(all);
+    await page.locator(nav).getByRole('link', { name: 'Tanya jawab' }).click();
+    await expect(page).toHaveURL(/#tanya-jawab$/);
+    await expect(page.locator('#tanya-jawab')).toBeFocused();
+    await expect(menu).not.toHaveAttribute('open', '');
+
+    // Keyboard: Enter opens it, Escape closes it and returns focus to the button.
+    await button.focus();
+    await page.keyboard.press('Enter');
+    await expect(menu).toHaveAttribute('open', '');
+    await page.keyboard.press('Tab');
+    await expect(page.locator(nav).getByRole('link', { name: 'Cara kerja' })).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(menu).not.toHaveAttribute('open', '');
+    await expect(button).toBeFocused();
+    await context.close();
   });
 
   test('the skip link comes first and moves focus to the content', async ({ page }) => {
@@ -236,17 +278,18 @@ test.describe('landing', () => {
       expect(focus.ring, focus.name).toBe('solid 2px rgb(36, 92, 143)');
       stops.push(focus.name);
     }
-    expect(stops.slice(0, 9)).toEqual([
+    expect(stops.slice(0, 8)).toEqual([
       'Langsung ke isi',
       'patepang',
-      'Cara tempel',
-      'Setelah bertemu',
-      'Prototipe',
+      'Cara kerja',
+      'Fitur',
+      'Cerita',
       'Tanya jawab',
-      'Lihat cara tempel',
-      'Tentang prototipe',
-      'Putar cara tempel',
+      'Lihat cara kerja',
+      'Jelajahi fitur',
     ]);
+    // Then the walk-through's button: "Putar", or "Putar lagi" once it has played by itself.
+    expect(stops[8]).toMatch(/^Putar/);
   });
 
   for (const width of [360, 1440]) {
@@ -260,7 +303,7 @@ test.describe('landing', () => {
       await openLanding(page);
       const small = await page.locator('a[href], button, summary').evaluateAll((elements) =>
         elements
-          .filter((el) => el.getClientRects().length > 0)
+          .filter((el) => el.checkVisibility())
           .map((el) => ({ el, box: el.getBoundingClientRect() }))
           .filter(({ box }) => box.width < 48 || box.height < 48)
           .map(({ el, box }) => `${el.textContent?.trim() ?? ''} ${box.width}x${box.height}`),
@@ -270,7 +313,7 @@ test.describe('landing', () => {
     });
   }
 
-  test('the tempel demo plays once per press, says each step in words and replays', async ({
+  test('the walk-through plays once on view, says each step in words, and replays', async ({
     page,
     baseURL,
   }) => {
@@ -278,15 +321,20 @@ test.describe('landing', () => {
     await openLanding(page);
     const demo = page.locator(`${DEMO} div[data-phase]`).first();
     const status = page.getByRole('status');
-    await expect(status).toHaveText('Siap diputar.');
+    await expect(demo).toHaveAttribute('data-phase', 'idle');
+    await expect(status).toHaveText('');
     await recordDemo(page);
 
-    // Each step is announced in words with the matching step marked current, in order.
-    await page.getByRole('button', { name: 'Putar cara tempel' }).click();
+    // Brought on screen, it plays by itself: each step announced, the same step marked current.
+    await showStage(page);
     await expect(status).toHaveText(/^Langkah 3 dari 3: terhubung\./, { timeout: STEP_TIMEOUT });
     expect(await page.evaluate(() => window.tempelLog)).toEqual(STEPS);
 
-    // It never loops: well after the end it is still finished and nothing more was announced.
+    // Only once, and it never loops: leaving and coming back does not start it again.
+    await page.evaluate(() => {
+      window.scrollTo(0, 0);
+    });
+    await showStage(page);
     await page.waitForTimeout(2500);
     await expect(demo).toHaveAttribute('data-phase', 'done');
     expect(await page.evaluate(() => window.tempelLog)).toEqual(STEPS);
@@ -300,7 +348,7 @@ test.describe('landing', () => {
     expect(problems).toEqual([]);
   });
 
-  test('if its script never loads, the demo offers no button that would not respond', async ({
+  test('if its script never loads, the walk-through offers no button that does nothing', async ({
     browser,
     baseURL,
   }) => {
@@ -317,13 +365,13 @@ test.describe('landing', () => {
     await context.close();
   });
 
-  test('under reduced motion the demo reaches every step without moving the phones', async ({
+  test('under reduced motion the walk-through reaches every step without moving', async ({
     browser,
     baseURL,
   }) => {
     const { context, page } = await newPage(browser, baseURL, { reducedMotion: 'reduce' });
     await openLanding(page);
-    await page.getByRole('button', { name: 'Putar cara tempel' }).click();
+    await showStage(page);
     const status = page.getByRole('status');
     await expect(status).toHaveText('Langkah 2 dari 3: goyang bersama.', { timeout: STEP_TIMEOUT });
     const phones = await page
@@ -341,7 +389,7 @@ test.describe('landing', () => {
 
   test('FAQ answers open with the keyboard and the pointer', async ({ page }) => {
     await openLanding(page);
-    const first = page.locator('details').first();
+    const first = page.locator(`${FAQ} details`).first();
     await first.locator('summary').focus();
     await page.keyboard.press('Enter');
     await expect(first).toHaveAttribute('open', '');
@@ -349,7 +397,7 @@ test.describe('landing', () => {
     await page.keyboard.press('Space');
     await expect(first).not.toHaveAttribute('open', '');
 
-    const last = page.locator('details').last();
+    const last = page.locator(`${FAQ} details`).last();
     await last.locator('summary').click();
     await expect(last.locator('p')).toContainText('Belum ada tanggal');
   });
@@ -404,18 +452,30 @@ test.describe('landing', () => {
     const { context, page } = await newPage(browser, baseURL, { javaScriptEnabled: false });
     await page.goto('/');
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
-    await expect(page.locator('ol > li')).toHaveCount(3);
+    await expect(page.locator(`${DEMO} ol > li`)).toHaveCount(3);
     await expect(page.getByText('Selesai untuk hari ini')).toBeVisible();
     await expect(page.getByText('Memudar dalam 24 hari.', { exact: false })).toBeVisible();
-    // The demo's button needs JavaScript, so it is not offered; the steps stay readable.
-    await expect(page.getByRole('button', { name: 'Putar cara tempel' })).toBeHidden();
+    // The walk-through's button needs JavaScript, so it is not offered; the steps stay readable.
+    await expect(page.getByRole('button', { name: /^Putar/ })).toBeHidden();
 
-    await page.getByRole('link', { name: 'Lihat cara tempel' }).first().click();
-    await expect(page).toHaveURL(/#cara-tempel$/);
-    const faq = page.locator('details').nth(1);
+    await page.getByRole('link', { name: 'Lihat cara kerja' }).first().click();
+    await expect(page).toHaveURL(/#cara-kerja$/);
+    const faq = page.locator(`${FAQ} details`).nth(1);
     await faq.locator('summary').click();
     await expect(faq).toHaveAttribute('open', '');
     await context.close();
+
+    // The phone menu is a native disclosure, so it opens and its links work without JavaScript.
+    const phone = await newPage(browser, baseURL, {
+      javaScriptEnabled: false,
+      viewport: { width: 390, height: 844 },
+    });
+    await phone.page.goto('/');
+    const nav = phone.page.locator('nav[aria-label="Utama"]');
+    await nav.locator('summary').click();
+    await nav.getByRole('link', { name: 'Fitur' }).click();
+    await expect(phone.page).toHaveURL(/#fitur$/);
+    await phone.context.close();
   });
 
   test('unknown addresses get the 404 page with a way back', async ({ page, baseURL }) => {
@@ -431,13 +491,13 @@ test.describe('landing', () => {
     // Its header leads back into the landing's sections.
     await page
       .getByRole('navigation', { name: 'Utama' })
-      .getByRole('link', { name: 'Cara tempel' })
+      .getByRole('link', { name: 'Cara kerja' })
       .click();
-    await expect(page).toHaveURL(/\/#cara-tempel$/);
+    await expect(page).toHaveURL(/\/#cara-kerja$/);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Hanya orang yang pernah kamu temui.',
     );
-    await expect(page.locator('#cara-tempel')).toBeInViewport();
+    await expect(page.locator('#cara-kerja')).toBeInViewport();
     // The only expected failure is the 404 response for the page itself.
     expect(problems.filter((p) => !p.includes('/halaman-yang-tidak-ada'))).toEqual([]);
   });

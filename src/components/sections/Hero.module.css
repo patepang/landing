@@ -40,10 +40,10 @@
 
 /*
  * ---- The stage ----
- * Forest mist, full bleed, drawn behind the label and the phone only, so on narrow screens the
- * notes can follow the screen they describe, on the canvas below. The phone rises from the
- * stage's bottom edge. The band is a pseudo-element stretched edge to edge with a spread shadow
- * that is clipped to its own height, so it never causes horizontal scrolling.
+ * Forest mist, full bleed, drawn behind the phone only, so on narrow screens the notes can follow
+ * the screen they describe, on the canvas below. The phone rises from the stage's bottom edge.
+ * The band is a pseudo-element stretched edge to edge with a spread shadow that is clipped to its
+ * own height, so it never causes horizontal scrolling.
  */
 .exhibit {
   --leader: calc(var(--space-16) + var(--space-8));
@@ -52,7 +52,6 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   grid-template-areas:
-    'label'
     'phone'
     'born'
     'code'
@@ -66,7 +65,7 @@
   content: '';
   z-index: -1;
   grid-column: 1 / -1;
-  grid-row: label-start / phone-end;
+  grid-row: phone-start / phone-end;
   /* An empty grid item: it must stretch, whatever the grid aligns its other items to. */
   align-self: stretch;
   margin-top: calc(-1 * var(--space-10));
@@ -92,10 +91,6 @@
 
 .noteFace {
   grid-area: face;
-}
-
-.label {
-  grid-area: label;
 }
 
 /* The screen continues below the stage: its shadow is cut at the bottom edge, not spilled. */
@@ -148,9 +143,8 @@
   .exhibit {
     --leader: var(--space-12);
     grid-template-columns: var(--content-message) minmax(0, 1fr);
-    grid-template-rows: auto auto auto auto;
+    grid-template-rows: auto auto auto;
     grid-template-areas:
-      'label .'
       'phone born'
       'phone face'
       'phone code';
@@ -201,10 +195,8 @@
   .exhibit {
     --leader: calc(var(--space-16) + var(--space-8));
     grid-template-columns: minmax(0, 1fr) var(--content-message) minmax(0, 1fr);
-    grid-template-rows: auto auto;
-    grid-template-areas:
-      'start label end'
-      'start phone end';
+    grid-template-rows: auto;
+    grid-template-areas: 'start phone end';
     padding-top: var(--space-16);
   }
 

@@ -1,7 +1,8 @@
 # patepang.com
 
-Landing page Patepang: satu halaman statis berbahasa Indonesia yang menjelaskan apa Patepang,
-cara tempel, apa yang terjadi setelah bertemu, dan bahwa produknya masih prototipe.
+Landing page Patepang: satu halaman statis berbahasa Indonesia untuk produk yang segera hadir.
+Isinya: apa Patepang, masalah yang dijawab, cara kerja tempel, fitur setelah bertemu, skenario
+pemakaian, tanya jawab, dan ajakan "Segera hadir" tanpa formulir.
 
 Dibangun dengan Next.js (App Router, static export) dan TypeScript. Tidak ada backend, formulir,
 analytics, atau pengumpulan data. Situs ini **belum di-deploy**; domain `patepang.com` hanya
@@ -45,9 +46,9 @@ karena hanya mode itu yang membaca pengaturan zoom dan ukuran teks browser.
 - `src/app/`: `layout.tsx` (metadata, font, tema), `page.tsx` (seluruh halaman),
   `not-found.tsx` (404), `tokens.css` (token dari design system app), `globals.css`, `fonts/`
   (Plus Jakarta Sans, OFL).
-- `src/components/`: `sections/` (bagian halaman), `preview/` (pratinjau komponen app, data
-  fiktif), `demo/TempelDemo.tsx` (satu-satunya Client Component), `brand/` (dua titik dan lockup),
-  `site/` (header dan footer), `ui/` (gaya tombol).
+- `src/components/`: `sections/` (bagian halaman), `preview/` (komponen app dengan data contoh),
+  `demo/TempelDemo.tsx` dan `site/MobileMenu.tsx` (dua Client Component), `brand/` (dua titik dan
+  lockup), `site/` (header dan footer), `ui/` (gaya tombol).
 - `tests/`: Playwright (`landing.spec.ts`, `zoom.spec.ts`, `screenshots.spec.ts`).
 - `scripts/`: `serve-out.mjs` (server statis lokal), `check-contrast.mjs`.
 - `docs/landing-implementation.md`: keputusan, penyimpangan dari rancangan, verifikasi, dan batas.

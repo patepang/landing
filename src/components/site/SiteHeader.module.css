@@ -1,14 +1,17 @@
+/* Positioned so the open menu can lie over the page just below the bar. */
 .header {
+  position: relative;
+  z-index: 2;
   padding-block: var(--space-4);
 }
 
+/* Wraps rather than overflows: at large text sizes the menu button moves under the lockup. */
 .bar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  column-gap: var(--space-6);
-  row-gap: var(--space-2);
+  gap: var(--space-2) var(--space-6);
 }
 
 .home {
@@ -18,9 +21,10 @@
   text-decoration: none;
 }
 
+/* ---- Wide screens: the section links in a row ---- */
+
 .links {
-  display: flex;
-  flex-wrap: wrap;
+  display: none;
   column-gap: var(--space-1);
   list-style: none;
 }
@@ -41,30 +45,107 @@
   transition: background-color var(--duration-press) var(--ease-out);
 }
 
-.link:active {
+/* ---- Narrow screens: the same links behind a "Menu" disclosure ---- */
+
+.menuButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--touch-target);
+  padding-inline: var(--space-4);
+  border: var(--border-thin) solid var(--color-border-strong);
+  border-radius: var(--shape-button);
+  color: var(--color-text-primary);
+  font-size: var(--type-label-small-size);
+  line-height: var(--type-label-small-line);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--type-label-small-tracking);
+  list-style: none;
+  cursor: pointer;
+  transition: background-color var(--duration-press) var(--ease-out);
+}
+
+.menuButton::-webkit-details-marker {
+  display: none;
+}
+
+.menuIconOpen,
+.menuIconClose {
+  display: inline-flex;
+}
+
+.menuIconClose,
+.menu[open] .menuIconOpen {
+  display: none;
+}
+
+.menu[open] .menuIconClose {
+  display: inline-flex;
+}
+
+/* The open menu lies over the page under the bar, as wide as the window. */
+.menuPanel {
+  position: absolute;
+  top: 100%;
+  inset-inline: 0;
+  padding-block: var(--space-2) var(--space-4);
+  border-block: var(--border-hairline) solid var(--color-border-subtle);
+  background: var(--color-surface-overlay);
+  box-shadow: var(--elevation-overlay);
+}
+
+.menuLinks {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+}
+
+.menuLink {
+  display: flex;
+  align-items: center;
+  min-height: calc(var(--touch-target) + var(--space-2));
+  margin-inline: calc(-1 * var(--space-3));
+  padding-inline: var(--space-3);
+  border-radius: var(--radius-lg);
+  color: var(--color-text-primary);
+  font-size: var(--type-headline-size);
+  line-height: var(--type-headline-line);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--type-headline-tracking);
+  text-decoration: none;
+  transition: background-color var(--duration-press) var(--ease-out);
+}
+
+.link:active,
+.menuButton:active,
+.menuLink:active {
   background: var(--color-surface-pressed);
   color: var(--color-text-primary);
 }
 
 @media (hover: hover) {
-  .link:hover {
+  .link:hover,
+  .menuButton:hover,
+  .menuLink:hover {
     background: var(--color-surface-pressed);
     color: var(--color-text-primary);
   }
 }
 
-/*
- * Narrow screens keep the lockup and one link, as the design spec sets for phones. The page is
- * read top to bottom from there, and the hero's two buttons lead to the demo and the status.
- */
-@media (max-width: 767.98px) {
-  .wideOnly {
+@media (min-width: 768px) {
+  .links {
+    display: flex;
+  }
+
+  .menu {
     display: none;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .link {
+  .link,
+  .menuButton,
+  .menuLink {
     transition: none;
   }
 }

@@ -8,7 +8,7 @@ import './globals.css';
 
 const title = 'Patepang: hanya orang yang pernah kamu temui';
 const description =
-  'Patepang sedang dirancang sebagai aplikasi untuk menjaga hubungan dengan orang yang benar-benar pernah kamu temui langsung. Saat ini masih prototipe dengan data fiktif.';
+  'Patepang adalah aplikasi untuk menjaga hubungan dengan orang yang benar-benar pernah kamu temui langsung. Koneksi hanya lahir saat kalian bertemu. Segera hadir.';
 
 /*
  * `metadataBase` names the domain the owner plans to connect; it does not mean the site is

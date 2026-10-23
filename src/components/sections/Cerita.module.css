@@ -1,0 +1,83 @@
+.section {
+  padding-block: var(--space-section);
+  border-top: var(--border-hairline) solid var(--color-border-subtle);
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: var(--content-reading);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  margin-top: var(--space-12);
+  list-style: none;
+}
+
+/* One situation per row, each opened by a hairline: its name, then how it goes on. */
+.scenario {
+  display: grid;
+  gap: var(--space-6);
+  padding-block: var(--space-8);
+  border-top: var(--border-hairline) solid var(--color-border-subtle);
+}
+
+.scenario:last-child {
+  padding-bottom: 0;
+}
+
+.beats {
+  display: grid;
+  gap: var(--space-5);
+  list-style: none;
+}
+
+/* The dots sit level with the first line of their sentence. */
+.beat {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-content: start;
+  align-items: start;
+  column-gap: var(--space-4);
+}
+
+.dots {
+  margin-top: calc((var(--type-body-line) - var(--space-3)) / 2);
+}
+
+/* Wide screens: the name on the left, the three beats side by side, read left to right. */
+@media (min-width: 1024px) {
+  .list {
+    margin-top: var(--space-16);
+  }
+
+  .scenario {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--space-8);
+    padding-block: var(--space-10);
+  }
+
+  .scenarioTitle {
+    grid-column: 1 / span 4;
+  }
+
+  .beats {
+    grid-column: 5 / span 8;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: var(--space-8);
+  }
+
+  .beat {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--space-3);
+  }
+
+  /* Above the text, each pair hugs its own width, so it starts where the sentence starts. */
+  .beat .dots {
+    width: calc(var(--distance) + var(--dot) * 2);
+    margin-top: 0;
+  }
+}
