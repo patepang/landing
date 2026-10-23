@@ -28,6 +28,12 @@ const cases = [
     size: { viewport: { width: 390, height: 844 } },
     layout: 390,
   },
+  {
+    name: '200% text size, 360×740 viewport',
+    setting: { textSize: 32 },
+    size: { viewport: { width: 360, height: 740 } },
+    layout: 360,
+  },
 ] as const;
 
 for (const { name, setting, size, layout } of cases) {
@@ -54,11 +60,16 @@ for (const { name, setting, size, layout } of cases) {
     expect(await page.evaluate(clippedElements)).toEqual([]);
 
     await expect(page.getByRole('heading', { level: 1 })).toBeInViewport();
-    // Below 768 CSS px the section links sit behind the menu, which must open within the window.
+    // Below 768 CSS px the section links sit behind the menu. Open, its first link is fully in
+    // the window, and the last one can be scrolled to in full.
     if (layout < 768) {
       const menu = page.locator('nav[aria-label="Utama"] summary');
+      const nav = page.locator('nav[aria-label="Utama"]');
       await menu.click();
-      await expect(page.getByRole('link', { name: 'Tanya jawab' }).first()).toBeInViewport();
+      await expect(nav.getByRole('link', { name: 'Cara kerja' })).toBeInViewport({ ratio: 1 });
+      const last = nav.getByRole('link', { name: 'Tanya jawab' });
+      await last.scrollIntoViewIfNeeded();
+      await expect(last).toBeInViewport({ ratio: 1 });
       await menu.click();
     }
     await page.getByRole('link', { name: 'Lihat cara kerja' }).first().click();
@@ -70,7 +81,10 @@ for (const { name, setting, size, layout } of cases) {
       .evaluate((stage) => {
         stage.scrollIntoView({ block: 'center' });
       });
-    await expect(page.getByRole('status')).toHaveText(/^Langkah 3 dari 3/, { timeout: 8000 });
+    // The sentence on screen (the live region stays quiet for a run nobody asked for).
+    await expect(
+      page.locator('section[aria-labelledby="cara-kerja"] p[aria-hidden="true"]'),
+    ).toHaveText(/^Langkah 3 dari 3/, { timeout: 8000 });
     await context.close();
   });
 }

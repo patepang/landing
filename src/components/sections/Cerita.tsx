@@ -13,7 +13,7 @@ const scenarios = [
     beats: [
       'Sabtu pagi, kamu satu meja dengan seseorang di workshop fotografi.',
       'Sebelum pulang, kalian tempel. Momen pertama tercatat untuk kalian berdua.',
-      'Minggu berikutnya, foto hasil latihannya muncul di Kabar-mu.',
+      'Minggu berikutnya, foto hasil latihannya muncul di Kabarmu.',
     ],
   },
   {

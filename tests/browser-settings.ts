@@ -48,16 +48,20 @@ export async function openWithBrowserSetting(
  * is intended (the code pattern running off the stage). Empty means no text is cut off.
  */
 export function clippedElements(): string[] {
-  return [...document.querySelectorAll('body *')]
-    .filter((el) => !el.closest('[data-intentional-crop]'))
-    .filter((el) => {
-      const style = getComputedStyle(el);
-      const clipsX = style.overflowX === 'hidden' || style.overflowX === 'clip';
-      const clipsY = style.overflowY === 'hidden' || style.overflowY === 'clip';
-      return (
-        (clipsX && el.scrollWidth > el.clientWidth + 1) ||
-        (clipsY && el.scrollHeight > el.clientHeight + 1)
-      );
-    })
-    .map((el) => `${el.tagName.toLowerCase()}.${String(el.className)}`);
+  return (
+    [...document.querySelectorAll('body *')]
+      .filter((el) => !el.closest('[data-intentional-crop]'))
+      // Screen-reader-only text is clipped to 1px on purpose; it is never drawn.
+      .filter((el) => !el.closest('.visually-hidden'))
+      .filter((el) => {
+        const style = getComputedStyle(el);
+        const clipsX = style.overflowX === 'hidden' || style.overflowX === 'clip';
+        const clipsY = style.overflowY === 'hidden' || style.overflowY === 'clip';
+        return (
+          (clipsX && el.scrollWidth > el.clientWidth + 1) ||
+          (clipsY && el.scrollHeight > el.clientHeight + 1)
+        );
+      })
+      .map((el) => `${el.tagName.toLowerCase()}.${String(el.className)}`)
+  );
 }

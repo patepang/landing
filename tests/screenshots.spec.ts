@@ -55,7 +55,8 @@ test('tempel walk-through, each step, full and reduced motion', async ({ browser
     const page = await context.newPage();
     await openLanding(page);
     const section = page.locator('section[aria-labelledby="cara-kerja"]');
-    const status = page.getByRole('status');
+    // The sentence on screen; the live region stays quiet for a run nobody asked for.
+    const status = section.locator('p[aria-hidden="true"]');
     const suffix = reducedMotion === 'reduce' ? '-reduced-motion' : '';
     // On screen, it plays by itself.
     await section.evaluate((el) => {

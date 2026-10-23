@@ -12,7 +12,7 @@ export function Ajakan() {
     <section className={styles.cta} aria-labelledby="segera-hadir">
       <div className={`page ${styles.inner}`}>
         <TwoDots phase="meet" size="lg" />
-        <h2 id="segera-hadir" className={`type-hero ${styles.title}`}>
+        <h2 id="segera-hadir" className={`type-section ${styles.title}`}>
           Patepang segera hadir.
         </h2>
         <p className="type-body-large">

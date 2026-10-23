@@ -1,10 +1,11 @@
 # Implementasi landing patepang.com
 
-- **Tanggal:** 22 Oktober 2026 (versi pertama), 23 Oktober 2026 (versi produksi).
+- **Tanggal:** 22 Oktober 2026 (versi pertama dan keputusan versi produksi), 23 Oktober 2026
+  (versi produksi selesai dan diverifikasi).
 - **Status:** halaman produk pra-rilis, diuji secara lokal. Belum di-deploy; tanpa hosting, DNS,
   analytics, atau pengumpulan data.
 - **Arah:** versi pertama memakai arah A, Tur prototipe
-  (`docs/superpowers/specs/2026-10-22-landing-design.md` §8; commit `35b4e47`). Pada 23 Oktober 2026
+  (`docs/superpowers/specs/2026-10-22-landing-design.md` §8; commit `35b4e47`). Pada 22 Oktober 2026
   pemilik meminta halaman tampil "seakan-akan produksi", dengan section header, hero, masalah,
   solusi, fitur, testimoni, tanya jawab, CTA, dan footer. Keputusan pemilik atas hal yang tidak bisa
   dikarang:
@@ -61,12 +62,15 @@ screenshot asli. Setiap pratinjau punya nama aksesibel (`role="img"` + `aria-lab
 
 | Hal | Keputusan | Alasan |
 |---|---|---|
-| Pembingkaian | Halaman produk pra-rilis: fitur ditulis sebagai produk Patepang. Label "Pratinjau prototipe — data fiktif" dan section Status prototipe dihapus. Status "Segera hadir" tampil di hero, FAQ "Kapan", dan CTA. | Keputusan pemilik 23 Oktober 2026, dicatat di `PRODUCT.md`. Halaman tetap tidak menyatakan aplikasi sudah tersedia. |
+| Pembingkaian | Halaman produk pra-rilis: fitur ditulis sebagai produk Patepang. Label "Pratinjau prototipe — data fiktif" dan section Status prototipe dihapus. Status "Segera hadir" tampil di hero, FAQ "Kapan", dan CTA. | Keputusan pemilik 22 Oktober 2026, dicatat di `PRODUCT.md`. Halaman tetap tidak menyatakan aplikasi sudah tersedia. |
 | Testimoni | Diganti tiga skenario pemakaian berpenanda "Tiga contoh dari keseharian", tanpa nama, foto, atau tanda kutip. Setiap ketukan adalah perilaku app: momen tercatat, foto di Kabar (composer app menerima foto), rencana dengan jawaban "Ikut", peringatan memudar. | Belum ada pengguna sungguhan; testimoni karangan akan menyesatkan pengunjung. Keputusan pemilik. |
 | CTA | "Lihat cara kerja" dan "Jelajahi fitur" (anchor di halaman). | Belum ada unduhan, daftar tunggu, atau kontak; pemilik memilih tanpa formulir. |
 | Footer | Lockup, tagline, tautan section, "© 2026 Patepang", "Kembali ke atas". | Belum ada kontak, akun media sosial, atau halaman legal. Keputusan pemilik. |
-| Navigasi di HP | Tombol "Menu" berupa `<details>` asli; panelnya menutupi halaman di bawah header. Dengan JavaScript, tautan atau Escape menutupnya, dan Escape mengembalikan fokus ke tombol. | Dengan empat tujuan, satu tautan tidak lagi cukup. `<details>` tetap bekerja tanpa JavaScript. |
-| Gerak khas | Ilustrasi Cara kerja berputar sendiri sekali, saat 60% panggungnya terlihat, dan tidak pernah berulang. "Putar lagi" memutarnya kembali. Hero dan lockup diam. | Halaman produksi menjelaskan alur tanpa meminta klik; satu momen yang terjadi sekali tetap sesuai larangan loop dan gerak dekoratif. Durasinya ±2 detik, di bawah batas 5 detik WCAG 2.2.2. |
+| Navigasi di HP | Tombol "Menu" berupa `<details>` asli; panelnya menutupi halaman di bawah header. Dengan JavaScript, menu tertutup saat tautan dipilih, Escape ditekan (fokus kembali ke tombol), fokus pindah keluar menu, atau halaman ditekan di luar menu. | Dengan empat tujuan, satu tautan tidak lagi cukup. `<details>` tetap bekerja tanpa JavaScript. |
+| Gerak khas | Ilustrasi Cara kerja berputar sendiri sekali, saat 60% panggungnya terlihat, dan tidak pernah berulang. "Putar lagi" memutarnya kembali; tekanan sebelum autoplay membatalkan autoplay. Hero dan lockup diam. | Halaman produksi menjelaskan alur tanpa meminta klik; satu momen yang terjadi sekali tetap sesuai larangan loop dan gerak dekoratif. Durasinya ±2 detik, di bawah batas 5 detik WCAG 2.2.2. |
+| Pengumuman langkah | Kalimat langkah tampil di layar (`aria-hidden`); region `role="status"` terpisah yang tak terlihat hanya diisi untuk putaran yang diminta lewat tombol. Putaran otomatis tidak diumumkan; langkah aktif tetap terbaca lewat `aria-current="step"`. | Tanpa ini, pembaca layar yang menggulir halaman (VoiceOver iOS, mode jelajah NVDA) disela tiga pengumuman yang tidak diminta (temuan code review). |
+| Nama tombol | Label terlihat "Putar" atau "Putar lagi", ditambah teks tak terlihat " cara tempel". | Nama aksesibel jelas di luar konteks ("Putar cara tempel") dan tetap memuat label yang terlihat (WCAG 2.5.3). |
+| Judul CTA | "Patepang segera hadir." memakai ukuran section di HP dan ukuran hero mulai 600px. | Dengan ukuran hero, kata "Patepang" lebih lebar dari layar 360px pada teks 200% (temuan code review; kini dites). |
 | Token | `src/app/tokens.css` menerjemahkan `palette.ts`, `color.ts` (terang dan gelap), `typography.ts`, `spacing.ts`, `shape.ts`, `elevation.ts`, `motion.ts`, `layout.ts`, `opacity.ts` apa adanya. Komponen hanya membaca custom property. | Brief: token lengkap dari sumber, tanpa nilai mentah di komponen. |
 | Ukuran teks | Skala app diubah ke `rem` (16px = 1rem); tracking diubah ke `em`. | Agar pengaturan ukuran teks pembaca tetap berlaku, setara `allowFontScaling` di app. |
 | Header di teks besar | Baris header boleh membungkus: pada teks 200% di lebar HP, tombol "Menu" pindah ke bawah lockup. | Wordmark di app juga ikut skala teks. Tanpa pembungkusan, tombol keluar layar 59px (ditemukan oleh tes teks 200%). |
@@ -83,7 +87,7 @@ screenshot asli. Setiap pratinjau punya nama aksesibel (`role="img"` + `aria-lab
 | Sorotan langkah | Latar `surface-pressed` (1,08:1 terhadap kanvas terang, 1,43:1 gelap), ditambah penanda terisi berangka, `aria-current="step"`, dan kalimat status. | Warna bukan satu-satunya penanda. |
 | Daftar | `role="list"` pada daftar tanpa penanda di luar `nav` (langkah, masalah, skenario). | Safari menghapus semantik daftar dari list tanpa penanda; peran eksplisit mempertahankannya. Belum diuji dengan VoiceOver (lihat §7). |
 | Pola kode | Port `qrPath()` dari `QrCodeView.tsx`; modul identik dengan app (dicek untuk empat seed), path digabung per baris. | Setia pada sumber, path ±50% lebih pendek. |
-| Data contoh | `src/content/fiction.ts`: satu cerita yang konsisten (Sari, pertama bertemu 3 Mar 2025, terakhir 341 hari lalu, memudar dalam 24 hari, rencana Sabtu, 7 November). String dibentuk mengikuti formatter app. | Contoh tampilan app, tidak pernah ditampilkan sebagai bukti (tanpa angka pengguna, kutipan, atau testimoni). |
+| Data contoh | `src/content/fiction.ts`: satu cerita yang konsisten (Sari, pertama bertemu 3 Mar 2025, terakhir 341 hari lalu, memudar dalam 24 hari, rencana Sabtu, 7 November). String dibentuk mengikuti formatter app. Nama aksesibel setiap pratinjau diawali "Contoh". | Contoh tampilan app, tidak pernah ditampilkan sebagai bukti (tanpa angka pengguna, kutipan, atau testimoni). |
 | Favicon dan gambar sosial | `<link rel="icon" href="data:,">`; tidak ada `og:image`. | Jangan mengarang aset atau simbol. |
 | Font | Empat file woff2 Plus Jakarta Sans (latin) dari `@fontsource/plus-jakarta-sans@5.3.0`, di `src/app/fonts/` bersama `OFL.txt`, dimuat dengan `next/font/local` (fallback metrik dari Arial). | Di-host sendiri, tanpa permintaan ke Google. |
 | Creative North Star | "Dua Titik Bertemu" hanya arahan kerja; tidak muncul di halaman. | Brief. |
@@ -125,7 +129,7 @@ Diukur dari `out/` hasil build versi produksi:
 
 ## 5. Gambar tinjauan
 
-`docs/screenshots/` (28 file, ±6 MB), dibuat ulang dengan `pnpm screenshots`, yang selalu
+`docs/screenshots/` (28 file, ±5,9 MB), dibuat ulang dengan `pnpm screenshots`, yang selalu
 menjalankan `next build` lebih dulu. Set yang ada sekarang diambil dari versi produksi:
 
 - Halaman penuh (JPEG): `360-light`, `390-light`, `390-dark`, `768-light`, `1440-light`,
@@ -151,7 +155,7 @@ kode terakhir.
 | `pnpm format:check` | Semua file sesuai Prettier. |
 | `pnpm check:contrast` | 62 dari 62 pasangan warna (31 pasangan × 2 tema) memenuhi minimum WCAG 2.2, termasuk teks dan cincin fokus di panel menu serta tombol di pita CTA. |
 | `pnpm build` | Static export berhasil: `out/index.html` dan `out/404.html`. |
-| `pnpm test:e2e` | 27 dari 27 lulus. Build dijalankan lebih dulu, dan server statis selalu dijalankan baru di port 4174. |
+| `pnpm test:e2e` | 29 dari 29 lulus. Build dijalankan lebih dulu, dan server statis selalu dijalankan baru di port 4174. |
 | `pnpm screenshots` | 9 dari 9 lulus; 28 gambar di `docs/screenshots/`. |
 | `pnpm check` | Semua di atas (kecuali screenshot) sekaligus: lulus. |
 
@@ -165,9 +169,10 @@ kode terakhir.
 - **Kejujuran**:
   - status "Segera hadir" terlihat, dan setiap pratinjau punya nama aksesibel;
   - tidak ada form, dan tidak ada `blockquote`, `q`, atau `cite` (skenario bukan testimoni);
-  - pemindaian kata terlarang (enkripsi, keamanan, terjamin, toko aplikasi, platform, testimoni,
-    rating, pengguna, harga, gratis, daftar tunggu, unduh sekarang) mencakup teks halaman, jawaban
-    FAQ yang tertutup, `aria-label`, `alt`, `title`, dan metadata.
+  - pemindaian kata terlarang (enkripsi, keamanan, privasi, jamin, toko aplikasi, platform,
+    termasuk "ios" sebagai kata utuh, testimoni, rating, pengguna, harga, gratis, daftar tunggu,
+    unduh sekarang) mencakup teks halaman, jawaban FAQ yang tertutup, `aria-label`, `alt`, `title`,
+    dan metadata.
 - **Tautan**: setiap `href` adalah anchor di halaman ini, dan targetnya ada.
 - **CTA**: CTA hero dan CTA penutup memindahkan fokus ke judul section tujuan, dan judul itu terlihat
   di layar.
@@ -182,16 +187,20 @@ kode terakhir.
   - pada 14 pemberhentian Tab pertama, cincin fokus selalu 2px focus-blue;
   - urutan delapan pemberhentian pertama sesuai harapan (skip link, lockup, empat tautan, dua CTA),
     lalu tombol "Putar".
-- **Target sentuh**: semua elemen yang terlihat dan bisa ditekan minimal 48×48px, di 360 dan 1440px.
+- **Target sentuh**: semua elemen yang terlihat dan bisa ditekan minimal 48×48px, di 360 (dengan menu
+  terbuka, sehingga tautannya ikut diukur) dan 1440px.
 - **Ilustrasi Cara kerja**:
-  - urutan langkah dicatat dari dalam halaman: kalimat status dan langkah ber-`aria-current` pada
-    saat yang sama;
-  - ilustrasi berputar sendiri sekali saat terlihat, tidak berulang, dan tidak mulai lagi saat
-    pengunjung pergi lalu kembali;
-  - "Putar lagi" mulai dari langkah pertama, dan fokus tetap di tombol;
+  - urutan langkah dicatat dari dalam halaman: kalimat di layar dan langkah ber-`aria-current` pada
+    saat yang sama, serta semua yang diumumkan region `role="status"`;
+  - ilustrasi berputar sendiri sekali saat terlihat, tanpa satu pun pengumuman, tidak berulang, dan
+    tidak mulai lagi saat pengunjung pergi lalu kembali;
+  - dengan seperempat panggung terlihat, ilustrasi tetap diam;
+  - "Putar lagi cara tempel" mulai dari langkah pertama, fokus tetap di tombol, dan ketiga langkah
+    diumumkan;
+  - tekanan sebelum autoplay memutarnya sekali, dan melihat panggung sesudahnya tidak memulainya lagi;
   - tidak ada error konsol selama diputar;
-  - dengan gerak dikurangi, kedua HP tidak dianimasikan dan tidak di-transform, dan semua langkah
-    tetap tercapai;
+  - dengan gerak dikurangi, semua langkah tercapai, dan di akhir (tempat gerak penuh menggeser HP)
+    kedua HP tidak dianimasikan dan tidak di-transform;
   - kalau skripnya gagal dimuat, tombol tidak ditawarkan, tetapi ruangnya tetap ada.
 - **FAQ**: bisa dibuka dan ditutup dengan Enter, Space, dan pointer.
 - **Tema**: kanvas mengikuti tema sistem, dan `theme-color` sama dengan kanvas di kedua tema.
@@ -202,8 +211,9 @@ kode terakhir.
 - **404**: status 404, judul, dan jalan kembali. Tautan header kembali ke section di halaman utama.
 - **axe-core 4.14** (tag `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa`, `best-practice`):
   0 pelanggaran di halaman utama dan 404, terang dan gelap.
-- **Zoom dan ukuran teks 200% sungguhan**: empat kasus, dibahas di bawah. Pada lebar di bawah 768 CSS
-  px, menu juga dibuka dan tautannya harus terlihat di jendela.
+- **Zoom dan ukuran teks 200% sungguhan**: lima kasus, dibahas di bawah. Pada lebar di bawah 768 CSS
+  px, menu juga dibuka: tautan pertamanya harus utuh di jendela, dan tautan terakhir harus utuh
+  setelah digulir.
 
 **Cara zoom 200% diuji**:
 
@@ -215,7 +225,8 @@ kode terakhir.
   yang diemulasikan:
   - Jendela 1440×900 menghasilkan `innerWidth` 720 dan `devicePixelRatio` 2.
   - Jendela 1280×800 menghasilkan `innerWidth` 640.
-  - Pengaturan ukuran teks menghasilkan font root 32px.
+  - Pengaturan ukuran teks menghasilkan font root 32px (jendela 1440×900, serta viewport 390×844
+    dan 360×740).
 - Di setiap kasus, tes memeriksa:
   - tidak ada overflow atau teks terpotong;
   - H1 terlihat;
@@ -228,6 +239,8 @@ kode terakhir.
   header boleh membungkus, overflow-nya 0 dan tombol berada di bawah lockup.
 - **Uji negatif menu**: tanpa penutupan saat tautan dipilih, tes menu gagal karena menu tetap
   terbuka. Setelah kodenya dikembalikan, tes lulus lagi.
+- **Uji negatif judul CTA**: dengan ukuran hero di HP, kasus teks 200% di 360px gagal (overflow 2px).
+  Dengan ukuran section, kasus itu lulus.
 - **Uji negatif dari versi pertama**: tes "skrip gagal dimuat" gagal ketika aturan penyembunyian
   dihapus sementara.
 - **Font merek**: tidak punya glyph U+2011. Lebarnya berbeda tergantung font cadangan yang dipakai.
@@ -238,6 +251,28 @@ kode terakhir.
   - kolom masalah yang terlalu sempit di 768px.
 - **`impeccable detect`** pada build versi produksi (1280×800 dan 390×844): satu-satunya temuan
   adalah `cream-palette`, yaitu kanvas merek #F7F5F0 dari token app.
+
+**Code review versi produksi** (`requesting-code-review`, sub-agen baca-saja dengan konteks bersih,
+atas `35b4e47..d4f04c8`):
+
+- Tidak ada temuan kritis. Setiap temuan dicek dulu terhadap kode, lalu ditindaklanjuti
+  (`receiving-code-review`).
+- Temuan penting yang diperbaiki:
+  - judul CTA keluar layar di 360px dengan teks 200%; kini ada kasus 360px di tes teks 200%;
+  - putaran otomatis membuat pembaca layar bicara tanpa diminta;
+  - tes gerak dikurangi rawan gagal karena mengambil sampel fase yang hanya ±1 detik.
+- Temuan minor yang diperbaiki:
+  - tekanan sebelum autoplay tidak membatalkan autoplay;
+  - nama tombol "Putar" ambigu di luar konteks;
+  - nama aksesibel pratinjau tidak menyebut contoh;
+  - celah tes: kata terlarang, ukuran tautan menu, menu di jendela zoom, dan ambang 60%;
+  - komentar dan sisa kode yang usang, termasuk tujuan landing di `PRODUCT.md`;
+  - tautan header yang boleh membungkus;
+  - `figure` tanpa keterangan;
+  - menu yang tetap terbuka saat fokus atau klik pindah keluar;
+  - "Kabar-mu" menjadi "Kabarmu" seperti di app.
+- Tidak diubah, karena sudah ada sebelum versi ini: setelah tautan menu dipakai di halaman 404
+  (navigasi `next/link`), fokus tertinggal di `<body>`, bukan di judul section (lihat §7).
 
 **Tinjauan versi pertama** (masih berlaku untuk bagian yang tidak berubah):
 
@@ -274,6 +309,9 @@ kode terakhir.
   - Ukuran teks 200% di lebar HP memakai viewport emulasi, karena Chromium headless tidak membuka
     jendela yang lebih sempit dari 500px.
 - **Lighthouse dan Core Web Vitals tidak diukur.** Angka di §4 adalah ukuran file.
+- **Fokus setelah navigasi dari 404**: tautan header di halaman 404 memakai `next/link`. Setelah
+  berpindah ke `/#section`, halaman menggulir ke section itu, tetapi fokus keyboard tetap di
+  `<body>`.
 - **Tes ilustrasi bergantung pada waktu** (fase 0,9 s dan 1,9 s) dan pada IntersectionObserver.
   Urutannya dicatat dari dalam halaman, dan batas tunggu tiap langkah 8 s; di mesin yang sangat
   sibuk, tes ini tetap yang paling peka.

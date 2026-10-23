@@ -1,6 +1,13 @@
 'use client';
 
-import { useRef, type KeyboardEvent, type MouseEvent, type ReactNode } from 'react';
+import {
+  useEffect,
+  useRef,
+  type FocusEvent,
+  type KeyboardEvent,
+  type MouseEvent,
+  type ReactNode,
+} from 'react';
 
 import styles from './SiteHeader.module.css';
 
@@ -13,11 +20,25 @@ export interface MobileMenuProps {
 
 /**
  * The section links on narrow screens, behind a "Menu" disclosure. It is a native <details>, so it
- * opens and closes with or without JavaScript. With JavaScript, choosing a link or pressing Escape
- * also closes it, and Escape returns focus to the button.
+ * opens and closes with or without JavaScript. With JavaScript it also closes when a link is
+ * chosen, when Escape is pressed (focus returns to the button), when focus moves on past it, and
+ * when the page is pressed outside it.
  */
 export function MobileMenu({ icons, children }: MobileMenuProps) {
   const menu = useRef<HTMLDetailsElement>(null);
+
+  useEffect(() => {
+    function onPointerDown(event: PointerEvent) {
+      const details = menu.current;
+      if (details?.open && event.target instanceof Node && !details.contains(event.target)) {
+        details.open = false;
+      }
+    }
+    document.addEventListener('pointerdown', onPointerDown);
+    return () => {
+      document.removeEventListener('pointerdown', onPointerDown);
+    };
+  }, []);
 
   function close(returnFocus: boolean) {
     const details = menu.current;
@@ -34,8 +55,13 @@ export function MobileMenu({ icons, children }: MobileMenuProps) {
     if (event.key === 'Escape') close(true);
   }
 
+  function onBlur(event: FocusEvent<HTMLDetailsElement>) {
+    const next = event.relatedTarget;
+    if (next instanceof Node && !event.currentTarget.contains(next)) close(false);
+  }
+
   return (
-    <details ref={menu} className={styles.menu} onKeyDown={onKeyDown}>
+    <details ref={menu} className={styles.menu} onKeyDown={onKeyDown} onBlur={onBlur}>
       <summary className={styles.menuButton}>
         <span className={styles.menuIconOpen}>{icons.open}</span>
         <span className={styles.menuIconClose}>{icons.close}</span>

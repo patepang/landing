@@ -15,7 +15,7 @@ export function SiteFooter() {
           <Lockup size="sm" />
           <p className="type-body tone-secondary">Hanya orang yang pernah kamu temui.</p>
         </div>
-        <nav aria-label="Halaman ini" className={styles.nav}>
+        <nav aria-label="Halaman ini">
           <ul className={styles.links}>
             {sections.map((section) => (
               <li key={section.id}>

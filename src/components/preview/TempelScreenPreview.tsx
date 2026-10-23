@@ -22,7 +22,7 @@ export function TempelScreenPreview({ className }: { className?: string }) {
     <div
       className={className ? `${styles.screen} ${className}` : styles.screen}
       role="img"
-      aria-label="Layar Tempel di aplikasi Patepang untuk orang yang belum punya akun: kartu “Akunmu lahir saat tempel pertama”, judul “sebelum pamit, tempel dulu”, dua titik yang masih berjauhan, dan kode yang dipindai HP lain saat tempel."
+      aria-label="Contoh layar Tempel di aplikasi Patepang untuk orang yang belum punya akun: kartu “Akunmu lahir saat tempel pertama”, judul “sebelum pamit, tempel dulu”, dua titik yang masih berjauhan, dan kode yang dipindai HP lain saat tempel."
     >
       <div className={styles.appHeader}>
         <span className={`type-title ${styles.appTitle}`}>Tempel</span>

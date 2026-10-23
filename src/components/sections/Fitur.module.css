@@ -47,7 +47,7 @@
   max-width: var(--content-reading);
 }
 
-/* Where an app component stands on the stage, with its label beneath. */
+/* Where an app component stands on the stage. */
 .plinth {
   display: flex;
   flex-direction: column;
@@ -91,8 +91,8 @@
 }
 
 /*
- * Wide screens: one continuous stage runs down the right half and each exhibit's words sit level
- * with its component, so the three read as stops on one tour rather than three cards.
+ * Wide screens: one continuous stage runs down the right half and each feature's words sit level
+ * with its component, so the three read as one stage rather than three cards.
  */
 @media (min-width: 1024px) {
   .exhibits {

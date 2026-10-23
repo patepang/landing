@@ -25,7 +25,7 @@ export function KabarEndPreview() {
     <div
       className={styles.stack}
       role="img"
-      aria-label="Akhir halaman Kabar di aplikasi Patepang: kartu “Selesai untuk hari ini. Kamu sudah membaca semua kabar hari ini. Kabar berikutnya datang besok; tidak ada yang perlu dikejar.”"
+      aria-label="Contoh akhir halaman Kabar di aplikasi Patepang: kartu “Selesai untuk hari ini. Kamu sudah membaca semua kabar hari ini. Kabar berikutnya datang besok; tidak ada yang perlu dikejar.”"
     >
       <TwoDots phase="meet" size="sm" className={styles.centerDots} />
       <div className={`${surfaceClass} ${styles.dayComplete}`}>
@@ -50,7 +50,7 @@ export function MomenPreview() {
     <div
       className={`${surfaceClass} ${styles.momen}`}
       role="img"
-      aria-label={`Kartu momen di aplikasi Patepang: ${firstMeeting.longDate}, di ${firstMeeting.place}, bersama ${person.firstName}, dengan catatan singkat, belum ada foto, dan tanda “Tempel langsung”.`}
+      aria-label={`Contoh kartu momen di aplikasi Patepang: ${firstMeeting.longDate}, di ${firstMeeting.place}, bersama ${person.firstName}, dengan catatan singkat, belum ada foto, dan tanda “Tempel langsung”.`}
     >
       <span className={styles.titleBlock}>
         <span className="type-headline">{firstMeeting.longDate}</span>
@@ -86,7 +86,7 @@ export function MeetAgainPreview() {
     <div
       className={styles.stack}
       role="img"
-      aria-label={`Kartu koneksi di aplikasi Patepang: ${person.name}, pertama bertemu ${firstMeeting.shortDate} di ${firstMeeting.place}, bertemu ${String(fiction.meetings)} kali, terakhir ${fiction.lastMet}, dengan peringatan “Memudar ${fiction.fadesIn}”. Di bawahnya, rencana “${fiction.plan.title}”, ${fiction.plan.when}, jawaban “${fiction.plan.rsvp}”.`}
+      aria-label={`Contoh kartu koneksi di aplikasi Patepang: ${person.name}, pertama bertemu ${firstMeeting.shortDate} di ${firstMeeting.place}, bertemu ${String(fiction.meetings)} kali, terakhir ${fiction.lastMet}, dengan peringatan “Memudar ${fiction.fadesIn}”. Di bawahnya, rencana “${fiction.plan.title}”, ${fiction.plan.when}, jawaban “${fiction.plan.rsvp}”.`}
     >
       <div className={surfaceClass}>
         <span className={styles.connectionHeader}>

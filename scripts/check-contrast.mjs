@@ -65,7 +65,7 @@ const pairs = [
   ['--color-text-primary', '--color-brand-subtle', TEXT, 'Note titles, closing heading on mist'],
   ['--color-text-primary', '--color-surface-overlay', TEXT, 'Links in the open menu'],
   ['--color-text-secondary', '--color-canvas', TEXT, 'Ledes, step details, FAQ answers'],
-  ['--color-text-secondary', '--color-surface-raised', TEXT, 'Preview label, card details'],
+  ['--color-text-secondary', '--color-surface-raised', TEXT, 'Card details in previews'],
   ['--color-text-secondary', '--color-surface-sunken', TEXT, 'Neutral badge in previews'],
   ['--color-text-secondary', '--color-surface-pressed', TEXT, 'Current step details in the demo'],
   [

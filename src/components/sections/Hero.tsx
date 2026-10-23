@@ -40,7 +40,7 @@ export function Hero() {
         </div>
       </div>
 
-      <figure className={`page ${styles.exhibit}`}>
+      <div className={`page ${styles.exhibit}`}>
         <div className={styles.notesStart}>
           <p className={`${styles.note} ${styles.noteBorn}`}>
             <strong className={styles.noteTitle}>Tanpa email atau nomor telepon</strong>
@@ -58,7 +58,7 @@ export function Hero() {
           </p>
         </div>
         <TempelScreenPreview className={styles.phone} />
-      </figure>
+      </div>
     </section>
   );
 }

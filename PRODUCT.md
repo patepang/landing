@@ -29,7 +29,7 @@ bertemu lagi, dan memudar bila kedua orang tidak pernah bertemu lagi.
 
 Landing berhasil bila pengunjung baru, dalam satu kunjungan singkat, paham apa Patepang, bagaimana
 koneksinya terbentuk, apa yang terjadi setelah bertemu, apa yang sengaja tidak ada, dan bahwa
-produknya masih prototipe.
+produknya segera hadir (belum bisa diunduh, belum ada tanggal rilis).
 
 ## Positioning
 
@@ -62,7 +62,7 @@ produknya masih prototipe.
 - **Status (fakta).** Yang ada adalah prototipe aplikasi v0.1.0 dengan data fiktif lokal, mencakup
   115 ID layar. Tidak ada backend, akun sungguhan, pesan, panggilan, pembayaran, atau kriptografi.
   Kamera/QR, goyang, NFC, dan biometrik disimulasikan. Belum ada aplikasi yang bisa diunduh.
-- **Landing (keputusan pemilik, 23 Oktober 2026).** Landing tampil sebagai halaman produk
+- **Landing (keputusan pemilik, 22 Oktober 2026).** Landing tampil sebagai halaman produk
   pra-rilis, bukan tur prototipe: fitur dijelaskan sebagai produk Patepang, tanpa label
   "Pratinjau prototipe". Statusnya tetap disebut jujur sebagai "Segera hadir": belum ada tanggal
   rilis dan belum bisa diunduh. Halaman tidak pernah menyatakan aplikasi sudah tersedia.

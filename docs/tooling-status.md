@@ -128,7 +128,7 @@ Sesi cloud baru dengan dua repo: `patepang/landing` dan clone baca-saja `patepan
 | Browser | Playwright MCP | Tidak dipakai; diganti `@playwright/test` dan DevTools Protocol langsung (screenshot zoom). |
 
 
-### Versi produksi (23 Oktober 2026)
+### Versi produksi (22–23 Oktober 2026)
 
 Pemilik meminta landing tampil sebagai halaman produk. Keputusan atas isi yang tidak boleh
 dikarang ditanyakan dulu lewat satu set pertanyaan: testimoni diganti skenario pemakaian, CTA
@@ -140,3 +140,5 @@ ke `main`.
 | Komposisi | Craft floor Impeccable (`reference/craft-floor.md`, dibaca ulang sebelum mengubah UI) dan panduan Frontend Design yang sudah termuat | Tanpa eyebrow atau kartu ikon berukuran sama. Masalah ditulis sebagai baris tipografi, dan skenario memakai dua titik merek sebagai penanda ketukan. Kata bertanda hubung dijaga utuh. |
 | Bukti browser | `@playwright/test` dan skrip Playwright sementara | Setiap section dipotret di 390/768/1440, terang dan gelap, plus menu terbuka, teks 200%, dan zoom 200%. Cacat yang ditemukan diperbaiki lalu dipotret ulang. |
 | Detektor | `impeccable detect` (Chromium terpasang, pembungkus `--no-sandbox`) | 1280×800 dan 390×844: hanya `cream-palette`, yaitu kanvas merek. |
+| Review | Superpowers `requesting-code-review` dan `receiving-code-review` (tool Skill) | Reviewer sub-agen baca-saja atas `35b4e47..d4f04c8`: tanpa temuan kritis, tiga temuan penting (judul CTA di 360px dengan teks 200%, pengumuman yang tidak diminta, tes yang rawan gagal), dan beberapa temuan minor. Semuanya dicek ke kode, diperbaiki, dan diuji; dua perbaikan dibuktikan dengan uji negatif. |
+| Verifikasi akhir | Superpowers `verification-before-completion` (tool Skill) | Sebelum merge: `pnpm check` dijalankan ulang (exit 0; 29/29 e2e, 62/62 kontras), screenshot dibuat ulang (9/9, 28 gambar) dan ditinjau, `pnpm dev` dicoba, dan clone app dicek tanpa perubahan. |

@@ -5,5 +5,3 @@ export const sections = [
   { id: 'cerita', label: 'Cerita' },
   { id: 'tanya-jawab', label: 'Tanya jawab' },
 ] as const;
-
-export type SectionId = (typeof sections)[number]['id'];

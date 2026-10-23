@@ -1,7 +1,7 @@
 # Desain landing patepang.com
 
-- **Status:** diimplementasikan dengan struktur A pada 22 Oktober 2026 (commit `35b4e47`). Pada 23
-  Oktober 2026 pemilik meminta landing tampil sebagai halaman produk pra-rilis: header, hero,
+- **Status:** diimplementasikan dengan struktur A pada 22 Oktober 2026 (commit `35b4e47`). Pada hari yang
+  sama pemilik meminta landing tampil sebagai halaman produk pra-rilis: header, hero,
   masalah, solusi, fitur, skenario pemakaian (pengganti testimoni), tanya jawab, CTA "Segera hadir",
   dan footer, tanpa label prototipe. Keputusan, penyimpangan, versi yang benar-benar dipasang, dan
   hasil verifikasi ada di `docs/landing-implementation.md`. Dokumen ini tetap menjadi rencana yang

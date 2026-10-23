@@ -22,25 +22,37 @@ declare global {
       ) => Promise<{ violations: { id: string; nodes: { target: string[] }[] }[] }>;
     };
     tempelLog: string[];
+    tempelSpoken: string[];
   }
 }
 
 /**
- * Records, from inside the page, every status the demo announces together with the step marked
- * current at that same moment. Each phase lasts about a second, too short to sample reliably from
- * the test under load, so the page writes the sequence down itself.
+ * Records, from inside the page, every status the walk-through shows together with the step marked
+ * current at that same moment (`tempelLog`), and everything its live region announces
+ * (`tempelSpoken`). Each phase lasts about a second, too short to sample reliably from the test
+ * under load, so the page writes the sequence down itself.
  */
 async function recordDemo(page: Page) {
-  await page.evaluate(() => {
+  await page.evaluate((demo) => {
     window.tempelLog = [];
-    const status = document.querySelector('[role="status"]');
-    if (!status) throw new Error('No status region');
+    window.tempelSpoken = [];
+    const section = document.querySelector(demo);
+    const shown = section?.querySelector('p[aria-hidden="true"]');
+    const spoken = section?.querySelector('[role="status"]');
+    if (!section || !shown || !spoken) throw new Error('No status');
+    const watch = { childList: true, characterData: true, subtree: true };
     new MutationObserver(() => {
-      const current = document.querySelector('li[aria-current="step"] .type-body-strong');
-      window.tempelLog.push(`${status.textContent ?? ''} | ${current?.textContent ?? '-'}`);
-    }).observe(status, { childList: true, characterData: true, subtree: true });
-  });
+      const current = section.querySelector('li[aria-current="step"] .type-body-strong');
+      window.tempelLog.push(`${shown.textContent ?? ''} | ${current?.textContent ?? '-'}`);
+    }).observe(shown, watch);
+    new MutationObserver(() => {
+      if (spoken.textContent) window.tempelSpoken.push(spoken.textContent);
+    }).observe(spoken, watch);
+  }, DEMO);
 }
+
+/** The status sentences of STEPS, as the live region announces them. */
+const SPOKEN = STEPS.map((step) => step.split(' | ')[0]);
 
 /** `#RRGGBB` as the browser reports computed colours. */
 function rgb(hex: string) {
@@ -156,7 +168,8 @@ test.describe('landing', () => {
       'enkripsi',
       'terenkripsi',
       'keamanan',
-      'terjamin',
+      'privasi',
+      'jamin',
       'app store',
       'google play',
       'play store',
@@ -173,6 +186,8 @@ test.describe('landing', () => {
     ]) {
       expect(text, banned).not.toContain(banned);
     }
+    // Platform names as whole words ("ios" also hides inside ordinary words).
+    expect(text).not.toMatch(/\bios\b/);
   });
 
   test('every link is real: anchors land on this page, nothing points to "#" or off-site', async ({
@@ -301,6 +316,8 @@ test.describe('landing', () => {
         viewport: { width, height: 900 },
       });
       await openLanding(page);
+      // Below 768px the section links live in the menu: open it so they are measured too.
+      if (width < 768) await page.locator('nav[aria-label="Utama"] summary').click();
       const small = await page.locator('a[href], button, summary').evaluateAll((elements) =>
         elements
           .filter((el) => el.checkVisibility())
@@ -313,22 +330,26 @@ test.describe('landing', () => {
     });
   }
 
-  test('the walk-through plays once on view, says each step in words, and replays', async ({
+  test('the walk-through plays once on view, quietly, and announces runs that are asked for', async ({
     page,
     baseURL,
   }) => {
     const problems = watchProblems(page, baseURL ?? '');
     await openLanding(page);
     const demo = page.locator(`${DEMO} div[data-phase]`).first();
-    const status = page.getByRole('status');
+    const shown = page.locator(`${DEMO} p[aria-hidden="true"]`);
+    const spoken = page.getByRole('status');
     await expect(demo).toHaveAttribute('data-phase', 'idle');
-    await expect(status).toHaveText('');
+    await expect(shown).toHaveText('');
     await recordDemo(page);
 
-    // Brought on screen, it plays by itself: each step announced, the same step marked current.
+    // Brought on screen, it plays by itself: each step shown in words with the same step marked
+    // current. Nobody asked for it, so the live region stays silent.
     await showStage(page);
-    await expect(status).toHaveText(/^Langkah 3 dari 3: terhubung\./, { timeout: STEP_TIMEOUT });
+    await expect(shown).toHaveText(/^Langkah 3 dari 3: terhubung\./, { timeout: STEP_TIMEOUT });
     expect(await page.evaluate(() => window.tempelLog)).toEqual(STEPS);
+    expect(await page.evaluate(() => window.tempelSpoken)).toEqual([]);
+    await expect(spoken).toHaveText('');
 
     // Only once, and it never loops: leaving and coming back does not start it again.
     await page.evaluate(() => {
@@ -339,13 +360,43 @@ test.describe('landing', () => {
     await expect(demo).toHaveAttribute('data-phase', 'done');
     expect(await page.evaluate(() => window.tempelLog)).toEqual(STEPS);
 
-    // "Putar lagi" starts it over from the first step, and keyboard focus stays on the button.
-    const replay = page.getByRole('button', { name: 'Putar lagi' });
+    // "Putar lagi" starts it over from the first step, keeps keyboard focus on the button, and,
+    // being asked for, is announced step by step.
+    const replay = page.getByRole('button', { name: 'Putar lagi cara tempel' });
     await replay.click();
     await expect(replay).toBeFocused();
-    await expect(status).toHaveText(/^Langkah 3 dari 3/, { timeout: STEP_TIMEOUT });
+    await expect(shown).toHaveText(/^Langkah 3 dari 3/, { timeout: STEP_TIMEOUT });
     expect(await page.evaluate(() => window.tempelLog)).toEqual([...STEPS, ...STEPS]);
+    expect(await page.evaluate(() => window.tempelSpoken)).toEqual(SPOKEN);
     expect(problems).toEqual([]);
+  });
+
+  test('the walk-through waits until its stage is well on screen, and a press comes first', async ({
+    page,
+  }) => {
+    await openLanding(page);
+    const demo = page.locator(`${DEMO} div[data-phase]`).first();
+    const stage = page.locator(`${DEMO} div[aria-hidden="true"]`).first();
+    await recordDemo(page);
+
+    // A quarter of the stage on screen is not enough to start it.
+    await stage.evaluate((el) => {
+      const box = el.getBoundingClientRect();
+      window.scrollBy(0, box.top - window.innerHeight + box.height * 0.25);
+    });
+    await page.waitForTimeout(1500);
+    await expect(demo).toHaveAttribute('data-phase', 'idle');
+
+    // Pressed before it ever played by itself, it plays once, announced, and seeing the whole
+    // stage afterwards does not start it again.
+    await page.locator(`${DEMO} button`).evaluate((button) => {
+      (button as HTMLButtonElement).click();
+    });
+    await expect(demo).toHaveAttribute('data-phase', 'done', { timeout: STEP_TIMEOUT });
+    await showStage(page);
+    await page.waitForTimeout(2500);
+    expect(await page.evaluate(() => window.tempelLog)).toEqual(STEPS);
+    expect(await page.evaluate(() => window.tempelSpoken)).toEqual(SPOKEN);
   });
 
   test('if its script never loads, the walk-through offers no button that does nothing', async ({
@@ -371,9 +422,15 @@ test.describe('landing', () => {
   }) => {
     const { context, page } = await newPage(browser, baseURL, { reducedMotion: 'reduce' });
     await openLanding(page);
+    await recordDemo(page);
     await showStage(page);
-    const status = page.getByRole('status');
-    await expect(status).toHaveText('Langkah 2 dari 3: goyang bersama.', { timeout: STEP_TIMEOUT });
+    await expect(page.locator(`${DEMO} div[data-phase]`).first()).toHaveAttribute(
+      'data-phase',
+      'done',
+      { timeout: STEP_TIMEOUT },
+    );
+    expect(await page.evaluate(() => window.tempelLog)).toEqual(STEPS);
+    // At the end, where full motion leaves the phones moved together, they have not moved.
     const phones = await page
       .locator(`${DEMO} div[aria-hidden="true"] > div > span`)
       .evaluateAll((spans) =>
@@ -383,7 +440,6 @@ test.describe('landing', () => {
         }),
       );
     expect(phones).toEqual(['none none', 'none none', 'none none']);
-    await expect(status).toHaveText(/^Langkah 3 dari 3/, { timeout: STEP_TIMEOUT });
     await context.close();
   });
 

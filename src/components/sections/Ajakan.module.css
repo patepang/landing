@@ -28,8 +28,20 @@
   text-align: center;
 }
 
+/*
+ * The section step on phones: at 200% text the hero step would make "Patepang" wider than a
+ * 360px screen. From 600px the closing line takes the hero step.
+ */
 .title {
   max-width: 14ch;
+}
+
+@media (min-width: 600px) {
+  .inner .title {
+    font-size: var(--type-hero-size);
+    line-height: var(--type-hero-line);
+    letter-spacing: var(--type-display-tracking);
+  }
 }
 
 .inner > p {

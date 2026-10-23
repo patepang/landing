@@ -49,7 +49,11 @@ function useHydrated() {
   );
 }
 
-/** Shown beside the button and read by screen readers as the walk-through moves on. */
+/**
+ * Shown beside the button as the walk-through moves on. Screen readers hear it only for runs
+ * started by a press: the run that starts by itself stays quiet, since the steps list above
+ * already says the same and an unasked announcement would interrupt whatever is being read.
+ */
 const status: Record<Phase, string> = {
   idle: '',
   scan: 'Langkah 1 dari 3: pindai kode.',
@@ -68,13 +72,17 @@ export interface TempelDemoProps {
 /**
  * An illustrated walk-through of tempel, after the app's TapRitualPreview: two phones move
  * together, shake, and a check mark lands. It plays by itself once, the first time the stage is
- * well on screen, and again on every press of the button; it never loops. Pressing the button
- * while it plays starts it over, and the button stays enabled, so keyboard focus never drops to
- * the page. Under reduced motion the CSS keeps every step but drops the travel and the shake.
+ * well on screen (unless a press already played it), and again on every press of the button; it
+ * never loops. Pressing the button while it plays starts it over, and the button stays enabled,
+ * so keyboard focus never drops to the page. Under reduced motion the CSS keeps every step but
+ * drops the travel and the shake.
  */
 export function TempelDemo({ intro, steps, icons }: TempelDemoProps) {
   const [phase, setPhase] = useState<Phase>('idle');
+  /** Set by the first press; from then on every run was asked for, so it is announced. */
+  const [pressed, setPressed] = useState(false);
   const timers = useRef<number[]>([]);
+  const started = useRef(false);
   const stage = useRef<HTMLDivElement>(null);
   const hydrated = useHydrated();
 
@@ -86,6 +94,7 @@ export function TempelDemo({ intro, steps, icons }: TempelDemoProps) {
   }, []);
 
   const play = useCallback(() => {
+    started.current = true;
     for (const id of timers.current) window.clearTimeout(id);
     timers.current.length = 0;
     setPhase('scan');
@@ -106,7 +115,7 @@ export function TempelDemo({ intro, steps, icons }: TempelDemoProps) {
       (entries) => {
         if (!entries.some((entry) => entry.isIntersecting)) return;
         observer.disconnect();
-        play();
+        if (!started.current) play();
       },
       { threshold: AUTOPLAY_THRESHOLD },
     );
@@ -115,6 +124,11 @@ export function TempelDemo({ intro, steps, icons }: TempelDemoProps) {
       observer.disconnect();
     };
   }, [play]);
+
+  function press() {
+    setPressed(true);
+    play();
+  }
 
   const current = order[phase];
 
@@ -164,12 +178,16 @@ export function TempelDemo({ intro, steps, icons }: TempelDemoProps) {
           <TwoDots phase={dots[phase]} size="lg" />
         </div>
         <div className={styles.controls} data-hydrating={hydrated ? undefined : ''}>
-          <button type="button" className={`${button.button} ${button.primary}`} onClick={play}>
+          <button type="button" className={`${button.button} ${button.primary}`} onClick={press}>
             {phase === 'idle' ? icons.play : icons.replay}
             {phase === 'idle' ? 'Putar' : 'Putar lagi'}
+            <span className="visually-hidden">{' cara tempel'}</span>
           </button>
-          <p className={`type-body-small ${styles.status}`} role="status">
+          <p className={`type-body-small ${styles.status}`} aria-hidden="true">
             {status[phase]}
+          </p>
+          <p className="visually-hidden" role="status">
+            {pressed ? status[phase] : ''}
           </p>
         </div>
       </div>

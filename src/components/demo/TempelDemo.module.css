@@ -280,7 +280,7 @@
 }
 
 /*
- * Room for two lines, so the last, longer step does not push the caption down. The top inset
+ * Room for two lines, so the last, longer step does not push the section's end down. The top inset
  * centres the first line on the button beside it (whose height follows the text size); when the
  * status wraps under the button, the same inset is the gap between them.
  */

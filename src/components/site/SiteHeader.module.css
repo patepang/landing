@@ -25,6 +25,7 @@
 
 .links {
   display: none;
+  flex-wrap: wrap;
   column-gap: var(--space-1);
   list-style: none;
 }
