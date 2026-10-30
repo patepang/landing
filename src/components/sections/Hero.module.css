@@ -27,15 +27,15 @@
   gap: var(--space-2) var(--space-4);
 }
 
-.status {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-2);
-  color: var(--color-text-secondary);
+/* Each action's arrow points where it leads and dips toward it under the pointer. */
+.actions svg {
+  transition: translate var(--duration-selection) var(--ease-out);
 }
 
-.statusIcon {
-  color: var(--color-text-secondary);
+@media (hover: hover) {
+  .actions a:hover svg {
+    translate: 0 calc(var(--space-1) / 2);
+  }
 }
 
 /*
@@ -46,16 +46,13 @@
  * own height, so it never causes horizontal scrolling.
  */
 .exhibit {
+  /* The phone: the app's 360px screen in a 12px frame. */
+  --phone: calc(var(--content-message) + 2 * var(--space-3));
   --leader: calc(var(--space-16) + var(--space-8));
   position: relative;
   isolation: isolate;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-areas:
-    'phone'
-    'born'
-    'code'
-    'face';
   justify-items: center;
   row-gap: var(--space-6);
   padding-top: var(--space-10);
@@ -65,7 +62,7 @@
   content: '';
   z-index: -1;
   grid-column: 1 / -1;
-  grid-row: phone-start / phone-end;
+  grid-row: 1;
   /* An empty grid item: it must stretch, whatever the grid aligns its other items to. */
   align-self: stretch;
   margin-top: calc(-1 * var(--space-10));
@@ -74,31 +71,22 @@
   clip-path: inset(0 -100vmax);
 }
 
-/* Narrow and medium screens lay the three notes out as their own grid items. */
-.notesStart,
-.notesEnd {
-  display: contents;
-}
-
-.noteBorn {
-  grid-area: born;
-  margin-top: var(--space-4);
-}
-
-.noteCode {
-  grid-area: code;
-}
-
-.noteFace {
-  grid-area: face;
-}
-
-/* The screen continues below the stage: its shadow is cut at the bottom edge, not spilled. */
+/*
+ * The phone continues below the stage: it is cut at the bottom edge, shadow included, never
+ * spilled. The cut belongs to this box, which stays put while the phone rises inside it, and which
+ * reaches the stage's bottom edge even where the notes beside it run taller than the phone.
+ */
 .phone {
-  grid-area: phone;
+  grid-column: 1;
+  grid-row: 1;
+  align-self: stretch;
+  display: grid;
+  justify-items: center;
+  width: 100%;
   clip-path: inset(calc(-1 * var(--space-16)) calc(-1 * var(--space-16)) 0);
 }
 
+/* On narrow screens the notes follow the phone in the order of the screen, below the stage. */
 .note {
   position: relative;
   justify-self: stretch;
@@ -106,13 +94,21 @@
   color: var(--color-brand-on-subtle);
 }
 
-.noteTitle {
+.noteBorn {
+  margin-top: var(--space-4);
+}
+
+.noteTitle,
+.noteBody {
   display: block;
+}
+
+.noteTitle {
   color: var(--color-text-primary);
   font-weight: var(--weight-semibold);
 }
 
-/* Leader lines: a forest hairline from the note's first line to the edge of the screen. */
+/* Leader lines: a forest hairline from the note's first line to the edge of the phone. */
 .note::after {
   position: absolute;
   top: calc(var(--type-body-line) / 2);
@@ -121,14 +117,46 @@
   background: var(--color-stage-line);
 }
 
-@media (max-width: 599.98px) {
+/*
+ * ---- A note and its part of the screen ----
+ * Pointing at a note lights the part of the screen it explains: a forest ring inside the card it
+ * is about, or the forest ink on the line it is about. Nothing moves; colour only.
+ */
+.exhibit [data-target] {
+  --ring: var(--color-brand-solid);
+  transition:
+    box-shadow var(--duration-selection) var(--ease-out),
+    color var(--duration-selection) var(--ease-out);
+}
+
+/* The code card is light in both themes, and so is the forest of its ring. */
+.exhibit [data-target='code'] {
+  --ring: var(--color-code-ring);
+}
+
+@media (hover: hover) {
+  .exhibit:has([data-note='born']:hover) [data-target='born'],
+  .exhibit:has([data-note='code']:hover) [data-target='code'] {
+    box-shadow: inset 0 0 0 var(--border-thick) var(--ring);
+  }
+
+  .exhibit:has([data-note='face']:hover) [data-target='face'] {
+    color: var(--color-brand-text);
+  }
+}
+
+/*
+ * Breakpoints are in em, like the header's and the footer's, so a larger reader text size keeps
+ * the narrower layout longer.
+ */
+@media (max-width: 37.49em) {
   /* Both actions take the full width on phones, so the text link lines up under the button. */
   .actions > * {
     flex: 1 1 100%;
   }
 }
 
-@media (min-width: 600px) {
+@media (min-width: 37.5em) {
   .exhibit {
     padding-top: var(--space-12);
   }
@@ -138,18 +166,21 @@
   }
 }
 
-/* Medium screens: the notes stand to the right of the screen, top to bottom as on the screen. */
-@media (min-width: 720px) {
+/*
+ * From 48em the notes stand beside the phone, each level with the part of the screen it is about,
+ * at any text size: the stage's rows are the screen's six parts (TempelScreenPreview), passed
+ * down to the phone and its screen as a subgrid, 16px apart as on the screen, and each note sits
+ * in the rows of its part, its first line centred on a line of that part. A note taller than its
+ * part makes room by growing its rows: the code's note grows the last row, which shows more of
+ * the code; the others open the screen a little, which only very large text sizes need.
+ */
+@media (min-width: 48em) {
   .exhibit {
     --leader: var(--space-12);
-    grid-template-columns: var(--content-message) minmax(0, 1fr);
-    grid-template-rows: auto auto auto;
-    grid-template-areas:
-      'phone born'
-      'phone face'
-      'phone code';
+    grid-template-columns: var(--phone) minmax(0, 1fr);
+    grid-template-rows: [status] auto [bar] auto [born] auto [face] auto [dots] auto [code] 1fr;
     column-gap: var(--leader);
-    row-gap: var(--space-6);
+    row-gap: var(--space-4);
     align-items: start;
   }
 
@@ -157,26 +188,68 @@
     grid-row: 1 / -1;
   }
 
-  .noteBorn {
-    margin-top: calc(var(--space-16) + var(--space-4));
+  .phone {
+    grid-row: 1 / -1;
+    grid-template-rows: subgrid;
   }
 
+  .phone > .screen {
+    grid-row: 1 / -1;
+    display: grid;
+    grid-template-rows: subgrid;
+  }
+
+  /* The measure is in rem, so it keeps its words per line as the text grows. */
   .note {
+    grid-column: 2;
     justify-self: start;
-    max-width: calc(var(--space-16) * 5);
+    max-width: 20rem;
+  }
+
+  /*
+   * Level with the card's title: past the card's 20px padding, its 32px icon and the 8px above
+   * the title, then centred on the title's first line.
+   */
+  .noteBorn {
+    grid-row: born / face;
+    margin-top: calc(
+      var(--space-5) + var(--space-8) + var(--space-2) +
+        (var(--type-headline-line) - var(--type-body-line)) / 2
+    );
+  }
+
+  /* Centred on the first line of "sebelum pamit, tempel dulu". */
+  .noteFace {
+    grid-row: face / code;
+    margin-top: calc((var(--type-title-large-line) - var(--type-body-line)) / 2);
+  }
+
+  /*
+   * Level with the middle of the code's top corner squares: past the card's hairline and 16px
+   * padding, then 42px into the pattern (2 + 3.5 of its 29 modules, 222px across). 32px of the
+   * stage stay below it.
+   */
+  .noteCode {
+    grid-row: code / -1;
+    margin-block: calc(
+        var(--border-hairline) + var(--space-4) + var(--space-10) + var(--space-1) / 2 -
+          var(--type-body-line) / 2
+      )
+      var(--space-8);
   }
 
   .note::after {
     content: '';
     right: calc(100% + var(--space-4));
+    transform-origin: left center;
   }
 }
 
 /*
- * Wide screens: the headline and its aside sit side by side, and the notes move to both sides of
- * the phone.
+ * From 80em: the headline and its aside sit side by side, and the notes move to both sides of
+ * the phone, still in the rows of their parts.
  */
-@media (min-width: 1280px) {
+@media (min-width: 80em) {
   .intro {
     grid-template-columns: repeat(12, minmax(0, 1fr));
     column-gap: var(--space-8);
@@ -194,9 +267,7 @@
 
   .exhibit {
     --leader: calc(var(--space-16) + var(--space-8));
-    grid-template-columns: minmax(0, 1fr) var(--content-message) minmax(0, 1fr);
-    grid-template-rows: auto;
-    grid-template-areas: 'start phone end';
+    grid-template-columns: minmax(0, 1fr) var(--phone) minmax(0, 1fr);
     padding-top: var(--space-16);
   }
 
@@ -204,50 +275,146 @@
     margin-top: calc(-1 * var(--space-16));
   }
 
-  .notesStart,
-  .notesEnd {
-    display: flex;
-    flex-direction: column;
-    align-self: stretch;
-  }
-
-  /* The note columns hug the screen, so each leader line reaches it. */
-  .notesStart {
-    grid-area: start;
-    justify-self: end;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: var(--space-8);
-    padding-top: calc(var(--space-16) * 2);
-    padding-bottom: var(--space-12);
-  }
-
-  .notesEnd {
-    grid-area: end;
-    justify-self: start;
-    align-items: flex-start;
-    padding-top: calc(var(--space-16) * 4 + var(--space-8));
-  }
-
-  .noteBorn {
-    margin-top: 0;
+  .phone {
+    grid-column: 2;
   }
 
   .note {
-    max-width: calc(var(--space-16) * 4 + var(--space-8));
+    max-width: 18rem;
   }
 
-  /* Notes left of the screen hug their leader line, as callouts do. */
-  .notesStart .note {
+  /* Notes left of the phone hug their leader line, as callouts do. */
+  .noteBorn,
+  .noteCode {
+    grid-column: 1;
+    justify-self: end;
     text-align: end;
   }
 
-  .notesStart .note::after {
-    right: auto;
-    left: calc(100% + var(--space-4));
+  .noteFace {
+    grid-column: 3;
   }
 
-  .notesEnd .note::after {
-    right: calc(100% + var(--space-4));
+  .noteBorn::after,
+  .noteCode::after {
+    right: auto;
+    left: calc(100% + var(--space-4));
+    transform-origin: right center;
+  }
+}
+
+/*
+ * ---- Opening ----
+ * Once, as the page opens: the phone rises out of the stage; then, beside it, each leader line is
+ * drawn out from the phone, its part of the screen lights, and its note appears, in the order of
+ * the screen (born, face, code). Each move stays within the app's durations. The notes only
+ * stand beside the phone from 48em, so narrower screens get the rise alone; with reduced motion,
+ * nothing moves and everything is simply there.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .screen {
+    animation: phone-rises var(--duration-overlay-enter) var(--ease-out) var(--duration-press)
+      backwards;
+  }
+}
+
+@media (min-width: 48em) and (prefers-reduced-motion: no-preference) {
+  .exhibit {
+    /* The phone has risen by then. */
+    --after-rise: calc(var(--duration-press) + var(--duration-overlay-enter));
+  }
+
+  .noteBorn {
+    --at: var(--after-rise);
+  }
+
+  .noteFace {
+    --at: calc(var(--after-rise) + var(--duration-press));
+  }
+
+  .noteCode {
+    --at: calc(var(--after-rise) + var(--duration-press) * 2);
+  }
+
+  .note::after {
+    animation: leader-draws var(--duration-move) var(--ease-out) var(--at) backwards;
+  }
+
+  .noteTitle,
+  .noteBody {
+    animation: note-appears var(--duration-enter) var(--ease-out)
+      calc(var(--at) + var(--duration-press)) backwards;
+  }
+
+  .exhibit [data-target='born'],
+  .exhibit [data-target='code'] {
+    animation: target-rings calc(var(--duration-overlay-enter) * 3) var(--ease-out) var(--at-target)
+      backwards;
+  }
+
+  .exhibit [data-target='face'] {
+    animation: target-inks calc(var(--duration-overlay-enter) * 3) var(--ease-out) var(--at-target)
+      backwards;
+  }
+
+  .exhibit [data-target='born'] {
+    --at-target: var(--after-rise);
+  }
+
+  .exhibit [data-target='face'] {
+    --at-target: calc(var(--after-rise) + var(--duration-press));
+  }
+
+  .exhibit [data-target='code'] {
+    --at-target: calc(var(--after-rise) + var(--duration-press) * 2);
+  }
+}
+
+@keyframes phone-rises {
+  from {
+    translate: 0 calc(var(--space-16) + var(--space-8));
+  }
+}
+
+@keyframes leader-draws {
+  from {
+    scale: 0 1;
+  }
+}
+
+@keyframes note-appears {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Lit for a moment while its line is drawn, then back to how the app shows it. */
+@keyframes target-rings {
+  0%,
+  100% {
+    box-shadow: inset 0 0 0 var(--border-thick) transparent;
+  }
+
+  25%,
+  65% {
+    box-shadow: inset 0 0 0 var(--border-thick) var(--ring);
+  }
+}
+
+@keyframes target-inks {
+  25%,
+  65% {
+    color: var(--color-brand-text);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .actions svg,
+  .exhibit [data-target] {
+    transition: none;
+  }
+
+  .actions a:hover svg {
+    translate: none;
   }
 }

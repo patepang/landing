@@ -37,6 +37,9 @@ Satu route `/` berisi seluruh halaman, ditambah 404:
    - di bawahnya, panggung forest mist dengan layar Tempel untuk orang yang belum punya akun. Tiga
      catatan di tepinya: tanpa email atau nomor telepon, kode berganti setiap 30 detik, dan hanya
      saat bertemu langsung.
+   - **Direvisi 30 Oktober 2026** (§8.5): aksi "Unduh Patepang" dan "Lihat cara kerja", tanpa baris
+     status; layar Tempel di dalam bingkai HP yang naik dari panggung sekali saat halaman dibuka;
+     tiap catatan sejajar dengan bagian layar yang dijelaskannya, pada ukuran teks berapa pun.
 3. **Masalah**: "Setelah pamit, kabar sering berhenti begitu saja.", dengan tiga masalah. Tanpa
    klaim riset.
 4. **Solusi / Cara kerja**:
@@ -70,10 +73,10 @@ screenshot asli. Setiap pratinjau punya nama aksesibel (`role="img"` + `aria-lab
 |---|---|---|
 | Pembingkaian | Halaman produk pra-rilis: fitur ditulis sebagai produk Patepang. Label "Pratinjau prototipe — data fiktif" dan section Status prototipe dihapus. Status "Segera hadir" tampil di hero, FAQ "Kapan", dan CTA. | Keputusan pemilik 22 Oktober 2026, dicatat di `PRODUCT.md`. Halaman tetap tidak menyatakan aplikasi sudah tersedia. **Diganti 30 Oktober 2026:** produk yang sudah hadir (§8). |
 | Testimoni | Diganti tiga skenario pemakaian berpenanda "Tiga contoh dari keseharian", tanpa nama, foto, atau tanda kutip. Setiap ketukan adalah perilaku app: momen tercatat, foto di Kabar (composer app menerima foto), rencana dengan jawaban "Ikut", peringatan memudar. | Belum ada pengguna sungguhan; testimoni karangan akan menyesatkan pengunjung. Keputusan pemilik. |
-| CTA | "Lihat cara kerja" dan "Jelajahi fitur" (anchor di halaman). | Belum ada unduhan, daftar tunggu, atau kontak; pemilik memilih tanpa formulir. **Sejak 30 Oktober 2026** header menambah "Unduh Patepang" ke `#unduh` (§8.2). |
+| CTA | "Lihat cara kerja" dan "Jelajahi fitur" (anchor di halaman). | Belum ada unduhan, daftar tunggu, atau kontak; pemilik memilih tanpa formulir. **Sejak 30 Oktober 2026** header menambah "Unduh Patepang" ke `#unduh` (§8.2), dan aksi hero menjadi "Unduh Patepang" dan "Lihat cara kerja" (§8.5). |
 | Footer | Lockup, tagline, tautan section, "© 2026 Patepang", "Kembali ke atas". | Belum ada kontak, akun media sosial, atau halaman legal. Keputusan pemilik. |
 | Navigasi di HP | Tombol "Menu" berupa `<details>` asli; panelnya menutupi halaman di bawah header. Dengan JavaScript, menu tertutup saat tautan dipilih, Escape ditekan (fokus kembali ke tombol), fokus pindah keluar menu, atau halaman ditekan di luar menu. | Dengan empat tujuan, satu tautan tidak lagi cukup. `<details>` tetap bekerja tanpa JavaScript. **Direvisi 30 Oktober 2026:** tombol bulat, panel membuka dan menutup dengan gerak (§8.2). |
-| Gerak khas | Ilustrasi Cara kerja berputar sendiri sekali, saat 60% panggungnya terlihat, dan tidak pernah berulang. "Putar lagi" memutarnya kembali; tekanan sebelum autoplay membatalkan autoplay. Hero dan lockup diam. | Halaman produksi menjelaskan alur tanpa meminta klik; satu momen yang terjadi sekali tetap sesuai larangan loop dan gerak dekoratif. Durasinya ±2 detik, di bawah batas 5 detik WCAG 2.2.2. **Sejak 30 Oktober 2026** dua titik lockup header bertemu sekali saat halaman dimuat (§8.2). |
+| Gerak khas | Ilustrasi Cara kerja berputar sendiri sekali, saat 60% panggungnya terlihat, dan tidak pernah berulang. "Putar lagi" memutarnya kembali; tekanan sebelum autoplay membatalkan autoplay. Hero dan lockup diam. | Halaman produksi menjelaskan alur tanpa meminta klik; satu momen yang terjadi sekali tetap sesuai larangan loop dan gerak dekoratif. Durasinya ±2 detik, di bawah batas 5 detik WCAG 2.2.2. **Sejak 30 Oktober 2026** dua titik lockup header bertemu sekali saat halaman dimuat (§8.2), dan HP di hero naik sekali lalu catatannya muncul (§8.5). |
 | Pengumuman langkah | Kalimat langkah tampil di layar (`aria-hidden`); region `role="status"` terpisah yang tak terlihat hanya diisi untuk putaran yang diminta lewat tombol. Putaran otomatis tidak diumumkan; langkah aktif tetap terbaca lewat `aria-current="step"`. | Tanpa ini, pembaca layar yang menggulir halaman (VoiceOver iOS, mode jelajah NVDA) disela tiga pengumuman yang tidak diminta (temuan code review). |
 | Nama tombol | Label terlihat "Putar" atau "Putar lagi", ditambah teks tak terlihat " cara tempel". | Nama aksesibel jelas di luar konteks ("Putar cara tempel") dan tetap memuat label yang terlihat (WCAG 2.5.3). |
 | Judul CTA | "Patepang segera hadir." memakai ukuran section di HP dan ukuran hero mulai 600px. | Dengan ukuran hero, kata "Patepang" lebih lebar dari layar 360px pada teks 200% (temuan code review; kini dites). Teksnya kini "Patepang sudah hadir." (§8.1). |
@@ -82,7 +85,7 @@ screenshot asli. Setiap pratinjau punya nama aksesibel (`role="img"` + `aria-lab
 | Header di teks besar | Baris header boleh membungkus: pada teks 200% di lebar HP, tombol "Menu" pindah ke bawah lockup. | Wordmark di app juga ikut skala teks. Tanpa pembungkusan, tombol keluar layar 59px (ditemukan oleh tes teks 200%). |
 | Kata bertanda hubung | "benar-benar", "ke-11", "Kabar-mu", dan sejenisnya dijaga tetap satu baris (`KeepHyphenated` dan kelas `.nowrap`). | Browser boleh memutus baris setelah tanda hubung. Font merek tidak punya glyph U+2011 (diuji), jadi tanda hubung tak-terputus akan meminjam glyph font lain. |
 | Perluasan web | H1 40/56/72px dan H2 28/32/40px per breakpoint, lebar halaman 1360px dengan grid 12 kolom, jarak antarsection 64/96/128px. Ditandai terpisah di `tokens.css`. | Skala app (display 36px) dirancang untuk HP; di 1440px hierarkinya hilang (spec §12). |
-| Breakpoint | 600 dan 1024px dari kelas jendela app (gutter 20/32/40). Khusus landing: 720px (catatan hero di kanan HP), 768px (tautan header sebaris), 1024px (masalah tiga kolom, cara kerja dan fitur dua kolom, skenario berdampingan), 1280px (judul hero berdampingan dengan lede, catatan di kedua sisi HP). | Diturunkan dari isi, bukan dari daftar perangkat. **Header sejak 30 Oktober 2026:** 48em dan 64em (§8.2). |
+| Breakpoint | 600 dan 1024px dari kelas jendela app (gutter 20/32/40). Khusus landing: 720px (catatan hero di kanan HP), 768px (tautan header sebaris), 1024px (masalah tiga kolom, cara kerja dan fitur dua kolom, skenario berdampingan), 1280px (judul hero berdampingan dengan lede, catatan di kedua sisi HP). | Diturunkan dari isi, bukan dari daftar perangkat. **Header sejak 30 Oktober 2026:** 48em dan 64em (§8.2). **Hero:** 37,5em, 48em, dan 80em (§8.5). |
 | Hover | Memakai warna *pressed* yang sudah ada, hanya di `@media (hover: hover)`. | App native tidak punya hover. |
 | Penanda langkah | Ukurannya `1rem + 8px` (24px di ukuran normal), tumbuh bersama teks. | Di teks 200% angka keluar dari lingkaran 24px yang tetap. |
 | Inisial avatar | Ukuran px tetap. | Paritas dengan app (`allowFontScaling={false}`). |
@@ -525,13 +528,105 @@ tersedia". Nama toko dan platform tetap dilarang sampai tautan toko diberikan.
   - overflow 2px di HP karena target "Kembali ke atas";
   - "Tanya jawab" terpotong dua baris pada teks 200%.
 
-### 8.5 Belum dikerjakan
+### 8.5 Hero (putaran ketiga, 30 Oktober 2026)
+
+Permintaan pemilik: hero "se-eksklusif mungkin", tetap sebagai perbaikan, bukan redesign. Judul,
+lede, layar Tempel, dan isi ketiga catatan tidak berubah. Yang berubah adalah aksinya, bingkai HP,
+gerak, dan ketepatan susunannya.
+
+**Yang dibangun:**
+
+- **Dua aksi, yang utama untuk mendapatkan Patepang:**
+  - "Unduh Patepang" (tombol utama besar dengan ikon unduh) ke `#unduh`;
+  - "Lihat cara kerja" (tombol ghost dengan panah ke bawah) ke `#cara-kerja`.
+
+  Panahnya turun 2px saat pointer ada di atasnya. Baris status "Sudah hadir. Tersedia untuk
+  diunduh." (§8.1) dihapus, karena tombol utama sudah mengatakannya. "Jelajahi fitur" kini hanya
+  ada di section penutup. Di HP kedua aksi selebar kolom.
+- **HP sungguhan:** layar Tempel kini dipegang bingkai HP:
+  - bezel 12px yang gelap di kedua tema (`--color-device`), dengan hairline cahaya di tepi luarnya;
+  - lengkung konsentris (56 di luar, 44 di dalam);
+  - pulau kamera dan status bar (09.41, sinyal, Wi-Fi, baterai; ikon Phosphor).
+
+  Bingkainya tanpa tepi bawah, dan dipotong tepat di tepi bawah panggung, bayangannya juga. HP
+  terbaca seperti berdiri di panggung dan berlanjut ke bawahnya. Hanya pola kode yang terpotong;
+  tidak ada teks yang terpotong.
+- **Catatan sejajar dengan bagian layarnya, pada ukuran teks berapa pun:** mulai 48em, baris
+  panggung adalah enam bagian layar: status bar, header app, kartu, judul, dua titik, dan kode.
+  Baris itu diteruskan ke HP dan layarnya dengan `subgrid`, berjarak 16px seperti di layar. Tiap
+  catatan duduk di baris bagiannya, dan baris pertamanya berpusat pada satu baris bagian itu:
+  - judul kartu "Akunmu lahir saat tempel pertama";
+  - baris pertama "sebelum pamit, tempel dulu";
+  - tengah kotak sudut atas pola kode.
+
+  Garis penunjuk berjalan dari catatan tepat sampai bingkai HP. Hasil ukur: selisih paling besar
+  0,1px, di lebar 768 sampai 2560px dan teks 100 sampai 200%. Catatan yang lebih tinggi dari
+  bagiannya menambah tinggi baris terakhir, sehingga layar memperlihatkan lebih banyak kode. Di
+  bawah catatan terakhir selalu tersisa minimal 32px panggung.
+- **Satu pembukaan, sekali saja:**
+  - saat halaman dibuka, HP naik 96px dari panggung (300ms, setelah jeda 120ms);
+  - lalu, dalam urutan layar dan berjarak 120ms, garis tiap catatan ditarik dari HP (240ms);
+  - bagian layarnya menyala sebentar: cincin forest di kartu dan kode, tinta forest di judul;
+  - catatannya muncul (220ms).
+
+  Semuanya selesai dalam 1,6 detik dan tidak pernah diulang. Di bawah 48em catatan ada di bawah
+  panggung, jadi yang bergerak hanya HP. Dengan gerak dikurangi tidak ada yang bergerak. Semuanya
+  CSS, tanpa JavaScript, dan tanpa pergeseran tata letak (`translate`, `scale`, dan opasitas).
+- **Catatan dan bagiannya terhubung:** pointer di atas catatan menyalakan bagian layar yang
+  dijelaskannya, dengan warna saja.
+
+**Keputusan dan penyimpangan:**
+
+| Hal | Keputusan | Alasan |
+|---|---|---|
+| Aksi utama | "Unduh Patepang" ke `#unduh`, sama dengan header. | Produknya sudah hadir (§8). Tautan toko belum ada, jadi aksi ini membawa ke section penutup, tempat tombol toko akan dipasang. |
+| Breakpoint hero dalam em | 37,5em (di bawahnya aksi selebar kolom), 48em (catatan di samping HP), dan 80em (judul dan lede berdampingan, catatan di kedua sisi HP). Sebelumnya 600, 720, dan 1280px. | Sama dengan header dan footer: pada teks besar, susunan sempit dipakai lebih lama. Pada teks 200% di jendela 1440px, judul tidak lagi terjepit lima baris di samping lede, dan catatan berada di bawah HP. |
+| Penyelarasan dengan `subgrid` | Keenam bagian layar adalah anak langsung bingkai HP: pembungkus `code` dihapus, dan bezel berupa `border`, sehingga satu tingkat subgrid cukup. | Sebelumnya posisi catatan berupa margin dan padding piksel yang disetel di ukuran teks bawaan. Pada teks 150 sampai 200%, garisnya menunjuk bagian yang salah. Kini kesejajarannya bagian dari tata letak, bukan angka. |
+| Lebar catatan dalam rem | 20rem, dan 18rem mulai 80em. | Jumlah kata per baris tetap saat teks membesar. |
+| Cincin kartu kode | Token web baru `--color-code-ring` (forest.700 di kedua tema). | Kartu kode terang di kedua tema; mint dari tema gelap hanya sekitar 1,8:1 di atasnya. Hasil ukur: 7,42:1. |
+| Token baru (web) | `--color-device`, `--color-device-edge`, dan `--color-code-ring` di bagian web-only `tokens.css`. | Masuk DESIGN.md setelah disetujui pemilik, seperti token header. |
+
+**Verifikasi putaran ketiga:**
+
+- `pnpm check:contrast`: 76 dari 76 pasangan lulus, termasuk cincin kartu kode (baru). Tiga label
+  pasangan lama kini juga menyebut pemakaian di hero.
+- `pnpm test:e2e`: 41 dari 41 lulus, termasuk 6 tes baru:
+  - HP naik sekali, catatan menyusul di layar lebar, di HP hanya HP yang naik, dan dengan gerak
+    dikurangi tidak ada animasi; setelah itu tidak ada yang berjalan lagi;
+  - pointer di atas tiap catatan menyalakan bagiannya, di tema terang dan gelap;
+  - di 768, 1024, dan 1440px: HP rata dengan tepi panggung, garis tiap catatan menyentuh bingkai
+    HP dan selisihnya dari baris bagiannya di bawah 1px, dan tersisa minimal 32px panggung di bawah
+    tiap catatan;
+  - hal yang sama pada teks 150% di jendela 1440px (setelan browser sungguhan).
+
+  Tes lama yang disesuaikan:
+  - aksi utama hero menuju `#unduh`, dan judul "Patepang sudah hadir." ada (menggantikan baris
+    status);
+  - kedua aksi hero, kedua aksi penutup, dan tombol unduh header memindahkan fokus ke judul tujuan,
+    yang tidak tertutup header;
+  - urutan fokus: setelah header, "Unduh Patepang" dan "Lihat cara kerja" dari hero.
+- Uji negatif: catatan "Hanya saat bertemu langsung" digeser 8px, dan keempat tes kesejajaran
+  gagal ("face", selisih 8px). Setelah kode dikembalikan, semuanya lulus lagi.
+- Tinjauan visual pada 360, 390, 768, 1024, 1280, 1440, dan 1920px, terang dan gelap, dengan:
+  - pembukaan yang diperlambat 5×, pointer di atas tiap catatan, dan gerak dikurangi;
+  - teks 200% di 390, 768, 1024, dan 1440px.
+
+  Yang diperbaiki dari tinjauan itu:
+  - di 720px catatan meluap dan catatan "face" tidak sejajar, jadi catatan berdiri di samping HP
+    mulai 48em;
+  - di 768px HP berakhir 8px di atas tepi panggung, karena catatannya lebih tinggi dari HP;
+  - di 768px catatan terakhir menyentuh tepi panggung;
+  - pada teks 150 sampai 200% garis menunjuk bagian yang salah;
+  - cincin kartu kode di tema gelap hanya sekitar 1,8:1.
+
+### 8.6 Belum dikerjakan
 
 - `docs/screenshots/` belum dibuat ulang, jadi gambarnya masih versi pra-rilis. Gambar akan dibuat
   ulang di akhir revisi bertahap, supaya ±6 MB gambar biner tidak ditulis ulang di setiap putaran.
   `tests/screenshots.spec.ts` sudah menunjuk `#unduh`.
 - Section penutup belum punya tombol toko, karena tautannya belum ada.
-- Hero dan section lain menunggu putaran berikutnya.
+- Section berikutnya menunggu putaran masing-masing: Masalah, Cara kerja, Fitur, Cerita, Tanya
+  jawab, dan section penutup.
 - Hanya Chromium yang diuji. Yang perlu dicek di Safari dan Firefox:
   - `backdrop-filter`, `subgrid`, `:has()`, dan `color-mix()`;
   - properti `translate`/`scale`, unit `cqw`, dan `clip-path` dengan `round`;

@@ -1,14 +1,19 @@
-import { CheckCircleIcon } from '@phosphor-icons/react/dist/ssr/CheckCircle';
+import { ArrowDownIcon } from '@phosphor-icons/react/dist/ssr/ArrowDown';
+import { DownloadSimpleIcon } from '@phosphor-icons/react/dist/ssr/DownloadSimple';
 
 import { Icon } from '@/components/Icon';
 import { TempelScreenPreview } from '@/components/preview/TempelScreenPreview';
 import button from '@/components/ui/button.module.css';
+import { download } from '@/content/sections';
 
 import styles from './Hero.module.css';
 
 /**
- * The opening: what Patepang is, where to look next, and that it is out. Below it, the
- * Tempel tab as a new person first sees it, with three things worth knowing at its edges.
+ * The opening: what Patepang is, and the two things to do next, get it or see how it works.
+ * Below, on the stage, the Tempel tab as a new person first sees it, held in a phone that rises
+ * from the stage once as the page opens; three notes, in the order of the screen, say what is
+ * different, each pointing at the part of the screen it explains (`data-note` names its
+ * `data-target`).
  */
 export function Hero() {
   return (
@@ -26,38 +31,43 @@ export function Hero() {
             </strong>
           </p>
           <div className={styles.actions}>
-            <a className={`${button.button} ${button.primary} ${button.large}`} href="#cara-kerja">
-              Lihat cara kerja
+            <a
+              className={`${button.button} ${button.primary} ${button.large} ${styles.get}`}
+              href={`#${download.id}`}
+            >
+              <Icon glyph={DownloadSimpleIcon} size="sm" weight="bold" />
+              {download.label}
             </a>
-            <a className={`${button.button} ${button.ghost}`} href="#fitur">
-              Jelajahi fitur
+            <a className={`${button.button} ${button.ghost} ${styles.see}`} href="#cara-kerja">
+              Lihat cara kerja
+              <Icon glyph={ArrowDownIcon} size="sm" />
             </a>
           </div>
-          <p className={`type-body-small ${styles.status}`}>
-            <Icon glyph={CheckCircleIcon} size="sm" className={styles.statusIcon} />
-            <span>Sudah hadir. Tersedia untuk diunduh.</span>
-          </p>
         </div>
       </div>
 
       <div className={`page ${styles.exhibit}`}>
-        <div className={styles.notesStart}>
-          <p className={`${styles.note} ${styles.noteBorn}`}>
-            <strong className={styles.noteTitle}>Tanpa email atau nomor telepon</strong>
+        <div className={styles.phone}>
+          <TempelScreenPreview className={styles.screen} />
+        </div>
+        <p className={`${styles.note} ${styles.noteBorn}`} data-note="born">
+          <strong className={styles.noteTitle}>Tanpa email atau nomor telepon</strong>
+          <span className={styles.noteBody}>
             Akunmu lahir saat tempel pertama dengan orang yang kamu temui, kapan pun itu.
-          </p>
-          <p className={`${styles.note} ${styles.noteCode}`}>
-            <strong className={styles.noteTitle}>Kode berganti setiap 30 detik</strong>
-            Satu HP menampilkan kode, HP lain memindainya, saat kalian berhadapan.
-          </p>
-        </div>
-        <div className={styles.notesEnd}>
-          <p className={`${styles.note} ${styles.noteFace}`}>
-            <strong className={styles.noteTitle}>Hanya saat bertemu langsung</strong>
+          </span>
+        </p>
+        <p className={`${styles.note} ${styles.noteFace}`} data-note="face">
+          <strong className={styles.noteTitle}>Hanya saat bertemu langsung</strong>
+          <span className={styles.noteBody}>
             Tempel dilakukan sebelum kalian berpisah. Koneksi tidak bisa dibuat dari pencarian.
-          </p>
-        </div>
-        <TempelScreenPreview className={styles.phone} />
+          </span>
+        </p>
+        <p className={`${styles.note} ${styles.noteCode}`} data-note="code">
+          <strong className={styles.noteTitle}>Kode berganti setiap 30 detik</strong>
+          <span className={styles.noteBody}>
+            Satu HP menampilkan kode, HP lain memindainya, saat kalian berhadapan.
+          </span>
+        </p>
       </div>
     </section>
   );

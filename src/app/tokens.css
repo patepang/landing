@@ -226,6 +226,18 @@
   --filter-glass: blur(20px) saturate(140%);
   /* Delay between the items of one list that enter together, such as the open menu's links. */
   --motion-stagger: 30ms;
+  /*
+   * The phone in the hero: device hardware, so dark in both themes (night.800 here, night.950 in
+   * the dark theme), with a faint lighter edge. Not used for anything people read.
+   */
+  --color-device: #1c1e1b;
+  --color-device-edge: rgb(255 255 255 / 0.08);
+  /*
+   * The ring that lights the code card in the hero. The card stays light in both themes (see
+   * QrCodeView above), so its ring stays the light theme's forest: the dark theme's mint would
+   * barely show on it.
+   */
+  --color-code-ring: #1f5f4f; /* light brand.solid */
 }
 
 @media (min-width: 600px) {
@@ -298,6 +310,10 @@
     --avatar-3-fg: #8dbdeb; /* blue.300 */
     --avatar-4-bg: #242723; /* night.700 */
     --avatar-4-fg: #c5c0b5; /* night.200 */
+
+    /* Web-only: the hero's phone, darker than the night stage it stands on. */
+    --color-device: #0f100e;
+    --color-device-edge: rgb(255 255 255 / 0.1);
 
     /* ---- elevation.ts, dark: raised surfaces rely on their lighter tone instead ---- */
     --elevation-raised: none;

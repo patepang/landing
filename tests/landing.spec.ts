@@ -1,7 +1,9 @@
 import { expect, test, type Browser, type Page } from '@playwright/test';
 
+import { openWithBrowserSetting } from './browser-settings';
 import { openLanding, watchProblems } from './helpers';
 
+const HERO = 'section[aria-labelledby="judul-utama"]';
 const DEMO = 'section[aria-labelledby="cara-kerja"]';
 const FAQ = 'section[aria-labelledby="tanya-jawab"]';
 /** The walk-through moves on at 0.9s and 1.9s; waits allow far more, since order is checked. */
@@ -82,6 +84,64 @@ async function shownLinks(page: Page, scope: string) {
     );
 }
 
+/**
+ * Where the opening's phone and notes stand: how far the phone's bottom is from the stage's, and
+ * for each note (in page order) how far its leader line is from the phone's frame and from the
+ * line of the screen it is about: the card's title, the title "sebelum pamit, tempel dulu", and
+ * the middle of the code's top corner squares. Also how much of the stage stays below the note.
+ */
+async function measureStage(page: Page) {
+  return page.locator(HERO).evaluate((section) => {
+    const device = section.querySelector('[role="img"]');
+    const stage = device?.parentElement?.parentElement;
+    const code = section.querySelector('[data-target="code"] svg');
+    if (!device || !stage || !code) throw new Error('No stage');
+    const firstLine = (el: Element | null) => {
+      if (!el) throw new Error('No target');
+      return el.getBoundingClientRect().top + parseFloat(getComputedStyle(el).lineHeight) / 2;
+    };
+    // The corner squares are 7 modules tall, after a 2-module margin, of the pattern's 29.
+    const pattern = code.getBoundingClientRect();
+    const aims: Record<string, number> = {
+      born: firstLine(section.querySelector('[data-target="born"] .type-headline')),
+      face: firstLine(section.querySelector('[data-target="face"]')),
+      code: pattern.top + (pattern.height * 5.5) / 29,
+    };
+    const phone = device.getBoundingClientRect();
+    const edge = stage.getBoundingClientRect().bottom;
+    return {
+      flush: Math.abs(phone.bottom - edge),
+      notes: [...section.querySelectorAll<HTMLElement>('[data-note]')].map((note) => {
+        const id = note.dataset.note ?? '';
+        const line = getComputedStyle(note, '::after');
+        const box = note.getBoundingClientRect();
+        const start = box.left + parseFloat(line.left);
+        const end = start + parseFloat(line.width);
+        return {
+          id,
+          // The line runs from the note to the phone's frame, on whichever side it stands.
+          reach: Math.min(Math.abs(end - phone.left), Math.abs(start - phone.right)),
+          aim: Math.abs(box.top + parseFloat(line.top) - (aims[id] ?? Number.NaN)),
+          below: edge - box.bottom,
+        };
+      }),
+    };
+  });
+}
+
+/** The phone stands on the stage edge, and each line runs from the phone to its part's line. */
+function expectNotesInPlace(stage: Awaited<ReturnType<typeof measureStage>>) {
+  expect(stage.flush).toBeLessThan(0.5);
+  // In the order of the screen.
+  expect(stage.notes.map(({ id }) => id)).toEqual(['born', 'face', 'code']);
+  for (const note of stage.notes) {
+    expect(note.reach, note.id).toBeLessThan(0.5);
+    expect(note.aim, note.id).toBeLessThan(1);
+    // At least 32px of the stage stays below every note.
+    expect(note.below, note.id).toBeGreaterThanOrEqual(32);
+  }
+}
+
 async function newPage(browser: Browser, baseURL: string | undefined, options: object = {}) {
   const context = await browser.newContext({ baseURL, ...options });
   return { context, page: await context.newPage() };
@@ -143,7 +203,12 @@ test.describe('landing', () => {
 
   test('says it is out, and makes no claims or offers it cannot keep', async ({ page }) => {
     await openLanding(page);
-    await expect(page.getByText('Sudah hadir. Tersedia untuk diunduh.')).toBeVisible();
+    // The opening offers Patepang itself first; the closing section says it is out.
+    await expect(page.locator(HERO).getByRole('link', { name: 'Unduh Patepang' })).toHaveAttribute(
+      'href',
+      '#unduh',
+    );
+    await expect(page.getByRole('heading', { name: 'Patepang sudah hadir.' })).toBeVisible();
     for (const image of await page.locator('[role="img"]').all()) {
       await expect(image).toHaveAttribute('aria-label', /\S/);
     }
@@ -211,38 +276,39 @@ test.describe('landing', () => {
 
   test('calls to action move to their sections and put focus on the heading', async ({ page }) => {
     await openLanding(page);
-    await page.getByRole('link', { name: 'Lihat cara kerja' }).first().click();
-    await expect(page).toHaveURL(/#cara-kerja$/);
-    await expect(page.locator('#cara-kerja')).toBeFocused();
-    await expect(page.locator('#cara-kerja')).toBeInViewport();
+    /** The heading is focused and shown below the floating header, not under it. */
+    const lands = async (id: string) => {
+      await expect(page).toHaveURL(new RegExp(`#${id}$`));
+      const heading = page.locator(`#${id}`);
+      await expect(heading).toBeFocused();
+      await expect(heading).toBeInViewport();
+      const covered = await heading.evaluate((el) => {
+        const box = el.getBoundingClientRect();
+        const hit = document.elementFromPoint(box.left + 8, box.top + 8);
+        return hit !== null && !el.contains(hit);
+      });
+      expect(covered, id).toBe(false);
+    };
 
-    await page.getByRole('link', { name: 'Jelajahi fitur' }).first().click();
-    await expect(page).toHaveURL(/#fitur$/);
-    await expect(page.locator('#fitur')).toBeFocused();
-    const top = await page.locator('#fitur').evaluate((el) => el.getBoundingClientRect().top);
-    expect(top).toBeGreaterThanOrEqual(0);
-    expect(top).toBeLessThan(160);
+    // The opening's two actions: see how it works, or go straight to getting it.
+    const hero = page.locator(HERO);
+    await hero.getByRole('link', { name: 'Lihat cara kerja' }).click();
+    await lands('cara-kerja');
+    await hero.getByRole('link', { name: 'Unduh Patepang' }).click();
+    await lands('unduh');
 
-    // The closing call leads back into the page too.
+    // The closing section leads back into the page.
+    await page.getByRole('link', { name: 'Jelajahi fitur' }).click();
+    await lands('fitur');
     await page.getByRole('link', { name: 'Lihat cara kerja' }).last().click();
-    await expect(page.locator('#cara-kerja')).toBeFocused();
+    await lands('cara-kerja');
 
-    // The header's download action leads to the closing section, which lands below the floating
-    // header rather than under it.
+    // The header's download action leads to the closing section too.
     await page
       .getByRole('navigation', { name: 'Utama' })
       .getByRole('link', { name: 'Unduh Patepang' })
       .click();
-    await expect(page).toHaveURL(/#unduh$/);
-    const heading = page.locator('#unduh');
-    await expect(heading).toBeFocused();
-    await expect(heading).toBeInViewport();
-    const covered = await heading.evaluate((el) => {
-      const box = el.getBoundingClientRect();
-      const hit = document.elementFromPoint(box.left + 8, box.top + 8);
-      return hit !== null && !el.contains(hit);
-    });
-    expect(covered).toBe(false);
+    await lands('unduh');
   });
 
   test('the header shows the section links from 768px and a working menu below that', async ({
@@ -404,6 +470,138 @@ test.describe('landing', () => {
       else await expect(home).not.toHaveCSS('transition-duration', '0s');
       await context.close();
     }
+  });
+
+  test('the phone rises once as the page opens, the notes follow, and reduced motion keeps all still', async ({
+    browser,
+    baseURL,
+  }) => {
+    // The notes only stand beside the phone from 768px, so narrower screens get the rise alone.
+    const cases = [
+      { width: 1440, reducedMotion: 'no-preference', rises: true, notes: true },
+      { width: 390, reducedMotion: 'no-preference', rises: true, notes: false },
+      { width: 1440, reducedMotion: 'reduce', rises: false, notes: false },
+    ] as const;
+    for (const { width, reducedMotion, rises, notes } of cases) {
+      const { context, page } = await newPage(browser, baseURL, {
+        viewport: { width, height: 900 },
+        reducedMotion,
+      });
+      await page.goto('/');
+      const hero = page.locator(HERO);
+      const motion = await hero.evaluate((section) => {
+        const style = (el: Element | null, pseudo?: string) =>
+          el ? getComputedStyle(el, pseudo) : null;
+        const phone = style(section.querySelector('[role="img"]'));
+        return {
+          phone: [phone?.animationName, phone?.animationIterationCount],
+          // Each note: its leader line, its title and its body.
+          notes: [...section.querySelectorAll('[data-note]')].map((note) => [
+            style(note, '::after')?.animationName,
+            style(note.firstElementChild)?.animationName,
+            style(note.lastElementChild)?.animationName,
+          ]),
+          targets: [...section.querySelectorAll('[data-target]')].map(
+            (target) => style(target)?.animationName,
+          ),
+        };
+      });
+      const label = `${String(width)}px, ${reducedMotion}`;
+      expect(motion.phone, label).toEqual(
+        rises ? [expect.stringContaining('phone-rises'), '1'] : ['none', '1'],
+      );
+      for (const note of motion.notes) {
+        expect(note, label).toEqual(
+          notes
+            ? [
+                expect.stringContaining('leader-draws'),
+                expect.stringContaining('note-appears'),
+                expect.stringContaining('note-appears'),
+              ]
+            : ['none', 'none', 'none'],
+        );
+      }
+      // In the order of the screen: the card, the line "sebelum pamit, tempel dulu", the code.
+      expect(motion.targets, label).toEqual(
+        notes
+          ? [
+              expect.stringContaining('target-rings'),
+              expect.stringContaining('target-inks'),
+              expect.stringContaining('target-rings'),
+            ]
+          : ['none', 'none', 'none'],
+      );
+      // Once played, nothing in the opening runs again.
+      await expect
+        .poll(() => hero.evaluate((section) => section.getAnimations({ subtree: true }).length))
+        .toBe(0);
+      await context.close();
+    }
+  });
+
+  test('pointing at a note lights the part of the screen it explains', async ({
+    browser,
+    baseURL,
+  }) => {
+    for (const colorScheme of ['light', 'dark'] as const) {
+      const { context, page } = await newPage(browser, baseURL, { colorScheme });
+      await openLanding(page);
+      const hero = page.locator(HERO);
+      // After the opening, which lights each part once by itself.
+      await expect
+        .poll(() => hero.evaluate((section) => section.getAnimations({ subtree: true }).length))
+        .toBe(0);
+      // The stage's forest; the code card stays light in both themes, and so does its ring.
+      const forest = rgb(colorScheme === 'light' ? '#1f5f4f' : '#7fcdb4');
+      const lit = [
+        ['born', 'box-shadow', `${forest} 0px 0px 0px 2px inset`],
+        ['face', 'color', forest],
+        ['code', 'box-shadow', `${rgb('#1f5f4f')} 0px 0px 0px 2px inset`],
+      ] as const;
+      for (const [id, property, value] of lit) {
+        const target = hero.locator(`[data-target="${id}"]`);
+        await expect(target).not.toHaveCSS(property, value);
+        await hero.locator(`[data-note="${id}"]`).hover();
+        await expect(target, `${id}, ${colorScheme}`).toHaveCSS(property, value);
+      }
+      await page.mouse.move(0, 0);
+      for (const [id, property, value] of lit) {
+        await expect(hero.locator(`[data-target="${id}"]`)).not.toHaveCSS(property, value);
+      }
+      await context.close();
+    }
+  });
+
+  for (const width of [768, 1024, 1440]) {
+    test(`at ${String(width)}px each note's line runs from the phone to the line it is about`, async ({
+      browser,
+      baseURL,
+    }) => {
+      const { context, page } = await newPage(browser, baseURL, {
+        viewport: { width, height: 1000 },
+        reducedMotion: 'reduce',
+      });
+      await openLanding(page);
+      expectNotesInPlace(await measureStage(page));
+      await context.close();
+    });
+  }
+
+  test('with a larger text size the notes still meet the lines they are about', async () => {
+    // 150% text: a 1440px window is 60em wide, so the notes still stand beside the phone.
+    const context = await openWithBrowserSetting(
+      test.info(),
+      { textSize: 24 },
+      { window: { width: 1440, height: 900 } },
+    );
+    const page = context.pages()[0] ?? (await context.newPage());
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await openLanding(page);
+    expect(await page.evaluate(() => getComputedStyle(document.documentElement).fontSize)).toBe(
+      '24px',
+    );
+    expectNotesInPlace(await measureStage(page));
+    await context.close();
   });
 
   test('a click or a tap never leaves the blue focus ring; the keyboard does', async ({
@@ -576,8 +774,9 @@ test.describe('landing', () => {
       'Cerita',
       'Tanya jawab',
       'Unduh Patepang',
+      // The opening's two actions.
+      'Unduh Patepang',
       'Lihat cara kerja',
-      'Jelajahi fitur',
     ]);
     // Then the walk-through's button: "Putar", or "Putar lagi" once it has played by itself.
     expect(stops[9]).toMatch(/^Putar/);

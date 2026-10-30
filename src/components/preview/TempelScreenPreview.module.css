@@ -1,29 +1,76 @@
 /*
- * The phone screen: the app's canvas at phone width (compact gutter 20px), floating on the stage
- * with the overlay shadow and the dialog radius. Its bottom edge is square and flush with the
- * stage, so the screen reads as rising from it. Heights follow the content; only the code pattern
- * is cropped, so no text is ever cut.
+ * The phone: a dark frame 12px wide around the app's screen, curved so the screen's corners are
+ * concentric with it (56 outside, 44 inside), with the camera island and the status bar of a
+ * phone. It floats on the stage with the overlay shadow. Its bottom edge is square and flush with
+ * the stage, so the phone reads as rising from it.
+ *
+ * The screen is the app's canvas at phone width with the compact gutter (20px), its parts in one
+ * column 16px apart. Heights follow the content; only the code pattern is cropped, so no text is
+ * ever cut. When the phone is given more height than its content (the notes beside it can be
+ * taller), the screen shows more of the code below.
  */
-.screen {
+.device {
+  --bezel: var(--space-3);
+  --corner: calc(var(--shape-dialog) * 2);
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
   width: 100%;
-  max-width: var(--content-message);
+  max-width: calc(var(--content-message) + 2 * var(--bezel));
   padding-inline: var(--gutter-compact);
-  border-radius: var(--shape-dialog) var(--shape-dialog) 0 0;
+  border: var(--bezel) solid var(--color-device);
+  border-bottom: 0;
+  border-radius: var(--corner) var(--corner) 0 0;
   background: var(--color-canvas);
+  background-clip: padding-box;
   box-shadow: var(--elevation-overlay);
   color: var(--color-text-primary);
   cursor: default;
   user-select: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  .screen {
-    border: var(--border-hairline) solid var(--color-border-subtle);
-    border-bottom: 0;
-  }
+/* The camera island, centred in the status bar. */
+.device::before {
+  content: '';
+  position: absolute;
+  top: var(--space-3);
+  left: 50%;
+  width: calc(var(--space-16) + var(--space-10));
+  height: calc(var(--space-6) + var(--space-1));
+  translate: -50% 0;
+  border-radius: var(--radius-full);
+  background: var(--color-device);
+}
+
+/* A hairline of light along the frame's outer edge; the phone has no bottom edge to catch it. */
+.device::after {
+  content: '';
+  position: absolute;
+  inset: calc(-1 * var(--bezel)) calc(-1 * var(--bezel)) 0;
+  border: var(--border-hairline) solid var(--color-device-edge);
+  border-bottom: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* The device's status bar: the time on the left, signal, network and battery on the right. */
+.statusBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: calc(var(--space-12) + var(--space-1));
+  margin-inline: calc(var(--space-1) * -1);
+  padding-inline: var(--space-3);
+  font-size: var(--type-label-small-size-fixed);
+  line-height: var(--type-label-small-line);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--type-label-small-tracking);
+}
+
+.statusIcons {
+  display: flex;
+  gap: var(--space-1);
 }
 
 /* AppHeader: title on the left, two raised icon buttons on the right. */
@@ -33,7 +80,6 @@
   justify-content: space-between;
   gap: var(--space-1);
   min-height: calc(var(--touch-target) + var(--space-2));
-  padding-top: var(--space-2);
   padding-bottom: var(--space-2);
 }
 
@@ -75,29 +121,34 @@
   color: var(--color-brand-text);
 }
 
-.code {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-4);
+/* The title and the dots stand centred in the column, whether it is a flex or a grid column. */
+.codeTitle {
+  margin-inline: auto;
+  text-align: center;
+  /* Balanced so a short last word ("dulu") never hangs alone on the web. */
+  text-wrap: balance;
 }
 
-/* Balanced so a short last word ("dulu") never hangs alone on the web. */
-.codeTitle {
-  text-align: center;
-  text-wrap: balance;
+.codeDots {
+  margin-inline: auto;
 }
 
 .unbornTitle {
   text-wrap: balance;
 }
 
-/* The picture ends here: about the top half of the code card shows above the stage edge. */
+/*
+ * The picture ends here: about the top half of the code card shows above the stage edge. Size
+ * containment keeps the card out of the crop's own height, so the crop asks for 152px and takes
+ * whatever more the phone is given.
+ */
 .codeCrop {
+  flex: 1 0 auto;
   display: block;
   width: 100%;
-  max-height: calc(var(--space-16) * 2 + var(--space-6));
+  min-height: calc(var(--space-16) * 2 + var(--space-6));
   overflow: hidden;
+  contain: size;
 }
 
 /* QrCodeView: dark on light in both themes, on a card with a hairline. */

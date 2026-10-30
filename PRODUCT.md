@@ -65,10 +65,10 @@ Patepang sudah hadir dan bisa diunduh.
   disimulasikan. Menurut pemilik (30 Oktober 2026), sekitar 90% Patepang kini sudah selesai.
 - **Landing (keputusan pemilik, 30 Oktober 2026).** Landing menampilkan Patepang sebagai produk
   yang sudah rilis ke publik ("Sudah hadir"), bukan "Segera hadir". Tautan toko aplikasi belum
-  diberikan: tombol "Unduh Patepang" di header mengarah ke section penutup (`#unduh`), yang memuat
-  tombol toko setelah tautannya dikirim pemilik. Teks status sudah diganti di seluruh halaman.
-  Desain diperbaiki bertahap per section (header, lalu footer, hero, dan section lain), sebagai
-  perbaikan, bukan redesign. Keputusan ini menggantikan keputusan 22 Oktober di bawah.
+  diberikan: tombol "Unduh Patepang" di header dan hero mengarah ke section penutup (`#unduh`),
+  yang memuat tombol toko setelah tautannya dikirim pemilik. Teks status sudah diganti di seluruh
+  halaman. Desain diperbaiki bertahap per section (header, lalu footer, hero, dan section lain),
+  sebagai perbaikan, bukan redesign. Keputusan ini menggantikan keputusan 22 Oktober di bawah.
 - **Landing (keputusan pemilik, 22 Oktober 2026; diganti 30 Oktober).** Landing tampil sebagai
   halaman produk pra-rilis, bukan tur prototipe: fitur dijelaskan sebagai produk Patepang, tanpa
   label "Pratinjau prototipe". Statusnya tetap disebut jujur sebagai "Segera hadir": belum ada
