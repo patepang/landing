@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  useCallback,
   useEffect,
   useRef,
   type FocusEvent,
@@ -19,32 +20,65 @@ export interface MobileMenuProps {
 }
 
 /**
- * The section links on narrow screens, behind a "Menu" disclosure. It is a native <details>, so it
- * opens and closes with or without JavaScript. With JavaScript it also closes when a link is
- * chosen, when Escape is pressed (focus returns to the button), when focus moves on past it, and
- * when the page is pressed outside it.
+ * The section links on narrow screens, behind a round menu button. It is a native <details>, so
+ * it opens and closes with or without JavaScript, and its panel unfolds in CSS. With JavaScript it
+ * also folds away before it closes, and it closes when a link is chosen, when Escape is pressed
+ * (focus returns to the button), when focus moves on past it, and when the page is pressed
+ * outside it.
  */
 export function MobileMenu({ icons, children }: MobileMenuProps) {
   const menu = useRef<HTMLDetailsElement>(null);
+  /** Counts closings, so a closing that was interrupted cannot finish a later one. */
+  const closings = useRef(0);
+
+  /**
+   * Plays the panel's exit (`data-state="closing"`), then closes the <details>: closing it at once
+   * would hide the panel before it could leave. Focus, when asked for, returns immediately.
+   */
+  const close = useCallback((returnFocus: boolean) => {
+    const details = menu.current;
+    if (!details?.open) return;
+    if (returnFocus) details.querySelector('summary')?.focus();
+    if (details.dataset.state === 'closing') return;
+    details.dataset.state = 'closing';
+    const closing = (closings.current += 1);
+    const panel = details.querySelector<HTMLElement>('[data-menu-panel]');
+
+    function finish() {
+      if (!details || closings.current !== closing || details.dataset.state !== 'closing') return;
+      delete details.dataset.state;
+      details.open = false;
+    }
+
+    // Reading the animations applies the closing style first, so the exit is already listed.
+    const exits = panel?.getAnimations() ?? [];
+    if (exits.length === 0) {
+      finish();
+      return;
+    }
+    void Promise.all(exits.map((animation) => animation.finished)).then(finish, finish);
+  }, []);
 
   useEffect(() => {
     function onPointerDown(event: PointerEvent) {
       const details = menu.current;
       if (details?.open && event.target instanceof Node && !details.contains(event.target)) {
-        details.open = false;
+        close(false);
       }
     }
     document.addEventListener('pointerdown', onPointerDown);
     return () => {
       document.removeEventListener('pointerdown', onPointerDown);
     };
-  }, []);
+  }, [close]);
 
-  function close(returnFocus: boolean) {
+  /** The button closes an open menu through the exit, and reopens one that is still leaving. */
+  function onToggleClick(event: MouseEvent<HTMLElement>) {
     const details = menu.current;
     if (!details?.open) return;
-    details.open = false;
-    if (returnFocus) details.querySelector('summary')?.focus();
+    event.preventDefault();
+    if (details.dataset.state === 'closing') delete details.dataset.state;
+    else close(false);
   }
 
   function onClick(event: MouseEvent<HTMLDivElement>) {
@@ -62,12 +96,14 @@ export function MobileMenu({ icons, children }: MobileMenuProps) {
 
   return (
     <details ref={menu} className={styles.menu} onKeyDown={onKeyDown} onBlur={onBlur}>
-      <summary className={styles.menuButton}>
-        <span className={styles.menuIconOpen}>{icons.open}</span>
-        <span className={styles.menuIconClose}>{icons.close}</span>
-        Menu
+      <summary className={styles.menuButton} onClick={onToggleClick}>
+        <span className={styles.menuGlyphs}>
+          <span className={styles.menuIconOpen}>{icons.open}</span>
+          <span className={styles.menuIconClose}>{icons.close}</span>
+        </span>
+        <span className="visually-hidden">Menu</span>
       </summary>
-      <div className={styles.menuPanel} onClick={onClick}>
+      <div className={styles.menuPanel} data-menu-panel onClick={onClick}>
         {children}
       </div>
     </details>

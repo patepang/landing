@@ -34,7 +34,8 @@ const faq = [
   },
   {
     question: 'Kapan Patepang bisa dipakai?',
-    answer: 'Patepang segera hadir. Belum ada tanggal rilis, dan aplikasinya belum bisa diunduh.',
+    answer:
+      'Sekarang. Patepang sudah bisa diunduh, dan koneksi pertamamu lahir saat kamu tempel dengan orang yang kamu temui berikutnya.',
   },
 ] as const;
 

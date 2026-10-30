@@ -5,3 +5,9 @@ export const sections = [
   { id: 'cerita', label: 'Cerita' },
   { id: 'tanya-jawab', label: 'Tanya jawab' },
 ] as const;
+
+/**
+ * Where the header's download action leads: the closing section. It will hold the store links
+ * once they exist; until then it says how to start.
+ */
+export const download = { id: 'unduh', label: 'Unduh Patepang' } as const;

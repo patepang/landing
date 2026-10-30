@@ -11,8 +11,18 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  /* Anchored sections land with a little air above them; the header does not stick. */
+  /* Anchored sections land with a little air above them. */
   scroll-padding-top: var(--space-6);
+}
+
+/*
+ * Where the header floats at the top of the window (the same condition as in
+ * SiteHeader.module.css), anchored sections and focused elements stop below its capsule.
+ */
+@media (min-width: 20em) and (min-height: 32.5em) {
+  html:has(header[data-enhanced]) {
+    scroll-padding-top: calc(var(--header-capsule-top) + var(--header-capsule) + var(--space-6));
+  }
 }
 
 body {

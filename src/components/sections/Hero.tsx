@@ -1,4 +1,4 @@
-import { HourglassMediumIcon } from '@phosphor-icons/react/dist/ssr/HourglassMedium';
+import { CheckCircleIcon } from '@phosphor-icons/react/dist/ssr/CheckCircle';
 
 import { Icon } from '@/components/Icon';
 import { TempelScreenPreview } from '@/components/preview/TempelScreenPreview';
@@ -7,7 +7,7 @@ import button from '@/components/ui/button.module.css';
 import styles from './Hero.module.css';
 
 /**
- * The opening: what Patepang is, where to look next, and that it is not out yet. Below it, the
+ * The opening: what Patepang is, where to look next, and that it is out. Below it, the
  * Tempel tab as a new person first sees it, with three things worth knowing at its edges.
  */
 export function Hero() {
@@ -34,8 +34,8 @@ export function Hero() {
             </a>
           </div>
           <p className={`type-body-small ${styles.status}`}>
-            <Icon glyph={HourglassMediumIcon} size="sm" className={styles.statusIcon} />
-            <span>Segera hadir. Belum tersedia untuk diunduh.</span>
+            <Icon glyph={CheckCircleIcon} size="sm" className={styles.statusIcon} />
+            <span>Sudah hadir. Tersedia untuk diunduh.</span>
           </p>
         </div>
       </div>

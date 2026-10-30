@@ -31,6 +31,10 @@
   --distance: 0px;
 }
 
+.dots[data-snug] {
+  width: calc(var(--distance) + var(--dot) * 2);
+}
+
 .dot {
   position: absolute;
   top: 0;
@@ -51,8 +55,52 @@
   transform: translateX(calc(var(--distance) / 2));
 }
 
+/*
+ * Arrival: the dots start where `data-from` puts them and move to their phase once, on the app's
+ * move curve, after a short pause so the move is seen rather than missed during first paint.
+ * Each keyframe names only its start; the end is the dot's own resting position.
+ */
+.dots[data-from='apart'] {
+  --from-distance: var(--gap);
+}
+
+.dots[data-from='near'] {
+  --from-distance: var(--dot);
+}
+
+.dots[data-from] .dot {
+  animation-duration: var(--duration-overlay-enter);
+  animation-timing-function: var(--ease-out);
+  animation-delay: var(--duration-enter);
+  animation-fill-mode: backwards;
+}
+
+.dots[data-from] .first {
+  animation-name: first-arrives;
+}
+
+.dots[data-from] .second {
+  animation-name: second-arrives;
+}
+
+@keyframes first-arrives {
+  from {
+    transform: translateX(calc(-1 * (var(--from-distance) / 2 + var(--dot))));
+  }
+}
+
+@keyframes second-arrives {
+  from {
+    transform: translateX(calc(var(--from-distance) / 2));
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .dot {
     transition: none;
+  }
+
+  .dots[data-from] .dot {
+    animation: none;
   }
 }

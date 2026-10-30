@@ -209,6 +209,23 @@
   --type-section-tracking: -0.015em;
   /* Hairline drawn on the forest stage (annotation leaders and row dividers). */
   --color-stage-line: var(--color-brand-solid);
+  /*
+   * The header. Its controls are the app's small size, 36px to the eye inside a 48px target, and
+   * grow with the reader's text. Once the page scrolls, the header floats as a capsule that holds
+   * them with a 10px inset, so the capsule's curve is concentric with theirs (18 + 10 = 28).
+   */
+  --header-control: calc(var(--type-label-small-line) + var(--space-4)); /* 36 */
+  --header-capsule: calc(var(--header-control) + var(--space-5)); /* 56 */
+  --header-capsule-top: var(--space-3); /* 12 */
+  /*
+   * The floating capsule is the overlay surface, slightly see-through with the page blurred
+   * behind it. Text on it is measured over the darkest (light theme) and lightest (dark theme)
+   * thing that can pass underneath (scripts/check-contrast.mjs).
+   */
+  --color-surface-glass: color-mix(in srgb, var(--color-surface-overlay) 88%, transparent);
+  --filter-glass: blur(20px) saturate(140%);
+  /* Delay between the items of one list that enter together, such as the open menu's links. */
+  --motion-stagger: 30ms;
 }
 
 @media (min-width: 600px) {

@@ -29,7 +29,7 @@ bertemu lagi, dan memudar bila kedua orang tidak pernah bertemu lagi.
 
 Landing berhasil bila pengunjung baru, dalam satu kunjungan singkat, paham apa Patepang, bagaimana
 koneksinya terbentuk, apa yang terjadi setelah bertemu, apa yang sengaja tidak ada, dan bahwa
-produknya segera hadir (belum bisa diunduh, belum ada tanggal rilis).
+Patepang sudah hadir dan bisa diunduh.
 
 ## Positioning
 
@@ -59,25 +59,32 @@ produknya segera hadir (belum bisa diunduh, belum ada tanggal rilis).
 
 ## Capabilities and Constraints
 
-- **Status (fakta).** Yang ada adalah prototipe aplikasi v0.1.0 dengan data fiktif lokal, mencakup
-  115 ID layar. Tidak ada backend, akun sungguhan, pesan, panggilan, pembayaran, atau kriptografi.
-  Kamera/QR, goyang, NFC, dan biometrik disimulasikan. Belum ada aplikasi yang bisa diunduh.
-- **Landing (keputusan pemilik, 22 Oktober 2026).** Landing tampil sebagai halaman produk
-  pra-rilis, bukan tur prototipe: fitur dijelaskan sebagai produk Patepang, tanpa label
-  "Pratinjau prototipe". Statusnya tetap disebut jujur sebagai "Segera hadir": belum ada tanggal
-  rilis dan belum bisa diunduh. Halaman tidak pernah menyatakan aplikasi sudah tersedia.
+- **Status (fakta di `patepang/app` @ `262202f`).** Yang ada di commit itu adalah prototipe
+  aplikasi v0.1.0 dengan data fiktif lokal, mencakup 115 ID layar. Tidak ada backend, akun
+  sungguhan, pesan, panggilan, pembayaran, atau kriptografi. Kamera/QR, goyang, NFC, dan biometrik
+  disimulasikan. Menurut pemilik (30 Oktober 2026), sekitar 90% Patepang kini sudah selesai.
+- **Landing (keputusan pemilik, 30 Oktober 2026).** Landing menampilkan Patepang sebagai produk
+  yang sudah rilis ke publik ("Sudah hadir"), bukan "Segera hadir". Tautan toko aplikasi belum
+  diberikan: tombol "Unduh Patepang" di header mengarah ke section penutup (`#unduh`), yang memuat
+  tombol toko setelah tautannya dikirim pemilik. Teks status sudah diganti di seluruh halaman.
+  Desain diperbaiki bertahap per section (header, lalu footer, hero, dan section lain), sebagai
+  perbaikan, bukan redesign. Keputusan ini menggantikan keputusan 22 Oktober di bawah.
+- **Landing (keputusan pemilik, 22 Oktober 2026; diganti 30 Oktober).** Landing tampil sebagai
+  halaman produk pra-rilis, bukan tur prototipe: fitur dijelaskan sebagai produk Patepang, tanpa
+  label "Pratinjau prototipe". Statusnya tetap disebut jujur sebagai "Segera hadir": belum ada
+  tanggal rilis dan belum bisa diunduh. Halaman tidak pernah menyatakan aplikasi sudah tersedia.
   (Sebelumnya pemilik memilih status prototipe disebut eksplisit dan fitur ditulis sebagai
   rancangan.)
-- Belum ada jalur konversi sungguhan: unduhan, akun, daftar tunggu, atau kanal kontak. Pengguna
-  memilih tanpa formulir dan tanpa pengumpulan data; CTA landing hanya mengarah ke section di
-  halaman itu sendiri.
+- Tautan unduhan (toko aplikasi), daftar tunggu, dan kanal kontak belum ada di landing. Pengguna
+  memilih tanpa formulir dan tanpa pengumpulan data; CTA landing mengarah ke section di halaman
+  itu sendiri sampai tautan toko diberikan.
 - Karena belum ada pengguna, slot testimoni di landing diisi skenario pemakaian yang ditulis
   sebagai contoh untuk pembaca ("kamu"), bukan kutipan orang.
 - Istilah: **Tempel** (aksinya ditulis huruf kecil di tengah kalimat dan kapital sebagai nama tab),
   **Kabar**, **Orang**, **Momen**, **lingkaran**, **titik lahir**. Menurut repo, "tepang" berarti
   "bertemu" dalam bahasa Sunda. Asal-usul nama "Patepang" belum dikonfirmasi.
-- **Belum diputuskan:** tanggal peluncuran, platform rilis, negara atau kota awal, harga, kanal
-  kontak, kebijakan privasi, entitas hukum, dan simbol logo final.
+- **Belum diputuskan atau belum diberikan:** tautan toko dan platform rilis, negara atau kota
+  awal, harga, kanal kontak, kebijakan privasi, entitas hukum, dan simbol logo final.
 - **Tidak boleh diklaim:** keamanan, privasi, enkripsi, penyimpanan di perangkat, pemulihan akun,
   angka pengguna, testimoni, mitra, maupun rating.
 
@@ -86,8 +93,10 @@ produknya segera hadir (belum bisa diunduh, belum ada tanggal rilis).
 Komitmen berikut mengikat menurut brief pengguna:
 
 - Ini bukan redesign identitas. Logo dipertahankan, yaitu wordmark huruf kecil `patepang` dan
-  lockup dua titik di atas wordmark. Karakter dan bagian design system aplikasi yang sudah bagus
-  juga dipertahankan. Setiap penyimpangan penting dicatat bersama bukti masalah dan manfaatnya.
+  lockup dua titik di atas wordmark. Atas permintaan pemilik (30 Oktober 2026), header landing
+  hanya memakai tanda dua titik sebagai ikon; lockup lengkap tetap dipakai di footer. Karakter
+  dan bagian design system aplikasi yang sudah bagus juga dipertahankan. Setiap penyimpangan
+  penting dicatat bersama bukti masalah dan manfaatnya.
 - Plus Jakarta Sans adalah keluarga huruf utama. Phosphor dipakai konsisten, dengan bobot dan
   ukuran yang tertib.
 - Arahnya warm-modern, presisi, polished, dan terasa manusiawi.

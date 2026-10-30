@@ -1,12 +1,39 @@
-/* Positioned so the open menu can lie over the page just below the bar. */
+/*
+ * The header: the brand mark, the section links and the download action.
+ *
+ * At the top of the page it rests on the canvas. With JavaScript (HeaderShell), once the page
+ * scrolls it stays at the top of the window and a floating capsule gathers around the same row; on
+ * wide screens the mark and the action move toward each other, as the two dots do. Everything that
+ * moves is transformed; no box changes its layout, so nothing on the page shifts.
+ */
+
 .header {
+  /* Each control draws its 36px capsule inside its 48px target; at large text sizes it fills it. */
+  --pill-inset: max(0px, (var(--touch-target) - var(--header-control)) / 2);
+  --cta-inset: calc((var(--header-capsule) - var(--header-control)) / 2);
+  /* The row is one target tall; the capsule reaches this far past the page column. */
+  --row: max(var(--touch-target), var(--header-control));
+  --capsule-outset: var(--space-3);
+  /* At rest the row already sits where the capsule will hold it, so it never moves up or down. */
+  --rest-pad: calc(var(--header-capsule-top) + (var(--header-capsule) - var(--row)) / 2);
   position: relative;
-  z-index: 2;
-  padding-block: var(--space-4);
+  z-index: 5;
+  padding-block: var(--rest-pad);
 }
 
-/* Wraps rather than overflows: at large text sizes the menu button moves under the lockup. */
+/* The page column, measured by the capsule (100cqw is its width). */
+.frame {
+  container-type: inline-size;
+}
+
+/* Wraps rather than overflows: at large text sizes the actions move under the mark. */
 .bar {
+  --island: calc(100cqw + 2 * var(--capsule-outset));
+  /* How far each end of the row travels inward to meet the capsule's ends. */
+  --gather: calc((100cqw - var(--island)) / 2);
+  --pull: calc(-1 * (var(--gather) + var(--cta-inset)));
+  position: relative;
+  isolation: isolate;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -14,85 +41,305 @@
   gap: var(--space-2) var(--space-6);
 }
 
-.home {
-  display: inline-flex;
-  padding: var(--space-1);
-  border-radius: var(--radius-md);
-  text-decoration: none;
+/* The capsule. Drawn at rest too, unseen and as wide as the row, so it can gather inward. */
+.bar::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  top: 50%;
+  left: calc(-1 * var(--capsule-outset));
+  right: calc(-1 * var(--capsule-outset));
+  height: var(--header-capsule);
+  translate: 0 -50%;
+  border: var(--border-hairline) solid var(--color-border-subtle);
+  border-radius: var(--radius-full);
+  background: var(--color-surface-glass);
+  box-shadow: var(--elevation-raised);
+  -webkit-backdrop-filter: var(--filter-glass);
+  backdrop-filter: var(--filter-glass);
+  opacity: 0;
+  visibility: hidden;
 }
 
-/* ---- Wide screens: the section links in a row ---- */
+/*
+ * The mark (two 16px dots met, 32 x 16) centred in a 64 x 48 target. The target reaches 16px past
+ * the page column, so the mark itself lines up with the column's edge, and the focus ring hugs the
+ * mark 2px out.
+ */
+.home {
+  display: grid;
+  place-items: center;
+  width: calc(var(--space-8) + 2 * var(--space-4));
+  height: var(--touch-target);
+  margin-inline-start: calc(-1 * var(--space-4));
+  border-radius: var(--radius-full);
+  outline-offset: calc(var(--focus-ring-offset) - var(--space-4));
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mark {
+  transition: scale var(--duration-press) var(--ease-out);
+}
+
+.home:active .mark {
+  scale: var(--motion-press-scale);
+}
+
+/*
+ * Gaps are measured between the visible capsules: the targets already add twice the inset, which
+ * shrinks to nothing at large text sizes, so the gap makes up the rest.
+ */
+.nav {
+  --between: calc(var(--space-3) - 2 * var(--pill-inset));
+  display: flex;
+  align-items: center;
+  gap: var(--between);
+}
+
+/* ---- Section links (from 48em) ---- */
+
+.track {
+  position: relative;
+  display: none;
+}
 
 .links {
-  display: none;
-  flex-wrap: wrap;
-  column-gap: var(--space-1);
+  display: flex;
+  gap: var(--between);
   list-style: none;
 }
 
-/* Text links with a 48px hit area; the hover tint reuses the pressed surface. */
+/* Flex items, so no line box adds height and the indicator's labels land on the links exactly. */
+.links > li {
+  display: flex;
+}
+
+.link,
+.indicatorLabel {
+  display: flex;
+  align-items: center;
+  padding: calc(var(--pill-inset) + var(--space-2)) calc(var(--pill-inset) + var(--space-3));
+  font-size: var(--type-label-small-size);
+  line-height: var(--type-label-small-line);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--type-label-small-tracking);
+  white-space: nowrap;
+}
+
+/* The focus ring hugs the visible capsule, 2px out, rather than the larger target. */
 .link {
+  position: relative;
+  isolation: isolate;
+  border-radius: var(--radius-full);
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  outline-offset: calc(var(--focus-ring-offset) - var(--pill-inset));
+  -webkit-tap-highlight-color: transparent;
+  transition: color var(--duration-press) var(--ease-out);
+}
+
+/* The hover and press tint, the app's pressed surface, drawn as the visible capsule. */
+.link::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: var(--pill-inset);
+  border-radius: var(--radius-full);
+  transition: background-color var(--duration-press) var(--ease-out);
+}
+
+/*
+ * The current-section indicator: forest mist with the selected-chip ink, as the app marks a
+ * chosen chip. HeaderShell sets the current link's box (--ind-*); with no current section, and
+ * without JavaScript, the cut is empty.
+ */
+.indicator {
+  --ind-x: 50%;
+  --ind-y: 0px;
+  --ind-w: 0px;
+  --ind-h: 100%;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  gap: var(--between);
+  background: var(--color-brand-subtle);
+  color: var(--color-brand-on-subtle);
+  pointer-events: none;
+  clip-path: inset(
+    calc(var(--ind-y) + var(--pill-inset))
+      calc(100% - var(--ind-x) - var(--ind-w) + var(--pill-inset))
+      calc(100% - var(--ind-y) - var(--ind-h) + var(--pill-inset))
+      calc(var(--ind-x) + var(--pill-inset)) round var(--radius-full)
+  );
+  transition: clip-path var(--duration-overlay-enter) var(--ease-out);
+}
+
+.indicator[data-instant] {
+  transition: none;
+}
+
+/* ---- The download action ---- */
+
+.cta {
+  position: relative;
+  isolation: isolate;
   display: inline-flex;
   align-items: center;
-  min-height: var(--touch-target);
-  padding-inline: var(--space-3);
-  border-radius: var(--shape-button);
-  color: var(--color-text-secondary);
+  justify-content: center;
+  gap: var(--space-2);
+  padding: calc(var(--pill-inset) + var(--space-2)) calc(var(--pill-inset) + var(--space-4));
+  border-radius: var(--radius-full);
+  color: var(--color-brand-on-solid);
   font-size: var(--type-label-small-size);
   line-height: var(--type-label-small-line);
   font-weight: var(--weight-semibold);
   letter-spacing: var(--type-label-small-tracking);
   text-decoration: none;
+  white-space: nowrap;
+  outline-offset: calc(var(--focus-ring-offset) - var(--pill-inset));
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    translate var(--duration-overlay-exit) var(--ease-out),
+    scale var(--duration-press) var(--ease-out);
+}
+
+.cta::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: var(--pill-inset);
+  border-radius: var(--radius-full);
+  background: var(--color-brand-solid);
   transition: background-color var(--duration-press) var(--ease-out);
 }
 
-/* ---- Narrow screens: the same links behind a "Menu" disclosure ---- */
+/* Glyphs keep their 16px and 20px at the default text size and grow with it, like the labels. */
+.ctaIcon {
+  width: 1rem;
+  height: 1rem;
+  transition: translate var(--duration-selection) var(--ease-out);
+}
+
+.menuGlyphs svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.cta:active {
+  scale: var(--motion-press-scale);
+}
+
+.cta:active::before {
+  background: var(--color-brand-solid-pressed);
+}
+
+/* ---- The menu (below 48em) ---- */
 
 .menuButton {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  min-height: var(--touch-target);
-  padding-inline: var(--space-4);
-  border: var(--border-thin) solid var(--color-border-strong);
-  border-radius: var(--shape-button);
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  width: calc(var(--header-control) + 2 * var(--pill-inset));
+  height: calc(var(--header-control) + 2 * var(--pill-inset));
+  margin-inline-end: calc(-1 * var(--pill-inset));
+  border-radius: var(--radius-full);
   color: var(--color-text-primary);
-  font-size: var(--type-label-small-size);
-  line-height: var(--type-label-small-line);
-  font-weight: var(--weight-semibold);
-  letter-spacing: var(--type-label-small-tracking);
   list-style: none;
   cursor: pointer;
-  transition: background-color var(--duration-press) var(--ease-out);
+  outline-offset: calc(var(--focus-ring-offset) - var(--pill-inset));
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    color var(--duration-selection) var(--ease-out),
+    translate var(--duration-overlay-exit) var(--ease-out);
 }
 
 .menuButton::-webkit-details-marker {
   display: none;
 }
 
+/*
+ * A ring as tall as the action's capsule (36px inside the 48px target, growing with the text),
+ * filled with ink while the menu is open.
+ */
+.menuButton::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: var(--pill-inset);
+  border: var(--border-thin) solid var(--color-border-strong);
+  border-radius: var(--radius-full);
+  transition:
+    background-color var(--duration-selection) var(--ease-out),
+    border-color var(--duration-selection) var(--ease-out),
+    scale var(--duration-press) var(--ease-out);
+}
+
+.menuButton:active::before {
+  scale: var(--motion-icon-press-scale);
+}
+
+/* The two glyphs share one cell and turn into each other. */
+.menuGlyphs {
+  display: grid;
+}
+
 .menuIconOpen,
 .menuIconClose {
-  display: inline-flex;
+  grid-area: 1 / 1;
+  display: flex;
+  transition:
+    opacity var(--duration-selection) var(--ease-out),
+    rotate var(--duration-selection) var(--ease-out),
+    scale var(--duration-selection) var(--ease-out);
 }
 
-.menuIconClose,
-.menu[open] .menuIconOpen {
-  display: none;
+.menuIconClose {
+  opacity: 0;
+  rotate: -90deg;
+  scale: var(--motion-pop-scale);
 }
 
-.menu[open] .menuIconClose {
-  display: inline-flex;
+.menu[open]:not([data-state='closing']) > .menuButton {
+  color: var(--color-canvas);
 }
 
-/* The open menu lies over the page under the bar, as wide as the window. */
+.menu[open]:not([data-state='closing']) > .menuButton::before {
+  border-color: var(--color-text-primary);
+  background: var(--color-text-primary);
+}
+
+.menu[open]:not([data-state='closing']) .menuIconOpen {
+  opacity: 0;
+  rotate: 90deg;
+  scale: var(--motion-pop-scale);
+}
+
+.menu[open]:not([data-state='closing']) .menuIconClose {
+  opacity: 1;
+  rotate: 0deg;
+  scale: 1;
+}
+
+/*
+ * The open menu is one card with the header row. It begins exactly as the capsule around the row,
+ * in the same glass, and unfolds downward to hold the links, so the bar and its links are a single
+ * surface. In the bar's stacking order it lies above the capsule and under the row's controls,
+ * which stay where they are and keep working.
+ */
 .menuPanel {
   position: absolute;
-  top: 100%;
-  inset-inline: 0;
-  padding-block: var(--space-2) var(--space-4);
-  border-block: var(--border-hairline) solid var(--color-border-subtle);
-  background: var(--color-surface-overlay);
+  z-index: -1;
+  top: calc(50% - var(--header-capsule) / 2);
+  left: calc(-1 * var(--capsule-outset));
+  right: calc(-1 * var(--capsule-outset));
+  padding: var(--header-capsule) var(--space-3) var(--space-3);
+  border: var(--border-hairline) solid var(--color-border-subtle);
+  border-radius: var(--radius-xxl);
+  background: var(--color-surface-glass);
   box-shadow: var(--elevation-overlay);
+  -webkit-backdrop-filter: var(--filter-glass);
+  backdrop-filter: var(--filter-glass);
 }
 
 .menuLinks {
@@ -101,52 +348,391 @@
   list-style: none;
 }
 
+/* Rows curve with the sheet: 16px inside a 28px corner, 12px in. */
 .menuLink {
   display: flex;
   align-items: center;
   min-height: calc(var(--touch-target) + var(--space-2));
-  margin-inline: calc(-1 * var(--space-3));
-  padding-inline: var(--space-3);
+  padding: var(--space-2) var(--space-4);
   border-radius: var(--radius-lg);
   color: var(--color-text-primary);
-  font-size: var(--type-headline-size);
-  line-height: var(--type-headline-line);
+  font-size: var(--type-title-size);
+  line-height: var(--type-title-line);
   font-weight: var(--weight-semibold);
-  letter-spacing: var(--type-headline-tracking);
+  letter-spacing: var(--type-title-tracking);
   text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
   transition: background-color var(--duration-press) var(--ease-out);
 }
 
-.link:active,
-.menuButton:active,
-.menuLink:active {
-  background: var(--color-surface-pressed);
-  color: var(--color-text-primary);
+.menuLink[aria-current='true'] {
+  background: var(--color-brand-subtle);
+  color: var(--color-brand-on-subtle);
 }
 
-@media (hover: hover) {
-  .link:hover,
-  .menuButton:hover,
-  .menuLink:hover {
-    background: var(--color-surface-pressed);
-    color: var(--color-text-primary);
+/* Unfolds from the bar downward, its links following one after another. */
+.menu[open] .menuPanel {
+  animation: panel-unfolds var(--duration-overlay-enter) var(--ease-out);
+}
+
+.menu[open] .menuLinks > li {
+  animation: link-rises var(--duration-enter) var(--ease-out) backwards;
+}
+
+.menu[open] .menuLinks > li:nth-child(1) {
+  animation-delay: calc(var(--motion-stagger) * 2);
+}
+
+.menu[open] .menuLinks > li:nth-child(2) {
+  animation-delay: calc(var(--motion-stagger) * 3);
+}
+
+.menu[open] .menuLinks > li:nth-child(3) {
+  animation-delay: calc(var(--motion-stagger) * 4);
+}
+
+.menu[open] .menuLinks > li:nth-child(4) {
+  animation-delay: calc(var(--motion-stagger) * 5);
+}
+
+/* Folds back up, faster than it came. */
+.menu[data-state='closing'] .menuPanel {
+  animation: panel-folds var(--duration-overlay-exit) var(--ease-out) forwards;
+}
+
+.menu[data-state='closing'] .menuLinks > li {
+  animation: none;
+}
+
+/*
+ * From the capsule (the card cut to its top 56px; the capsule's 28px curve is the card's corner)
+ * to the whole card. It ends past the card's edges, so its shadow is never cut.
+ */
+@keyframes panel-unfolds {
+  from {
+    opacity: 0;
+    clip-path: inset(0 0 calc(100% - var(--header-capsule)) 0 round var(--radius-xxl));
+  }
+
+  to {
+    clip-path: inset(calc(-1 * var(--space-16)) round var(--radius-xxl));
   }
 }
 
-@media (min-width: 768px) {
-  .links {
-    display: flex;
+@keyframes panel-folds {
+  from {
+    clip-path: inset(calc(-1 * var(--space-16)) round var(--radius-xxl));
+  }
+
+  to {
+    opacity: 0;
+    clip-path: inset(0 0 calc(100% - var(--header-capsule)) 0 round var(--radius-xxl));
+  }
+}
+
+@keyframes link-rises {
+  from {
+    opacity: 0;
+    translate: 0 var(--motion-enter-rise);
+  }
+}
+
+/* ---- Hover, for pointers that can hover ---- */
+
+.link:active,
+.menuLink:active {
+  color: var(--color-text-primary);
+}
+
+.link:active::before,
+.menuLink:active {
+  background: var(--color-surface-pressed);
+}
+
+@media (hover: hover) {
+  .link:hover {
+    color: var(--color-text-primary);
+  }
+
+  .link:hover::before,
+  .menuLink:hover,
+  .menu:not([open]) > .menuButton:hover::before {
+    background: var(--color-surface-pressed);
+  }
+
+  .menuLink[aria-current='true']:hover {
+    background: var(--color-brand-subtle);
+  }
+
+  .cta:hover::before {
+    background: var(--color-brand-solid-pressed);
+  }
+
+  /* The arrow dips toward the download, a hint of what the action does. */
+  .cta:hover .ctaIcon {
+    translate: 0 calc(var(--space-1) / 2);
+  }
+}
+
+/* ---- Layout by width, in em so it follows the reader's text size ---- */
+
+/* From 48em: the links in a row before the action; no menu. */
+@media (min-width: 48em) {
+  .nav {
+    gap: calc(var(--space-6) - 2 * var(--pill-inset));
+  }
+
+  .track {
+    display: block;
   }
 
   .menu {
     display: none;
   }
+
+  /* The action's capsule lines up with the page column's edge. */
+  .cta {
+    margin-inline-end: calc(-1 * var(--pill-inset));
+  }
 }
 
+/*
+ * From 64em: mark, links and action on three columns, the links centred on the page. Floating,
+ * the capsule is an island no wider than 48rem, and the mark and the action travel in to it.
+ */
+@media (min-width: 64em) {
+  .bar {
+    --island: min(100cqw + 2 * var(--capsule-outset), 48rem);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  }
+
+  .home {
+    justify-self: start;
+  }
+
+  .nav {
+    grid-column: 2 / 4;
+    display: grid;
+    grid-template-columns: subgrid;
+  }
+
+  .cta {
+    justify-self: end;
+  }
+}
+
+/*
+ * ---- Floating ----
+ * Only where the window has room for it: at least 20em wide (the narrow row fits on one line)
+ * and 32.5em tall. At 200% zoom or with very large text the header simply rests at the top of
+ * the page, as it does without JavaScript, instead of covering a large share of the window.
+ */
+@media (min-width: 20em) and (min-height: 32.5em) {
+  .header[data-enhanced] {
+    position: sticky;
+    top: 0;
+    pointer-events: none;
+    transition: translate var(--duration-overlay-enter) var(--ease-out);
+  }
+
+  /* Only the capsule and the controls catch the pointer; around them, the page stays reachable. */
+  .header[data-enhanced] .home,
+  .header[data-enhanced] .nav > *,
+  .header[data-enhanced] .bar::before {
+    pointer-events: auto;
+  }
+
+  /* Leaving the floating state is a little faster than entering it. */
+  .header[data-enhanced] .home,
+  .header[data-enhanced] .track {
+    transition: translate var(--duration-overlay-exit) var(--ease-out);
+  }
+
+  .header[data-enhanced] .bar::before {
+    transition:
+      left var(--duration-overlay-exit) var(--ease-out),
+      right var(--duration-overlay-exit) var(--ease-out),
+      opacity var(--duration-overlay-exit) var(--ease-out),
+      visibility 0s linear var(--duration-overlay-exit);
+  }
+
+  .header[data-floating] .home,
+  .header[data-floating] .track {
+    transition-duration: var(--duration-overlay-enter);
+  }
+
+  .header[data-floating] .bar::before {
+    left: var(--gather);
+    right: var(--gather);
+    opacity: 1;
+    visibility: visible;
+    transition:
+      left var(--duration-overlay-enter) var(--ease-out),
+      right var(--duration-overlay-enter) var(--ease-out),
+      opacity var(--duration-overlay-enter) var(--ease-out),
+      visibility 0s;
+  }
+
+  /*
+   * The mark settles 20px inside the capsule's end, where its own 8px curve is concentric with the
+   * capsule's 28px one (8 + 20 = 28), as the action's is.
+   */
+  .header[data-floating] .home {
+    translate: calc(var(--gather) + var(--space-5)) 0;
+  }
+
+  .header[data-floating] .cta,
+  .header[data-floating] .menuButton {
+    translate: var(--pull) 0;
+  }
+
+  .header[data-floating] .cta {
+    transition-duration: var(--duration-overlay-enter), var(--duration-press);
+  }
+
+  .header[data-floating] .menuButton {
+    transition-duration: var(--duration-selection), var(--duration-overlay-enter);
+  }
+
+  /*
+   * On the capsule the menu button is a filled circle rather than a ring: a thin ring cannot keep
+   * 3:1 against everything that passes under the see-through capsule, and the glyph on the
+   * pressed surface already names the control.
+   */
+  .header[data-floating] .menu:not([open]) > .menuButton::before,
+  .header[data-floating] .menu[data-state='closing'] > .menuButton::before {
+    border-color: transparent;
+    background: var(--color-surface-pressed);
+  }
+
+  /* The links scroll inside the card when it would reach past the window. */
+  .header[data-enhanced] .menuLinks {
+    max-height: calc(
+      100dvh - var(--header-capsule-top) - var(--header-capsule) - var(--space-3) - var(--space-4)
+    );
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
+
+/* Between 48em and 64em the links stand beside the action, so they travel with it. */
+@media (min-width: 48em) and (max-width: 63.99em) and (min-height: 32.5em) {
+  .header[data-floating] .track {
+    translate: var(--pull) 0;
+  }
+}
+
+/* Narrow and floating: the header steps out of the way while the reader scrolls down. */
+@media (min-width: 20em) and (max-width: 47.99em) and (min-height: 32.5em) {
+  .header[data-hidden] {
+    translate: 0 calc(-100% - var(--space-2));
+    transition-duration: var(--duration-overlay-exit);
+  }
+}
+
+/* A solid capsule for readers who ask for less transparency, and where blur is unsupported. */
+@media (prefers-reduced-transparency: reduce) {
+  .bar::before {
+    background: var(--color-surface-overlay);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .bar::before {
+    background: var(--color-surface-overlay);
+  }
+}
+
+/*
+ * Less motion: nothing travels, turns or scales. The capsule and the menu fade in 120ms, the
+ * floating geometry changes at once, and the hidden header fades instead of sliding away.
+ */
 @media (prefers-reduced-motion: reduce) {
   .link,
+  .link::before,
+  .cta,
+  .cta::before,
+  .ctaIcon,
   .menuButton,
-  .menuLink {
+  .menuButton::before,
+  .menuIconOpen,
+  .menuIconClose,
+  .menuLink,
+  .indicator,
+  .mark,
+  .header[data-enhanced],
+  .header[data-enhanced] .home,
+  .header[data-enhanced] .track,
+  .header[data-floating] .cta,
+  .header[data-floating] .menuButton {
     transition: none;
+  }
+
+  .header[data-enhanced] .bar::before,
+  .header[data-floating] .bar::before {
+    transition:
+      opacity var(--duration-reduced-fade) var(--ease-out),
+      visibility 0s;
+  }
+
+  .cta:active,
+  .home:active .mark,
+  .menuButton:active::before {
+    scale: none;
+  }
+
+  .cta:hover .ctaIcon {
+    translate: none;
+  }
+
+  .menuIconOpen,
+  .menuIconClose,
+  .menu[open]:not([data-state='closing']) .menuIconOpen {
+    rotate: none;
+    scale: none;
+  }
+
+  .menu[open] .menuPanel {
+    animation: panel-appears var(--duration-reduced-fade) var(--ease-out);
+  }
+
+  .menu[open] .menuLinks > li {
+    animation: none;
+  }
+
+  .menu[data-state='closing'] .menuPanel {
+    animation: panel-disappears var(--duration-reduced-fade) var(--ease-out) forwards;
+  }
+
+  @keyframes panel-appears {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @keyframes panel-disappears {
+    to {
+      opacity: 0;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) and (min-width: 20em) and (max-width: 47.99em) and (min-height: 32.5em) {
+  .header[data-enhanced] {
+    transition:
+      opacity var(--duration-reduced-fade) var(--ease-out),
+      visibility 0s;
+  }
+
+  .header[data-hidden] {
+    translate: none;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity var(--duration-reduced-fade) var(--ease-out),
+      visibility 0s linear var(--duration-reduced-fade);
   }
 }

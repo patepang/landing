@@ -94,7 +94,7 @@ test('real 200% browser zoom and 200% text size', async () => {
     '#fitur',
     '#cerita',
     '#tanya-jawab',
-    '#segera-hadir',
+    '#unduh',
   ];
   for (const [index, selector] of sections.entries()) {
     await zoomPage.locator(selector).evaluate((el) => el.scrollIntoView({ block: 'start' }));

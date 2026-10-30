@@ -54,6 +54,31 @@ function ratio(fg, bg) {
   return (a + 0.05) / (b + 0.05);
 }
 
+/**
+ * The see-through capsule (`--color-surface-glass`, a color-mix of a surface with transparent) as
+ * it looks over `behind`: the share of the surface comes from the token itself, so the check
+ * follows what ships. The blur behind it only ever softens what passes underneath.
+ */
+function glassOver(theme, behind) {
+  const value = theme['--color-surface-glass'];
+  const match = value.match(
+    /^color-mix\(in srgb, var\((--[\w-]+)\) (\d+(?:\.\d+)?)%, transparent\)$/,
+  );
+  if (!match) throw new Error(`Unexpected --color-surface-glass: ${value}`);
+  const share = Number(match[2]) / 100;
+  const [top, bottom] = [resolve(theme, match[1]), resolve(theme, behind)].map((hex) =>
+    [0, 2, 4].map((i) => parseInt(hex.slice(1 + i, 3 + i), 16)),
+  );
+  const mixed = top.map((channel, i) => Math.round(channel * share + bottom[i] * (1 - share)));
+  return `#${mixed.map((channel) => channel.toString(16).padStart(2, '0')).join('')}`;
+}
+
+/**
+ * The floating header over the worst page underneath it: the darkest ink in the light theme, and
+ * in the dark theme the code panel, which stays light (`--color-code-surface`).
+ */
+const GLASS = { light: '--color-code-ink', dark: '--color-code-surface' };
+
 const TEXT = 4.5;
 const NON_TEXT = 3;
 
@@ -63,7 +88,6 @@ const pairs = [
   ['--color-text-primary', '--color-surface-raised', TEXT, 'Text in preview cards'],
   ['--color-text-primary', '--color-surface-pressed', TEXT, 'Header links on hover'],
   ['--color-text-primary', '--color-brand-subtle', TEXT, 'Note titles, closing heading on mist'],
-  ['--color-text-primary', '--color-surface-overlay', TEXT, 'Links in the open menu'],
   ['--color-text-secondary', '--color-canvas', TEXT, 'Ledes, step details, FAQ answers'],
   ['--color-text-secondary', '--color-surface-raised', TEXT, 'Card details in previews'],
   ['--color-text-secondary', '--color-surface-sunken', TEXT, 'Neutral badge in previews'],
@@ -103,8 +127,20 @@ const pairs = [
     'Leader lines, check mark on the stage',
   ],
   ['--color-border-focus', '--color-canvas', NON_TEXT, 'Focus ring on the page'],
-  ['--color-border-focus', '--color-surface-overlay', NON_TEXT, 'Focus ring in the open menu'],
+  [
+    '--color-border-focus',
+    '--color-surface-overlay',
+    NON_TEXT,
+    'Focus ring on the overlay surface',
+  ],
   ['--color-border-focus', '--color-brand-subtle', NON_TEXT, 'Focus ring on the stage'],
+  ['--color-brand-on-subtle', '--color-brand-subtle', TEXT, 'Current section in the header'],
+  ['--color-canvas', '--color-text-primary', NON_TEXT, 'Close glyph on the open menu button'],
+  ['--color-text-secondary', GLASS, TEXT, 'Header links on the floating capsule'],
+  ['--color-text-primary', GLASS, TEXT, 'Links on the open menu card'],
+  ['--color-text-primary', '--color-surface-pressed', NON_TEXT, 'Menu glyph, filled circle'],
+  ['--color-brand-solid', GLASS, NON_TEXT, 'Download action and mark on the capsule'],
+  ['--color-border-focus', GLASS, NON_TEXT, 'Focus ring on the floating capsule'],
 ];
 
 let failures = 0;
@@ -114,11 +150,14 @@ for (const [label, theme] of [
 ]) {
   console.log(`\n${label}`);
   for (const [fg, bg, min, usage] of pairs) {
-    const value = ratio(resolve(theme, fg), resolve(theme, bg));
+    const glass = typeof bg === 'object';
+    const background = glass ? glassOver(theme, bg[label]) : resolve(theme, bg);
+    const value = ratio(resolve(theme, fg), background);
     const pass = value >= min;
     if (!pass) failures += 1;
+    const where = glass ? `--color-surface-glass over ${bg[label]}` : bg;
     console.log(
-      `${pass ? 'pass' : 'FAIL'}  ${value.toFixed(2).padStart(5)}:1  (min ${min})  ${fg} on ${bg}  ${usage}`,
+      `${pass ? 'pass' : 'FAIL'}  ${value.toFixed(2).padStart(5)}:1  (min ${min})  ${fg} on ${where}  ${usage}`,
     );
   }
 }

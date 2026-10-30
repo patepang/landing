@@ -60,6 +60,9 @@ for (const { name, setting, size, layout } of cases) {
     expect(await page.evaluate(clippedElements)).toEqual([]);
 
     await expect(page.getByRole('heading', { level: 1 })).toBeInViewport();
+    // With this much zoom or text, the header rests at the top of the page instead of following
+    // the reader and covering a large share of the window.
+    await expect(page.locator('header')).toHaveCSS('position', 'relative');
     // Below 768 CSS px the section links sit behind the menu. Open, its first link is fully in
     // the window, and the last one can be scrolled to in full.
     if (layout < 768) {

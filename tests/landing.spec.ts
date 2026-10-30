@@ -107,7 +107,7 @@ test.describe('landing', () => {
       'Setelah bertemu, hubungan tetap terjaga.',
       'Dibuat untuk pertemuan seperti ini.',
       'Tanya jawab',
-      'Patepang segera hadir.',
+      'Patepang sudah hadir.',
     ]) {
       await expect(page.getByRole('heading', { level: 2, name })).toBeVisible();
     }
@@ -129,7 +129,7 @@ test.describe('landing', () => {
     const head = page.locator('head');
     await expect(head.locator('meta[name="description"]')).toHaveAttribute(
       'content',
-      /Segera hadir/,
+      /Sudah bisa diunduh/,
     );
     await expect(head.locator('link[rel="canonical"]')).toHaveAttribute(
       'href',
@@ -141,14 +141,15 @@ test.describe('landing', () => {
     await expect(head.locator('link[rel="icon"]')).toHaveAttribute('href', 'data:,');
   });
 
-  test('says it is not out yet and makes no claims or offers it cannot keep', async ({ page }) => {
+  test('says it is out, and makes no claims or offers it cannot keep', async ({ page }) => {
     await openLanding(page);
-    await expect(page.getByText('Segera hadir. Belum tersedia untuk diunduh.')).toBeVisible();
+    await expect(page.getByText('Sudah hadir. Tersedia untuk diunduh.')).toBeVisible();
     for (const image of await page.locator('[role="img"]').all()) {
       await expect(image).toHaveAttribute('aria-label', /\S/);
     }
-    // No forms, downloads, waitlists, store badges, ratings, security promises, and no quotes:
-    // the situations in "Cerita" are examples told to the reader, not testimonials.
+    // No forms, waitlists, store badges, ratings, security promises, and no quotes: the
+    // situations in "Cerita" are examples told to the reader, not testimonials. The store links
+    // are not in yet, so no store is named either.
     await expect(page.locator('form, input, textarea, select')).toHaveCount(0);
     await expect(page.locator('blockquote, q, cite')).toHaveCount(0);
     // Everything a reader or a screen reader can meet: closed FAQ answers, labels and metadata too.
@@ -165,6 +166,10 @@ test.describe('landing', () => {
     });
     expect(text, 'the scan reaches closed FAQ answers').toContain('titik lahir');
     for (const banned of [
+      // The pre-launch wording is gone everywhere.
+      'segera hadir',
+      'belum bisa diunduh',
+      'belum tersedia',
       'enkripsi',
       'terenkripsi',
       'keamanan',
@@ -221,6 +226,23 @@ test.describe('landing', () => {
     // The closing call leads back into the page too.
     await page.getByRole('link', { name: 'Lihat cara kerja' }).last().click();
     await expect(page.locator('#cara-kerja')).toBeFocused();
+
+    // The header's download action leads to the closing section, which lands below the floating
+    // header rather than under it.
+    await page
+      .getByRole('navigation', { name: 'Utama' })
+      .getByRole('link', { name: 'Unduh Patepang' })
+      .click();
+    await expect(page).toHaveURL(/#unduh$/);
+    const heading = page.locator('#unduh');
+    await expect(heading).toBeFocused();
+    await expect(heading).toBeInViewport();
+    const covered = await heading.evaluate((el) => {
+      const box = el.getBoundingClientRect();
+      const hit = document.elementFromPoint(box.left + 8, box.top + 8);
+      return hit !== null && !el.contains(hit);
+    });
+    expect(covered).toBe(false);
   });
 
   test('the header shows the section links from 768px and a working menu below that', async ({
@@ -228,12 +250,26 @@ test.describe('landing', () => {
     baseURL,
   }) => {
     const all = ['Cara kerja', 'Fitur', 'Cerita', 'Tanya jawab'];
+    // On screen the action reads "Unduh"; its accessible name is "Unduh Patepang".
+    const action = 'Unduh';
     const nav = 'nav[aria-label="Utama"]';
 
     const wide = await newPage(browser, baseURL, { viewport: { width: 768, height: 900 } });
     await openLanding(wide.page);
-    expect(await shownLinks(wide.page, nav)).toEqual(all);
+    expect(await shownLinks(wide.page, nav)).toEqual([...all, action]);
     await expect(wide.page.locator(`${nav} summary`)).toBeHidden();
+    // Mark, links and action share one row.
+    const tops = await wide.page
+      .locator(`header a[href="#atas"], ${nav} a[data-section], ${nav} a[href="#unduh"]`)
+      .evaluateAll((links) =>
+        links
+          .filter((link) => link.checkVisibility())
+          .map((link) => {
+            const box = link.getBoundingClientRect();
+            return Math.round(box.top + box.height / 2);
+          }),
+      );
+    expect(new Set(tops).size).toBe(1);
     await wide.context.close();
 
     const { context, page } = await newPage(browser, baseURL, {
@@ -243,11 +279,12 @@ test.describe('landing', () => {
     const menu = page.locator(`${nav} details`);
     const button = menu.locator('summary');
     await expect(button).toHaveText('Menu');
-    expect(await shownLinks(page, nav)).toEqual([]);
+    // The download action stays in reach; the section links wait behind the menu.
+    expect(await shownLinks(page, nav)).toEqual([action]);
 
     // Choosing a link closes the menu and lands on the section, with focus on its heading.
     await button.click();
-    expect(await shownLinks(page, nav)).toEqual(all);
+    expect(await shownLinks(page, nav)).toEqual([action, ...all]);
     await page.locator(nav).getByRole('link', { name: 'Tanya jawab' }).click();
     await expect(page).toHaveURL(/#tanya-jawab$/);
     await expect(page.locator('#tanya-jawab')).toBeFocused();
@@ -263,6 +300,110 @@ test.describe('landing', () => {
     await expect(menu).not.toHaveAttribute('open', '');
     await expect(button).toBeFocused();
     await context.close();
+  });
+
+  test('the header floats once the page scrolls, and marks the section being read', async ({
+    page,
+  }) => {
+    await openLanding(page);
+    const header = page.locator('header');
+    const current = page.locator('nav[aria-label="Utama"] a[aria-current="true"]');
+    await expect(header).toHaveCSS('position', 'sticky');
+    await expect(header).not.toHaveAttribute('data-floating');
+    await expect(current).toHaveCount(0);
+
+    for (const [id, name] of [
+      ['fitur', 'Fitur'],
+      ['cerita', 'Cerita'],
+      ['cara-kerja', 'Cara kerja'],
+    ] as const) {
+      await page.locator(`#${id}`).evaluate((heading) => {
+        heading.scrollIntoView({ block: 'start' });
+      });
+      await expect(header).toHaveAttribute('data-floating', '');
+      // The same section on both of its links: the row's and the menu's.
+      await expect(current).toHaveText([name, name]);
+    }
+    expect(await header.evaluate((el) => el.getBoundingClientRect().top)).toBe(0);
+
+    await page.evaluate(() => {
+      window.scrollTo(0, 0);
+    });
+    await expect(header).not.toHaveAttribute('data-floating');
+    await expect(current).toHaveCount(0);
+  });
+
+  test('on phones the floating header steps aside on the way down and returns on the way up', async ({
+    browser,
+    baseURL,
+  }) => {
+    const { context, page } = await newPage(browser, baseURL, {
+      viewport: { width: 390, height: 844 },
+    });
+    await openLanding(page);
+    const header = page.locator('header');
+    const bottom = () => header.evaluate((el) => el.getBoundingClientRect().bottom);
+
+    // Near the top it floats and stays, so the capsule is seen first.
+    await page.mouse.wheel(0, 100);
+    await expect(header).toHaveAttribute('data-floating', '');
+    await expect(header).not.toHaveAttribute('data-hidden');
+
+    // Reading on, it steps out of the window; a little scroll back brings it in again.
+    await page.mouse.wheel(0, 700);
+    await expect(header).toHaveAttribute('data-hidden', '');
+    await expect.poll(bottom).toBeLessThanOrEqual(0);
+    await page.mouse.wheel(0, -100);
+    await expect(header).not.toHaveAttribute('data-hidden');
+    await expect.poll(bottom).toBeGreaterThan(0);
+
+    // Keyboard focus brings it back too.
+    await page.mouse.wheel(0, 700);
+    await expect(header).toHaveAttribute('data-hidden', '');
+    await header.locator('summary').focus();
+    await expect(header).not.toHaveAttribute('data-hidden');
+    await context.close();
+  });
+
+  test('the header mark dots meet once on arrival, and stay still with reduced motion', async ({
+    browser,
+    baseURL,
+  }) => {
+    for (const reducedMotion of ['no-preference', 'reduce'] as const) {
+      const { context, page } = await newPage(browser, baseURL, { reducedMotion });
+      await page.goto('/');
+      const dots = page.locator('header [data-from] > span');
+      const names = await dots.evaluateAll((spans) =>
+        spans.map((span) => getComputedStyle(span).animationName),
+      );
+      if (reducedMotion === 'reduce') {
+        expect(names).toEqual(['none', 'none']);
+      } else {
+        expect(names).toEqual([
+          expect.stringContaining('first-arrives'),
+          expect.stringContaining('second-arrives'),
+        ]);
+        expect(
+          await dots.evaluateAll((spans) =>
+            spans.map((span) => getComputedStyle(span).animationIterationCount),
+          ),
+        ).toEqual(['1', '1']);
+        // Once met, nothing runs on them again.
+        await expect
+          .poll(() => dots.evaluateAll((spans) => spans.flatMap((span) => span.getAnimations())))
+          .toHaveLength(0);
+      }
+
+      // Floating: with reduced motion the header changes shape at once instead of travelling.
+      await page.evaluate(() => {
+        window.scrollTo(0, 400);
+      });
+      await expect(page.locator('header')).toHaveAttribute('data-floating', '');
+      const home = page.locator('header a[href="#atas"]');
+      if (reducedMotion === 'reduce') await expect(home).toHaveCSS('transition-duration', '0s');
+      else await expect(home).not.toHaveCSS('transition-duration', '0s');
+      await context.close();
+    }
   });
 
   test('the skip link comes first and moves focus to the content', async ({ page }) => {
@@ -293,18 +434,19 @@ test.describe('landing', () => {
       expect(focus.ring, focus.name).toBe('solid 2px rgb(36, 92, 143)');
       stops.push(focus.name);
     }
-    expect(stops.slice(0, 8)).toEqual([
+    expect(stops.slice(0, 9)).toEqual([
       'Langsung ke isi',
-      'patepang',
+      'Patepang',
       'Cara kerja',
       'Fitur',
       'Cerita',
       'Tanya jawab',
+      'Unduh Patepang',
       'Lihat cara kerja',
       'Jelajahi fitur',
     ]);
     // Then the walk-through's button: "Putar", or "Putar lagi" once it has played by itself.
-    expect(stops[8]).toMatch(/^Putar/);
+    expect(stops[9]).toMatch(/^Putar/);
   });
 
   for (const width of [360, 1440]) {
@@ -455,7 +597,7 @@ test.describe('landing', () => {
 
     const last = page.locator(`${FAQ} details`).last();
     await last.locator('summary').click();
-    await expect(last.locator('p')).toContainText('Belum ada tanggal');
+    await expect(last.locator('p')).toContainText('sudah bisa diunduh');
   });
 
   test('the theme follows the operating system, and so does the browser colour', async ({
@@ -508,6 +650,8 @@ test.describe('landing', () => {
     const { context, page } = await newPage(browser, baseURL, { javaScriptEnabled: false });
     await page.goto('/');
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    // The header rests at the top of the page: floating needs the script that styles it.
+    await expect(page.locator('header')).toHaveCSS('position', 'relative');
     await expect(page.locator(`${DEMO} ol > li`)).toHaveCount(3);
     await expect(page.getByText('Selesai untuk hari ini')).toBeVisible();
     await expect(page.getByText('Memudar dalam 24 hari.', { exact: false })).toBeVisible();
@@ -522,8 +666,11 @@ test.describe('landing', () => {
     await context.close();
 
     // The phone menu is a native disclosure, so it opens and its links work without JavaScript.
+    // Reduced motion: without JavaScript, Playwright cannot wait for the panel's unfolding to end
+    // before it clicks (its stability check needs page scripts), so the panel only fades here.
     const phone = await newPage(browser, baseURL, {
       javaScriptEnabled: false,
+      reducedMotion: 'reduce',
       viewport: { width: 390, height: 844 },
     });
     await phone.page.goto('/');
