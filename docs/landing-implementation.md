@@ -58,7 +58,8 @@ Satu route `/` berisi seluruh halaman, ditambah 404:
    "Patepang segera hadir." dengan dua anchor kembali ke Cara kerja dan
    Fitur. Tidak ada unduhan, daftar tunggu, atau formulir.
 9. **Footer**: lockup, "Hanya orang yang pernah kamu temui.", tautan section, "© 2026 Patepang",
-   dan "Kembali ke atas". Tidak ada tautan ke halaman yang belum ada.
+   dan "Kembali ke atas". Tidak ada tautan ke halaman yang belum ada. **Direvisi 30 Oktober 2026**
+   (§8.3): wordmark selebar kolom menggantikan lockup.
 
 Pratinjau app adalah terjemahan HTML/CSS/SVG dari komponen sumber dengan data contoh, tanpa
 screenshot asli. Setiap pratinjau punya nama aksesibel (`role="img"` + `aria-label`).
@@ -456,13 +457,82 @@ tersedia". Nama toko dan platform tetap dilarang sampai tautan toko diberikan.
   1.63). Bagian menu HP di tes itu memakai gerak dikurangi. Di browser sungguhan tautannya langsung
   bisa ditekan.
 
-**Belum dikerjakan di putaran ini:**
+### 8.3 Footer (putaran kedua, 30 Oktober 2026)
+
+**Yang dibangun:**
+
+- **Isi tetap, susunannya baru:** kalimat merek "Hanya orang yang pernah kamu temui." (ukuran
+  section), tautan section, wordmark, lalu baris terakhir dengan "© 2026 Patepang" dan "Kembali ke
+  atas". Tetap hanya tujuan yang sungguh ada: belum ada kontak, akun media sosial, atau halaman
+  legal.
+- **Wordmark selebar kolom:** "patepang" (Bold, warna merek) tintanya tepat selebar kolom halaman
+  di semua lebar, dari 71px di 360px sampai 302px di 1440px. Ukurannya `100cqw / 4.497` (kolom
+  sebagai container), dengan margin yang menarik kotak ke tinta. Angkanya diukur dari render
+  halaman sendiri pada 1000px, karena `measureText` canvas membulatkan batas glyph di beberapa
+  ukuran (0,047em, padahal yang tergambar 0,061em). Wordmark berdiri 24px di atas hairline baris
+  terakhir. Ia `aria-hidden`; namanya terbaca di baris terakhir.
+- **Grid:** mulai 48em, kalimat menempati kolom 1–7 dan tautan satu kolom di kolom 9–12, dengan
+  label pertama sejajar puncak kalimat. Di HP tautan dua kolom, dan satu kolom di bawah 20em
+  (teks sangat besar), supaya tiap label tetap satu baris.
+- **Kontrol:** tautan dan "Kembali ke atas" memakai bahasa header: kapsul 36px di dalam target
+  48px, dengan permukaan pressed saat hover atau tekan, dan cincin fokus yang memeluk kapsul.
+  Labelnya sejajar tepi kolom, dan targetnya tetap di dalam gutter tersempit (20px). Panah
+  "Kembali ke atas" naik 2px saat hover, dan tombolnya mengecil 0,97 saat ditekan.
+- **Tanpa gerak saat digulir** (janji kepada pemilik): footer diam, dan hanya kontrolnya yang
+  merespons. Dengan gerak dikurangi, panah tidak bergerak dan tekan tidak mengecilkan.
+
+**Keputusan dan penyimpangan:**
+
+| Hal | Keputusan | Alasan |
+|---|---|---|
+| Logo di halaman | Header memakai tanda dua titik saja (permintaan pemilik), footer menutup dengan wordmark saja. Lockup bertumpuk lengkap kini tidak tampil di halaman, tetapi tetap logo resmi. | Bersama-sama keduanya membentuk lockup: halaman dibuka dengan dua titik dan ditutup dengan namanya. Ukuran titik di design system (12, 16, 28px) tidak bisa mengikuti wordmark raksasa. Dicatat di `PRODUCT.md`; pemilik bisa memintanya kembali. |
+| Ukuran wordmark | Lebih besar dari batas display biasa (6rem). | Wordmark diperlakukan sebagai tanda merek, bukan judul, dan tetap `aria-hidden`. Ukurannya mengikuti kolom, bukan teks pembaca, sehingga tidak meluap pada teks 200%. |
+| Hairline atas footer | Dihapus. | Pita mist section penutup sudah memisahkan footer. |
+
+### 8.4 Seluruh halaman (putaran kedua)
+
+- **Tanpa scrollbar** (permintaan pemilik: "efek scroll yang di kanan, yang abu-abu"):
+  `scrollbar-width: none` dan `::-webkit-scrollbar { display: none }` pada halaman dan daftar menu.
+  Halaman tetap bisa digulir dengan roda, trackpad, sentuhan, dan keyboard (dites).
+- **Tanpa efek biru saat klik** (permintaan pemilik): `-webkit-tap-highlight-color: transparent`
+  untuk semua `a`, `button`, dan `summary` di `globals.css`, menggantikan deklarasi per komponen.
+  Klik mouse dan ketukan tidak pernah menampilkan cincin fokus (dites pada tautan header, tombol
+  unduh, pertanyaan FAQ, tombol "Putar", "Kembali ke atas", menu HP, dan tautan menu). Cincin
+  biru tetap muncul untuk navigasi keyboard, sesuai WCAG 2.4.7 dan design system.
+- **`#atas` kini penanda kosong di puncak halaman, bukan header.** Header yang menempel selalu
+  terlihat, jadi browser tidak menggulir ke sana. Akibatnya, sejak putaran header, "Kembali ke
+  atas" dan tanda di header tidak membawa pembaca ke atas. Ini ditemukan oleh tes footer yang baru,
+  dan kini dites: keduanya menggulir ke 0, dan fokus mendarat di penanda itu.
+- Perilaku header di HP (menyingkir saat menggulir ke bawah) tidak diubah. Pemilik menjelaskan
+  bahwa yang dimaksud "efek scroll" adalah scrollbar.
+
+**Verifikasi putaran kedua:**
+
+- `pnpm check:contrast`: 74 dari 74 pasangan lulus. Footer memakai pasangan yang sudah diukur.
+- `pnpm test:e2e`: 35 dari 35 lulus, termasuk 3 tes baru:
+  - klik dan ketukan tidak meninggalkan cincin fokus, keyboard menampilkannya, dan semua kontrol
+    tanpa warna tap;
+  - scrollbar tidak digambar, dan halaman tetap bergulir;
+  - tepi tinta wordmark, diukur dari piksel layar, sejajar tepi kolom (selisih < 1px) di 360, 768,
+    dan 1440px, lalu "Kembali ke atas" dan tanda header membawa ke atas walaupun header
+    mengambang.
+- Kegagalan nyata selama pengembangan menunjukkan tes ini menangkap masalahnya: angka canvas
+  membuat tinta meleset 1,7 sampai 4,5px dari tepi kolom, dan target `#atas` di header membuat
+  halaman tetap di bawah (`scrollY` 6052).
+- Tinjauan visual footer di 360, 390, 768, 1024, 1440, dan 1920px, terang dan gelap, hover,
+  fokus keyboard, dan teks 200%. Yang diperbaiki dari tinjauan itu:
+  - baris terakhir 12px lebih lebar dari kolom karena wordmark;
+  - overflow 2px di HP karena target "Kembali ke atas";
+  - "Tanya jawab" terpotong dua baris pada teks 200%.
+
+### 8.5 Belum dikerjakan
 
 - `docs/screenshots/` belum dibuat ulang, jadi gambarnya masih versi pra-rilis. Gambar akan dibuat
   ulang di akhir revisi bertahap, supaya ±6 MB gambar biner tidak ditulis ulang di setiap putaran.
   `tests/screenshots.spec.ts` sudah menunjuk `#unduh`.
 - Section penutup belum punya tombol toko, karena tautannya belum ada.
-- Footer, hero, dan section lain menunggu putaran berikutnya.
-- Hanya Chromium yang diuji. Yang perlu dicek di Safari dan Firefox: `backdrop-filter`, `subgrid`,
-  `:has()`, `color-mix()`, properti `translate`/`scale`, unit `cqw`, `clip-path` dengan `round`,
-  `prefers-reduced-transparency`, dan animasi tutup `<details>`.
+- Hero dan section lain menunggu putaran berikutnya.
+- Hanya Chromium yang diuji. Yang perlu dicek di Safari dan Firefox:
+  - `backdrop-filter`, `subgrid`, `:has()`, dan `color-mix()`;
+  - properti `translate`/`scale`, unit `cqw`, dan `clip-path` dengan `round`;
+  - `prefers-reduced-transparency`, `scrollbar-width`, dan animasi tutup `<details>`.

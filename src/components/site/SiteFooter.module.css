@@ -1,21 +1,31 @@
+/*
+ * The footer: the line Patepang stands for beside the section links, the wordmark across the page
+ * column, and the last line. It rests; only its controls respond, to the pointer and the keyboard,
+ * with the header's capsules and press feedback.
+ */
+
 .footer {
-  padding-block: var(--space-12) var(--space-10);
-  border-top: var(--border-hairline) solid var(--color-border-subtle);
+  /* Controls draw a 36px capsule inside their 48px target; at large text sizes they fill it. */
+  --control: calc(var(--type-label-line) + var(--space-4));
+  --pill-inset: max(0px, (var(--touch-target) - var(--control)) / 2);
+  padding-block: var(--space-16) var(--space-6);
 }
 
+/* The page column, measured by the wordmark (100cqw is its width). */
 .inner {
+  container-type: inline-size;
   display: grid;
-  gap: var(--space-8);
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: var(--space-10);
 }
 
-.identity {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-4);
+.line {
+  text-wrap: balance;
 }
 
-/* Two columns of links on phones; one row beside the identity on wide screens. */
+/* ---- Section links ---- */
+
+/* Two columns on phones; one column beside the line on wider screens. */
 .links {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -23,63 +33,196 @@
   list-style: none;
 }
 
+/*
+ * The label lines up with the page column. Its capsule (the pressed surface, on hover and press)
+ * reaches 12px past the label, and the focus ring hugs the capsule 2px out.
+ */
 .link {
+  position: relative;
+  isolation: isolate;
   display: inline-flex;
   align-items: center;
-  min-height: var(--touch-target);
-  margin-inline: calc(-1 * var(--space-3));
-  padding-inline: var(--space-3);
-  border-radius: var(--shape-button);
-  color: var(--color-brand-text);
-  font-size: var(--type-label-small-size);
-  line-height: var(--type-label-small-line);
+  margin-inline-start: calc(-1 * (var(--pill-inset) + var(--space-3)));
+  padding: calc(var(--pill-inset) + var(--space-2)) calc(var(--pill-inset) + var(--space-3));
+  border-radius: var(--radius-full);
+  color: var(--color-text-secondary);
+  font-size: var(--type-label-size);
+  line-height: var(--type-label-line);
   font-weight: var(--weight-semibold);
-  letter-spacing: var(--type-label-small-tracking);
   text-decoration: none;
+  outline-offset: calc(var(--focus-ring-offset) - var(--pill-inset));
+  transition: color var(--duration-press) var(--ease-out);
+}
+
+.link::before,
+.top::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: var(--pill-inset);
+  border-radius: var(--radius-full);
   transition: background-color var(--duration-press) var(--ease-out);
 }
 
-.link:active {
-  background: var(--color-surface-pressed);
+/*
+ * ---- The wordmark ----
+ * Its ink is exactly as wide as the page column. Measured from the page's own rendering of the
+ * brand face (Plus Jakarta Sans Bold) at display tracking: the ink of "patepang" is 4.497em wide
+ * and starts 0.061em in, and on a 1em line it runs from 0.24em below the line's top to 0.128em
+ * past its bottom (the descenders). The margins pull the box onto the ink, so the space around it
+ * is the space that shows.
+ */
+.wordmark {
+  --ink-width: 4.497;
+  --ink-start: 0.061em;
+  --ink-top: 0.24em;
+  --ink-below: 0.128em;
+  margin: calc(-1 * var(--ink-top)) 0 var(--ink-below) calc(-1 * var(--ink-start));
+  color: var(--color-brand-text);
+  font-size: calc(100cqw / var(--ink-width));
+  line-height: 1;
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--type-display-tracking);
+  white-space: nowrap;
+  user-select: none;
 }
 
-@media (hover: hover) {
-  .link:hover {
-    background: var(--color-surface-pressed);
-  }
+/*
+ * The wordmark resting 24px above the last line's hairline. The column is held to the page width:
+ * the wordmark's advance runs a few pixels past its ink, and must not widen the line below.
+ */
+.end {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: var(--space-6);
 }
 
-/* The last line: who, and the way back up. */
+/* ---- The last line: who, and the way back up ---- */
+
 .base {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-2) var(--space-6);
-  padding-top: var(--space-6);
+  padding-top: var(--space-3);
   border-top: var(--border-hairline) solid var(--color-border-subtle);
 }
 
-@media (min-width: 768px) {
+/*
+ * The label and its arrow line up with the column's right edge; the capsule reaches 12px past
+ * them and the target 18px, which stays inside the narrowest gutter (20px).
+ */
+.top {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-inline-end: calc(-1 * (var(--pill-inset) + var(--space-3)));
+  padding: calc(var(--pill-inset) + var(--space-2)) calc(var(--pill-inset) + var(--space-3));
+  border-radius: var(--radius-full);
+  color: var(--color-text-primary);
+  font-size: var(--type-label-small-size);
+  line-height: var(--type-label-small-line);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--type-label-small-tracking);
+  text-decoration: none;
+  outline-offset: calc(var(--focus-ring-offset) - var(--pill-inset));
+  transition: scale var(--duration-press) var(--ease-out);
+}
+
+/* 16px at the default text size, growing with it like the label. */
+.topIcon {
+  width: 1rem;
+  height: 1rem;
+  transition: translate var(--duration-selection) var(--ease-out);
+}
+
+.link:active {
+  color: var(--color-text-primary);
+}
+
+.link:active::before,
+.top:active::before {
+  background: var(--color-surface-pressed);
+}
+
+.top:active {
+  scale: var(--motion-press-scale);
+}
+
+@media (hover: hover) {
+  .link:hover {
+    color: var(--color-text-primary);
+  }
+
+  .link:hover::before,
+  .top:hover::before {
+    background: var(--color-surface-pressed);
+  }
+
+  /* The arrow lifts toward where it leads. */
+  .top:hover .topIcon {
+    translate: 0 calc(var(--space-1) / -2);
+  }
+}
+
+/* At very large text sizes on a phone (under 20em), one column keeps each label on one line. */
+@media (max-width: 19.99em) {
+  .links {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/*
+ * From 48em (in em, so a larger reader text size keeps the narrow layout longer): the line on
+ * the left of a 12-column grid and the links in one column on the right, their first label level
+ * with the top of the line.
+ */
+@media (min-width: 48em) {
+  .footer {
+    padding-top: calc(var(--space-16) + var(--space-8));
+  }
+
   .inner {
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: start;
-    column-gap: var(--space-12);
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--space-8);
+    row-gap: var(--space-16);
+  }
+
+  .line {
+    grid-column: 1 / span 7;
+  }
+
+  .nav {
+    grid-column: 9 / span 4;
+    margin-top: calc(-1 * (var(--pill-inset) + var(--space-2)));
   }
 
   .links {
-    display: flex;
-    flex-wrap: wrap;
-    column-gap: var(--space-6);
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  .base {
+  .end {
     grid-column: 1 / -1;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .link {
+  .link,
+  .link::before,
+  .top,
+  .top::before,
+  .topIcon {
     transition: none;
+  }
+
+  .top:active {
+    scale: none;
+  }
+
+  .top:hover .topIcon {
+    translate: none;
   }
 }

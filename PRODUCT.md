@@ -94,9 +94,9 @@ Komitmen berikut mengikat menurut brief pengguna:
 
 - Ini bukan redesign identitas. Logo dipertahankan, yaitu wordmark huruf kecil `patepang` dan
   lockup dua titik di atas wordmark. Atas permintaan pemilik (30 Oktober 2026), header landing
-  hanya memakai tanda dua titik sebagai ikon; lockup lengkap tetap dipakai di footer. Karakter
-  dan bagian design system aplikasi yang sudah bagus juga dipertahankan. Setiap penyimpangan
-  penting dicatat bersama bukti masalah dan manfaatnya.
+  hanya memakai tanda dua titik sebagai ikon, dan footer menutup halaman dengan wordmark saja;
+  lockup bertumpuk tetap logo resmi. Karakter dan bagian design system aplikasi yang sudah bagus
+  juga dipertahankan. Setiap penyimpangan penting dicatat bersama bukti masalah dan manfaatnya.
 - Plus Jakarta Sans adalah keluarga huruf utama. Phosphor dipakai konsisten, dengan bobot dan
   ukuran yang tertib.
 - Arahnya warm-modern, presisi, polished, dan terasa manusiawi.

@@ -10,11 +10,17 @@ import { SiteHeader } from '@/components/site/SiteHeader';
 
 /**
  * The whole landing, read top to bottom: what Patepang is, the problem, how it works, what it
- * does after a meeting, situations it is made for, questions, and when it arrives.
+ * does after a meeting, situations it is made for, questions, and how to start.
  */
 export default function HomePage() {
   return (
     <>
+      {/*
+       * The top of the page, where the mark and "Kembali ke atas" lead. It is not the header: a
+       * header that stays at the top of the window is always in view, so the browser would not
+       * scroll back to it. Empty, so it takes no space; it takes focus, and Tab goes on from there.
+       */}
+      <div id="atas" tabIndex={-1} />
       <a className="skip-link" href="#isi">
         Langsung ke isi
       </a>

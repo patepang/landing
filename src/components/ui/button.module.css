@@ -21,7 +21,6 @@
   text-align: center;
   text-decoration: none;
   cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
   transition:
     background-color var(--duration-press) var(--ease-out),
     transform var(--duration-press) var(--ease-out);

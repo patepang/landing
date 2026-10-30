@@ -13,6 +13,15 @@ html {
   text-size-adjust: 100%;
   /* Anchored sections land with a little air above them. */
   scroll-padding-top: var(--space-6);
+  /*
+   * No scrollbar is drawn (owner's request, 30 October 2026); the page still scrolls with a wheel,
+   * trackpad, touch or the keyboard.
+   */
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar {
+  display: none;
 }
 
 /*
@@ -78,6 +87,16 @@ a {
 
 svg {
   flex-shrink: 0;
+}
+
+/*
+ * No flash on tap: mobile browsers tint what is pressed (blue on Android). Every control here
+ * gives its own press feedback, so the browser's is turned off everywhere.
+ */
+a,
+button,
+summary {
+  -webkit-tap-highlight-color: transparent;
 }
 
 ::selection {

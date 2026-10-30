@@ -406,6 +406,140 @@ test.describe('landing', () => {
     }
   });
 
+  test('a click or a tap never leaves the blue focus ring; the keyboard does', async ({
+    browser,
+    baseURL,
+  }) => {
+    const ring = (page: Page) =>
+      page.evaluate(() => getComputedStyle(document.activeElement ?? document.body).outlineStyle);
+
+    const desk = await newPage(browser, baseURL, { viewport: { width: 1280, height: 800 } });
+    await openLanding(desk.page);
+    const nav = desk.page.getByRole('navigation', { name: 'Utama' });
+    for (const target of [
+      nav.getByRole('link', { name: 'Cerita' }),
+      nav.getByRole('link', { name: 'Unduh Patepang' }),
+      desk.page.locator(`${FAQ} summary`).first(),
+      desk.page.getByRole('button', { name: /^Putar/ }),
+      desk.page.getByRole('link', { name: 'Kembali ke atas' }),
+    ]) {
+      await target.click();
+      expect(await ring(desk.page)).toBe('none');
+    }
+    await desk.page.keyboard.press('Tab');
+    expect(await ring(desk.page)).toBe('solid');
+    await desk.context.close();
+
+    // Taps, and the browser's own tap tint (blue on Android) is off on everything pressable.
+    const phone = await newPage(browser, baseURL, {
+      viewport: { width: 390, height: 844 },
+      hasTouch: true,
+      isMobile: true,
+    });
+    await openLanding(phone.page);
+    const menu = phone.page.getByRole('navigation', { name: 'Utama' });
+    await menu.locator('summary').tap();
+    expect(await ring(phone.page)).toBe('none');
+    await menu.getByRole('link', { name: 'Fitur' }).tap();
+    expect(await ring(phone.page)).toBe('none');
+    const tints = await phone.page
+      .locator('a, button, summary')
+      .evaluateAll((elements) => [
+        ...new Set(
+          elements.map((el) =>
+            getComputedStyle(el).getPropertyValue('-webkit-tap-highlight-color'),
+          ),
+        ),
+      ]);
+    expect(tints).toEqual(['rgba(0, 0, 0, 0)']);
+    await phone.context.close();
+  });
+
+  test('no scrollbar is drawn, and the page still scrolls', async ({ page }) => {
+    await openLanding(page);
+    await expect(page.locator('html')).toHaveCSS('scrollbar-width', 'none');
+    await page.mouse.wheel(0, 600);
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
+  });
+
+  test('the footer wordmark is exactly as wide as the page column, and the way back up works', async ({
+    browser,
+    baseURL,
+  }) => {
+    for (const width of [360, 768, 1440]) {
+      const { context, page } = await newPage(browser, baseURL, {
+        viewport: { width, height: 900 },
+      });
+      await openLanding(page);
+      // The ink as drawn: the first and last columns of wordmark pixels, against the column.
+      const wordmark = page.locator('footer p[aria-hidden="true"]');
+      await wordmark.scrollIntoViewIfNeeded();
+      const area = await wordmark.evaluate((el) => {
+        const column = el.closest('footer')?.firstElementChild;
+        if (!(column instanceof HTMLElement)) throw new Error('No column');
+        const box = column.getBoundingClientRect();
+        const padding = getComputedStyle(column);
+        const own = el.getBoundingClientRect();
+        return {
+          top: own.top,
+          height: own.height,
+          columnLeft: box.left + parseFloat(padding.paddingLeft),
+          columnRight: box.right - parseFloat(padding.paddingRight),
+        };
+      });
+      const shot = await page.screenshot({
+        clip: { x: 0, y: area.top, width, height: area.height },
+      });
+      const ink = await page.evaluate(async (png) => {
+        const image = new Image();
+        image.src = `data:image/png;base64,${png}`;
+        await image.decode();
+        const canvas = document.createElement('canvas');
+        canvas.width = image.width;
+        canvas.height = image.height;
+        const context = canvas.getContext('2d');
+        if (!context) throw new Error('No canvas');
+        context.drawImage(image, 0, 0);
+        const { data } = context.getImageData(0, 0, canvas.width, canvas.height);
+        // Forest ink is far darker in red than the ivory canvas: the midpoint splits them.
+        const inked = (x: number) => {
+          for (let y = 0; y < canvas.height; y += 1) {
+            if ((data[(y * canvas.width + x) * 4] ?? 255) < 139) return true;
+          }
+          return false;
+        };
+        let left = 0;
+        while (left < canvas.width && !inked(left)) left += 1;
+        let right = canvas.width - 1;
+        while (right > left && !inked(right)) right -= 1;
+        return { left, right: right + 1 };
+      }, shot.toString('base64'));
+      const fit = {
+        inkLeft: ink.left,
+        inkRight: ink.right,
+        columnLeft: area.columnLeft,
+        columnRight: area.columnRight,
+      };
+      expect(Math.abs(fit.inkLeft - fit.columnLeft), String(width)).toBeLessThan(1);
+      expect(Math.abs(fit.inkRight - fit.columnRight), String(width)).toBeLessThan(1);
+
+      if (width === 1440) {
+        // Back to the very top, although the floating header is in view the whole time.
+        await page.getByRole('link', { name: 'Kembali ke atas' }).click();
+        await expect(page).toHaveURL(/#atas$/);
+        await expect(page.locator('#atas')).toBeFocused();
+        await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
+        // The mark in the floating header leads there too.
+        await page.locator('#cerita').evaluate((heading) => {
+          heading.scrollIntoView();
+        });
+        await page.locator('header a[href="#atas"]').click();
+        await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
+      }
+      await context.close();
+    }
+  });
+
   test('the skip link comes first and moves focus to the content', async ({ page }) => {
     await openLanding(page);
     await page.keyboard.press('Tab');

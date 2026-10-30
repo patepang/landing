@@ -184,7 +184,7 @@ export function HeaderShell({ className, children }: HeaderShellProps) {
   }, []);
 
   return (
-    <header ref={ref} id="atas" className={className} tabIndex={-1}>
+    <header ref={ref} className={className}>
       {children}
     </header>
   );
