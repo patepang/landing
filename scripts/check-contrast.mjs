@@ -88,6 +88,12 @@ const pairs = [
   ['--color-text-primary', '--color-surface-raised', TEXT, 'Text in preview cards'],
   ['--color-text-primary', '--color-surface-pressed', TEXT, 'Header and footer links on hover'],
   ['--color-text-primary', '--color-brand-subtle', TEXT, 'Note titles, closing heading on mist'],
+  [
+    '--color-text-primary',
+    '--color-surface-sunken',
+    TEXT,
+    'Titles on the sand band, own chat bubbles',
+  ],
   ['--color-text-secondary', '--color-canvas', TEXT, 'Ledes, FAQ answers, footer links'],
   ['--color-text-secondary', '--color-surface-raised', TEXT, 'Card details in previews'],
   ['--color-text-secondary', '--color-surface-sunken', TEXT, 'Neutral badge in previews'],
@@ -120,6 +126,12 @@ const pairs = [
   ['--color-code-ink', '--color-code-surface', NON_TEXT, 'Demo code pattern'],
   ['--color-code-ring', '--color-code-surface', NON_TEXT, 'Lit code card in the hero'],
   ['--color-border-strong', '--color-canvas', NON_TEXT, 'Menu button and upcoming step outlines'],
+  [
+    '--color-border-strong',
+    '--color-surface-sunken',
+    NON_TEXT,
+    'Rail and its ticks on the sand band',
+  ],
   ['--color-brand-solid', '--color-canvas', NON_TEXT, 'Primary button against the page'],
   [
     '--color-brand-solid',

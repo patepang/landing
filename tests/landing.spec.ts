@@ -4,6 +4,7 @@ import { openWithBrowserSetting } from './browser-settings';
 import { openLanding, watchProblems } from './helpers';
 
 const HERO = 'section[aria-labelledby="judul-utama"]';
+const PROBLEM = 'section[aria-labelledby="masalah"]';
 const DEMO = 'section[aria-labelledby="cara-kerja"]';
 const FAQ = 'section[aria-labelledby="tanya-jawab"]';
 /** The walk-through moves on at 0.9s and 1.9s; waits allow far more, since order is checked. */
@@ -140,6 +141,55 @@ function expectNotesInPlace(stage: Awaited<ReturnType<typeof measureStage>>) {
     // At least 32px of the stage stays below every note.
     expect(note.below, note.id).toBeGreaterThanOrEqual(32);
   }
+}
+
+/**
+ * Where the problem's story stands: how far the second dot has drifted along the rail (0 touching
+ * the first dot, 1 at the far end) and how faded it is; how much of each memory in the contact is
+ * left; how far Sari's post has been pushed down the feed, and how much of it still shows; and how
+ * long ago the chat's last message was.
+ */
+async function storyState(page: Page) {
+  return page.locator(PROBLEM).evaluate((section) => {
+    const rail = section.querySelector('ol')?.parentElement?.firstElementChild;
+    const [you, them] = [...(rail?.children ?? [])];
+    const [feedWindow, age] = [...section.querySelectorAll('[data-intentional-crop]')];
+    const post = [...(feedWindow?.firstElementChild?.children ?? [])].find((child) =>
+      child.textContent.includes('Sari'),
+    );
+    if (!rail || !you || !them || !feedWindow || !age || !post) throw new Error('No story');
+    const across = getComputedStyle(rail).height === getComputedStyle(you).height;
+    const box = (el: Element) => el.getBoundingClientRect();
+    const [line, first, second] = [box(rail), box(you), box(them)];
+    const travelled = across ? second.left - first.right : second.top - first.bottom;
+    const room = across
+      ? line.right - first.right - second.width
+      : line.bottom - first.bottom - second.height;
+    const shown = [...(age.firstElementChild?.children ?? [])].find(
+      (label) => Math.abs(box(label).top - box(age).top) < 1,
+    );
+    return {
+      drift: travelled / room,
+      fade: Number(getComputedStyle(them).opacity),
+      dotMiddle: across ? second.left + second.width / 2 : second.top + second.height / 2,
+      memories: [...section.querySelectorAll('[data-part]')]
+        .slice(0, 3)
+        .map((memory) => Number(getComputedStyle(memory).opacity)),
+      sariFromTop: box(post).top - box(feedWindow).top,
+      sariShowing: box(feedWindow).bottom - box(post).top,
+      lastMessage: shown?.textContent ?? '',
+    };
+  });
+}
+
+/** Scrolls so the problem's story ends `below` px above the bottom of the window. */
+async function showStory(page: Page, below: number) {
+  await page.locator(PROBLEM).evaluate((section, gap) => {
+    const story = section.querySelector('ol')?.parentElement;
+    if (!story) throw new Error('No story');
+    const bottom = story.getBoundingClientRect().bottom + window.scrollY;
+    window.scrollTo(0, bottom - window.innerHeight + gap);
+  }, below);
 }
 
 async function newPage(browser: Browser, baseURL: string | undefined, options: object = {}) {
@@ -604,6 +654,100 @@ test.describe('landing', () => {
     await context.close();
   });
 
+  test('the problem is told as one meeting fading over a week, a month and a year', async ({
+    page,
+  }) => {
+    await openLanding(page);
+    // The pictures are pictures only: what reaches assistive technology is the words.
+    await expect(page.locator(PROBLEM)).toMatchAriaSnapshot(`
+      - heading "Setelah pamit, kabar sering berhenti begitu saja." [level=2]
+      - paragraph: /^Kenalan di sebuah acara/
+      - list:
+        - listitem:
+          - paragraph: Seminggu kemudian
+          - heading "Kontaknya tersimpan, ceritanya hilang." [level=3]
+          - paragraph: /^Nama dan nomor ada di HP/
+        - listitem:
+          - paragraph: Sebulan kemudian
+          - heading "Kabarnya tenggelam." [level=3]
+          - paragraph: /^Di media sosial/
+        - listitem:
+          - paragraph: Setahun kemudian
+          - heading "Bertemu lagi terus tertunda." [level=3]
+          - paragraph: /basa-basi\.$/
+    `);
+  });
+
+  test('time passes as the story scrolls into view, and stands still with reduced motion', async ({
+    browser,
+    baseURL,
+  }) => {
+    for (const reducedMotion of ['no-preference', 'reduce'] as const) {
+      const { context, page } = await newPage(browser, baseURL, {
+        viewport: { width: 1440, height: 900 },
+        reducedMotion,
+      });
+      await openLanding(page);
+      const ended = {
+        drift: expect.closeTo(1, 2),
+        fade: expect.closeTo(0.4, 2),
+        memories: [0, 0, 0],
+        // Five posts above it, Sari's post shows only its first 32px at the bottom of the feed.
+        sariShowing: expect.closeTo(32, 0),
+        lastMessage: 'setahun lalu',
+      };
+      if (reducedMotion === 'reduce') {
+        // Nothing moves: the story shows how it ends wherever the reader is.
+        expect(await storyState(page)).toMatchObject(ended);
+        expect(
+          await page
+            .locator(PROBLEM)
+            .evaluate((section) => section.getAnimations({ subtree: true }).length),
+        ).toBe(0);
+      } else {
+        // Before the story comes into view, the two dots still touch and nothing has faded.
+        expect(await storyState(page)).toMatchObject({
+          drift: expect.closeTo(0, 2),
+          fade: 1,
+          memories: [1, 1, 1],
+          sariFromTop: expect.closeTo(0, 0),
+          lastMessage: 'hari ini',
+        });
+        // Fully in view, the story has played to its end.
+        await showStory(page, 40);
+        await expect.poll(() => storyState(page)).toMatchObject(ended);
+        // And it plays back as the reader scrolls back up.
+        await page.evaluate(() => {
+          window.scrollTo(0, 0);
+        });
+        await expect.poll(async () => (await storyState(page)).lastMessage).toBe('hari ini');
+      }
+      await context.close();
+    }
+  });
+
+  test('on phones the drifting dot follows the middle of the window down the rail', async ({
+    browser,
+    baseURL,
+  }) => {
+    const { context, page } = await newPage(browser, baseURL, {
+      viewport: { width: 390, height: 844 },
+    });
+    await openLanding(page);
+    for (const share of [0.25, 0.5, 0.75]) {
+      await page.locator(PROBLEM).evaluate((section, at) => {
+        const story = section.querySelector('ol')?.parentElement;
+        if (!story) throw new Error('No story');
+        const box = story.getBoundingClientRect();
+        window.scrollTo(0, box.top + window.scrollY + box.height * at - window.innerHeight / 2);
+      }, share);
+      await expect
+        .poll(async () => Math.abs((await storyState(page)).dotMiddle - 844 / 2))
+        .toBeLessThan(1);
+    }
+    await context.close();
+  });
+
   test('a click or a tap never leaves the blue focus ring; the keyboard does', async ({
     browser,
     baseURL,
@@ -791,13 +935,29 @@ test.describe('landing', () => {
         viewport: { width, height: 900 },
       });
       await openLanding(page);
-      // Below 768px the section links live in the menu: open it so they are measured too.
-      if (width < 768) await page.locator('nav[aria-label="Utama"] summary').click();
+      // Below 768px the section links live in the menu: open it so they are measured too, once
+      // the header has settled (mid-slide, a translated box can measure a hair under its size).
+      if (width < 768) {
+        await page.locator('nav[aria-label="Utama"] summary').click();
+        await expect
+          .poll(() =>
+            page
+              .locator('header')
+              .evaluate(
+                (header) =>
+                  header
+                    .getAnimations({ subtree: true })
+                    .filter((animation) => animation.playState === 'running').length,
+              ),
+          )
+          .toBe(0);
+      }
       const small = await page.locator('a[href], button, summary').evaluateAll((elements) =>
         elements
           .filter((el) => el.checkVisibility())
           .map((el) => ({ el, box: el.getBoundingClientRect() }))
-          .filter(({ box }) => box.width < 48 || box.height < 48)
+          // Within a hundredth of a pixel: layout rounds to 1/64 px.
+          .filter(({ box }) => box.width < 47.99 || box.height < 47.99)
           .map(({ el, box }) => `${el.textContent?.trim() ?? ''} ${box.width}x${box.height}`),
       );
       expect(small).toEqual([]);
@@ -1052,7 +1212,20 @@ test.describe('landing', () => {
   }
 });
 
+/**
+ * Runs axe on the page at rest, once its opening (the time-based animations) has played: a note
+ * still fading in would measure as low contrast. Scroll-driven animations rest wherever the page
+ * is scrolled, so they are measured as they stand.
+ */
 async function runAxe(page: Page) {
+  await page.waitForFunction(() =>
+    document
+      .getAnimations()
+      .every(
+        (animation) =>
+          animation.timeline !== document.timeline || animation.playState !== 'running',
+      ),
+  );
   return page.evaluate(async () => {
     const result = await window.axe.run(document, {
       runOnly: {

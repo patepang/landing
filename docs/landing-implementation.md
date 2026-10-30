@@ -41,7 +41,8 @@ Satu route `/` berisi seluruh halaman, ditambah 404:
      status; layar Tempel di dalam bingkai HP yang naik dari panggung sekali saat halaman dibuka;
      tiap catatan sejajar dengan bagian layar yang dijelaskannya, pada ukuran teks berapa pun.
 3. **Masalah**: "Setelah pamit, kabar sering berhenti begitu saja.", dengan tiga masalah. Tanpa
-   klaim riset.
+   klaim riset. **Direvisi 30 Oktober 2026** (§8.6): satu pertemuan yang memudar, dari hari kalian
+   bertemu sampai setahun kemudian, dengan gambar dan gerak yang mengikuti guliran.
 4. **Solusi / Cara kerja**:
    - "Sebelum pamit, tempel dulu." dengan tiga langkah dari `TapRitualPreview`;
    - ilustrasi bergerak yang berputar sendiri sekali saat panggungnya terlihat, lalu bisa diputar
@@ -76,7 +77,7 @@ screenshot asli. Setiap pratinjau punya nama aksesibel (`role="img"` + `aria-lab
 | CTA | "Lihat cara kerja" dan "Jelajahi fitur" (anchor di halaman). | Belum ada unduhan, daftar tunggu, atau kontak; pemilik memilih tanpa formulir. **Sejak 30 Oktober 2026** header menambah "Unduh Patepang" ke `#unduh` (§8.2), dan aksi hero menjadi "Unduh Patepang" dan "Lihat cara kerja" (§8.5). |
 | Footer | Lockup, tagline, tautan section, "© 2026 Patepang", "Kembali ke atas". | Belum ada kontak, akun media sosial, atau halaman legal. Keputusan pemilik. |
 | Navigasi di HP | Tombol "Menu" berupa `<details>` asli; panelnya menutupi halaman di bawah header. Dengan JavaScript, menu tertutup saat tautan dipilih, Escape ditekan (fokus kembali ke tombol), fokus pindah keluar menu, atau halaman ditekan di luar menu. | Dengan empat tujuan, satu tautan tidak lagi cukup. `<details>` tetap bekerja tanpa JavaScript. **Direvisi 30 Oktober 2026:** tombol bulat, panel membuka dan menutup dengan gerak (§8.2). |
-| Gerak khas | Ilustrasi Cara kerja berputar sendiri sekali, saat 60% panggungnya terlihat, dan tidak pernah berulang. "Putar lagi" memutarnya kembali; tekanan sebelum autoplay membatalkan autoplay. Hero dan lockup diam. | Halaman produksi menjelaskan alur tanpa meminta klik; satu momen yang terjadi sekali tetap sesuai larangan loop dan gerak dekoratif. Durasinya ±2 detik, di bawah batas 5 detik WCAG 2.2.2. **Sejak 30 Oktober 2026** dua titik lockup header bertemu sekali saat halaman dimuat (§8.2), dan HP di hero naik sekali lalu catatannya muncul (§8.5). |
+| Gerak khas | Ilustrasi Cara kerja berputar sendiri sekali, saat 60% panggungnya terlihat, dan tidak pernah berulang. "Putar lagi" memutarnya kembali; tekanan sebelum autoplay membatalkan autoplay. Hero dan lockup diam. | Halaman produksi menjelaskan alur tanpa meminta klik; satu momen yang terjadi sekali tetap sesuai larangan loop dan gerak dekoratif. Durasinya ±2 detik, di bawah batas 5 detik WCAG 2.2.2. **Sejak 30 Oktober 2026** dua titik lockup header bertemu sekali saat halaman dimuat (§8.2), dan HP di hero naik sekali lalu catatannya muncul (§8.5). Di Masalah, waktu berjalan mengikuti guliran pembaca (§8.6). |
 | Pengumuman langkah | Kalimat langkah tampil di layar (`aria-hidden`); region `role="status"` terpisah yang tak terlihat hanya diisi untuk putaran yang diminta lewat tombol. Putaran otomatis tidak diumumkan; langkah aktif tetap terbaca lewat `aria-current="step"`. | Tanpa ini, pembaca layar yang menggulir halaman (VoiceOver iOS, mode jelajah NVDA) disela tiga pengumuman yang tidak diminta (temuan code review). |
 | Nama tombol | Label terlihat "Putar" atau "Putar lagi", ditambah teks tak terlihat " cara tempel". | Nama aksesibel jelas di luar konteks ("Putar cara tempel") dan tetap memuat label yang terlihat (WCAG 2.5.3). |
 | Judul CTA | "Patepang segera hadir." memakai ukuran section di HP dan ukuran hero mulai 600px. | Dengan ukuran hero, kata "Patepang" lebih lebar dari layar 360px pada teks 200% (temuan code review; kini dites). Teksnya kini "Patepang sudah hadir." (§8.1). |
@@ -85,7 +86,7 @@ screenshot asli. Setiap pratinjau punya nama aksesibel (`role="img"` + `aria-lab
 | Header di teks besar | Baris header boleh membungkus: pada teks 200% di lebar HP, tombol "Menu" pindah ke bawah lockup. | Wordmark di app juga ikut skala teks. Tanpa pembungkusan, tombol keluar layar 59px (ditemukan oleh tes teks 200%). |
 | Kata bertanda hubung | "benar-benar", "ke-11", "Kabar-mu", dan sejenisnya dijaga tetap satu baris (`KeepHyphenated` dan kelas `.nowrap`). | Browser boleh memutus baris setelah tanda hubung. Font merek tidak punya glyph U+2011 (diuji), jadi tanda hubung tak-terputus akan meminjam glyph font lain. |
 | Perluasan web | H1 40/56/72px dan H2 28/32/40px per breakpoint, lebar halaman 1360px dengan grid 12 kolom, jarak antarsection 64/96/128px. Ditandai terpisah di `tokens.css`. | Skala app (display 36px) dirancang untuk HP; di 1440px hierarkinya hilang (spec §12). |
-| Breakpoint | 600 dan 1024px dari kelas jendela app (gutter 20/32/40). Khusus landing: 720px (catatan hero di kanan HP), 768px (tautan header sebaris), 1024px (masalah tiga kolom, cara kerja dan fitur dua kolom, skenario berdampingan), 1280px (judul hero berdampingan dengan lede, catatan di kedua sisi HP). | Diturunkan dari isi, bukan dari daftar perangkat. **Header sejak 30 Oktober 2026:** 48em dan 64em (§8.2). **Hero:** 37,5em, 48em, dan 80em (§8.5). |
+| Breakpoint | 600 dan 1024px dari kelas jendela app (gutter 20/32/40). Khusus landing: 720px (catatan hero di kanan HP), 768px (tautan header sebaris), 1024px (masalah tiga kolom, cara kerja dan fitur dua kolom, skenario berdampingan), 1280px (judul hero berdampingan dengan lede, catatan di kedua sisi HP). | Diturunkan dari isi, bukan dari daftar perangkat. **Header sejak 30 Oktober 2026:** 48em dan 64em (§8.2). **Hero:** 37,5em, 48em, dan 80em (§8.5). **Masalah:** 48em dan 64em (§8.6). |
 | Hover | Memakai warna *pressed* yang sudah ada, hanya di `@media (hover: hover)`. | App native tidak punya hover. |
 | Penanda langkah | Ukurannya `1rem + 8px` (24px di ukuran normal), tumbuh bersama teks. | Di teks 200% angka keluar dari lingkaran 24px yang tetap. |
 | Inisial avatar | Ukuran px tetap. | Paritas dengan app (`allowFontScaling={false}`). |
@@ -619,15 +620,105 @@ gerak, dan ketepatan susunannya.
   - pada teks 150 sampai 200% garis menunjuk bagian yang salah;
   - cincin kartu kode di tema gelap hanya sekitar 1,8:1.
 
-### 8.6 Belum dikerjakan
+### 8.6 Masalah (putaran keempat, 30 Oktober 2026)
+
+Permintaan pemilik setelah putaran hero: "Ingat ini proyek jadi! Jangan cuma kumpulan teks saja!"
+Tata letak, ukuran huruf, jarak, gerak, animasi, dan ilustrasi harus digarap di setiap section,
+bukan kumpulan teks. Sebelumnya Masalah hanya berisi judul, lede, dan tiga paragraf. Judul, lede,
+dan teks ketiga masalah tidak berubah.
+
+**Yang dibangun:**
+
+- **Satu pertemuan, setelah pamit:** di bawah judul, pita pasir (`surface-sunken`) memuat sebuah
+  rel waktu:
+  - dimulai dari dua titik yang bersentuhan, "Hari kalian bertemu";
+  - lalu tiga titik di rel: "Seminggu kemudian", "Sebulan kemudian", dan "Setahun kemudian";
+  - di tiap titik, sebuah gambar dan masalahnya (judul dan teks yang sama seperti sebelumnya).
+
+  Pita pasir adalah panggung netral halaman: panggung forest menunjukkan Patepang, sedangkan
+  panggung pasir menunjukkan keseharian tanpa Patepang.
+- **Pertemuan yang sama dengan pratinjau di bawahnya:** gambarnya memakai Sari dari
+  `content/fiction.ts`, pertemuan di kedai kopi dekat stasiun pada 3 Mar 2025. Di Masalah,
+  pertemuan itu memudar. Di Fitur, Patepang menyimpannya (momen, riwayat, rencana bertemu lagi).
+- **Tiga gambar dari alat sehari-hari, dalam nada netral halaman** (permukaan pratinjau, hairline,
+  ikon Phosphor). Tidak ada layar Patepang dan tidak ada produk sungguhan yang ditiru:
+  - **Kontak:** nama dan nomor tersimpan, "Catatan" kosong, dan "Yang kamu ingat" berisi kedai
+    kopi, tanggal, dan obrolan soal buku. Ingatan itu memudar dan kabur, tinggal garis putus-putus.
+  - **Beranda:** lima unggahan ("Disarankan untukmu", "Bersponsor", "Mungkin kamu kenal",
+    "Sedang ramai") datang satu per satu di atas unggahan Sari. Unggahan Sari terdorong ke bawah
+    sampai hanya namanya yang terlihat.
+  - **Pesan:** obrolan hari itu ("Senang ketemu tadi!", "Sama-sama! Kapan-kapan ketemu lagi, ya.",
+    "Iya, kapan-kapan."), lalu "Pesan terakhir" yang menua dari "hari ini" sampai "setahun lalu".
+- **Gerak yang mengikuti guliran** (CSS scroll-driven animations, tanpa JavaScript):
+  - **HP dan tablet:** rel turun di kiri. Titik kedua mengikuti tengah jendela, tepat (selisih di
+    bawah 1px), dan memudar sampai 40%. Tiap gambar berjalan saat naik dari bawah jendela ke
+    tengahnya.
+  - **Mulai 64em:** rel melintang di atas tiga kolom. Titik kedua menyeberanginya saat cerita
+    masuk ke jendela, dan ketiga gambar berjalan berurutan saat titik itu lewat. Saat cerita
+    terlihat utuh, semuanya sudah selesai.
+  - Gerak ini berjalan mundur saat pembaca menggulir kembali ke atas.
+  - Dengan gerak dikurangi, atau di browser tanpa scroll-driven animations, tidak ada yang
+    bergerak, dan tiap gambar langsung menunjukkan akhir ceritanya.
+- **Untuk pembaca layar:** gambar disembunyikan (`aria-hidden`), sehingga yang terbaca hanya
+  daftar berurutan: label waktu, judul masalah, dan teksnya.
+
+**Keputusan dan penyimpangan:**
+
+| Hal | Keputusan | Alasan |
+|---|---|---|
+| Ilustrasi | Gambar dirakit dari bagian design system (permukaan, avatar, hairline, kapsul, ikon Phosphor) dan motif dua titik, tanpa gambar bitmap. | Permintaan pemilik akan ilustrasi. Hanya Plus Jakarta Sans dan Phosphor yang dipakai, tidak ada layar Patepang yang dikarang, dan tidak ada merek lain yang ditiru. |
+| Dua titik yang menjauh | Motif dipakai terbalik: titik kedua menjauh dan memudar. | Ini masalahnya, kebalikan dari "dua titik bertemu" yang muncul lagi di Cara kerja. Apricot tetap hanya titik kedua. |
+| Gerak mengikuti guliran | Bukan animasi sekali jalan berdasarkan waktu, melainkan progres yang ditentukan posisi gulir. Tidak berulang sendiri dan tidak ada durasi. | Cerita tentang waktu yang berlalu berjalan dengan kecepatan pembaca, dan tidak ada yang terlewat bila pembaca menggulir cepat atau membuka halaman di tengah. Ini perluasan web dari aturan gerak; masuk DESIGN.md setelah disetujui pemilik. |
+| `view-timeline-inset: 0` | Timeline cerita memakai seluruh jendela. | Bawaannya mengecualikan `scroll-padding` halaman (92px untuk header mengambang), sehingga titik mendahului tengah jendela sekitar 40px. Ini ditemukan oleh tes. |
+| Keadaan akhir sebagai dasar | Gaya dasar adalah akhir cerita; keyframe hanya menyebut awalnya. | Tanpa dukungan atau dengan gerak dikurangi, halaman tetap utuh dan bercerita. |
+| Breakpoint dalam em | 48em (gambar di samping teks) dan 64em (tiga kolom). | Sama dengan header, footer, dan hero. Pada teks 200% di jendela 1440px dipakai susunan bertumpuk. |
+
+**Verifikasi putaran keempat:**
+
+- `pnpm check:contrast`: 80 dari 80 pasangan lulus. Ada dua pasangan baru:
+  - teks utama di atas pita pasir (judul masalah dan gelembung pesan sendiri);
+  - rel dan titik-titiknya di atas pita pasir (3,18:1 terang, 4,23:1 gelap).
+- `pnpm test:e2e`: 44 dari 44 lulus, termasuk 3 tes baru:
+  - yang sampai ke pembaca layar hanya daftar tiga momen (label waktu, judul, teks), tanpa isi
+    gambar (snapshot ARIA);
+  - di 1440px, sebelum cerita terlihat, dua titik masih bersentuhan, ingatan masih utuh, unggahan
+    Sari di atas, dan pesan terakhir "hari ini". Saat cerita terlihat utuh, titik ada di ujung
+    rel dan memudar ke 40%, ingatan hilang, unggahan Sari terlihat 32px, dan pesan terakhir
+    "setahun lalu". Saat digulir kembali ke atas, cerita mundur. Dengan gerak dikurangi, keadaan
+    akhir langsung tampil dan tidak ada animasi;
+  - di HP titik kedua mengikuti tengah jendela (selisih di bawah 1px di 25, 50, dan 75%).
+- Dua tes lama kini mengukur halaman yang sudah diam. Keduanya sesekali gagal karena waktu
+  pengukuran, bukan karena halamannya:
+  - tes axe menunggu pembukaan hero selesai; sebelumnya catatan hero yang masih memudar kadang
+    terukur sebagai kontras rendah;
+  - tes target 48px di 360px menunggu header selesai bergeser setelah menu dibuka; di tengah
+    gesernya, tombol menu 48px kadang terukur 47,99px.
+- Uji negatif: dengan blok gerak dimatikan, kedua tes gerak gagal, dan tes struktur tetap lulus.
+  Percobaan pertama memakai syarat `@supports` yang ternyata tetap benar, karena Chromium ini
+  membaca `--nama(1)` sebagai fungsi kustom CSS. Percobaan kedua memakai nilai yang tidak sah.
+- Detektor desain: tidak ada temuan pada berkas Masalah. Di halaman hanya ada `cream-palette`
+  (kanvas merek, disengaja).
+- Tinjauan visual: 360, 390, 768, 1024, dan 1440px, terang dan gelap, bingkai gerak di beberapa
+  posisi gulir (desktop dan HP), gerak dikurangi, dan teks 200% (390 dan 1440px). Yang diperbaiki
+  dari tinjauan itu:
+  - unggahan di atas Sari kurang satu, sehingga unggahannya masih utuh;
+  - kartu kontak kosong di tengah, lalu diisi bidang "Seluler" dan "Catatan" dengan kepala yang
+    berpusat;
+  - di 1024px kartu Beranda meregang dan menyisakan ruang kosong di bawah potongannya, sehingga
+    Beranda dijadikan kartu tertinggi;
+  - judul satu baris terpisah dari teksnya karena baris grid bersama;
+  - obrolan diberi tanggal hari itu (3 Mar 2025).
+
+### 8.7 Belum dikerjakan
 
 - `docs/screenshots/` belum dibuat ulang, jadi gambarnya masih versi pra-rilis. Gambar akan dibuat
   ulang di akhir revisi bertahap, supaya ±6 MB gambar biner tidak ditulis ulang di setiap putaran.
   `tests/screenshots.spec.ts` sudah menunjuk `#unduh`.
 - Section penutup belum punya tombol toko, karena tautannya belum ada.
-- Section berikutnya menunggu putaran masing-masing: Masalah, Cara kerja, Fitur, Cerita, Tanya
-  jawab, dan section penutup.
+- Section berikutnya menunggu putaran masing-masing, dengan standar yang sama (permintaan pemilik
+  di §8.6): Cara kerja, Fitur, Cerita, Tanya jawab, dan section penutup.
 - Hanya Chromium yang diuji. Yang perlu dicek di Safari dan Firefox:
   - `backdrop-filter`, `subgrid`, `:has()`, dan `color-mix()`;
   - properti `translate`/`scale`, unit `cqw`, dan `clip-path` dengan `round`;
+  - scroll-driven animations di Masalah (Firefox mendapat keadaan akhir tanpa gerak);
   - `prefers-reduced-transparency`, `scrollbar-width`, dan animasi tutup `<details>`.

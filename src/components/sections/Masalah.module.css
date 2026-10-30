@@ -1,43 +1,713 @@
+/*
+ * Masalah: the heading and its lede, then the story of one meeting after it ends, on a sand band.
+ * The sand band is the page's neutral stage: where the forest stages show Patepang, this one is
+ * the everyday world without it.
+ */
+
 .section {
-  padding-block: var(--space-section);
+  padding-top: var(--space-section);
 }
 
 .intro {
-  display: flex;
-  flex-direction: column;
+  display: grid;
   gap: var(--space-4);
-  max-width: var(--content-reading);
+  padding-bottom: var(--space-12);
 }
 
 .title {
   max-width: 20ch;
+  text-wrap: balance;
 }
 
-/* Three short rows, each opened by a hairline; side by side once there is room for the titles. */
-.list {
-  display: grid;
+.lede {
   max-width: var(--content-reading);
-  margin-top: var(--space-12);
+}
+
+.stage {
+  padding-block: var(--space-12) var(--space-16);
+  background: var(--color-surface-sunken);
+}
+
+/*
+ * ---- The story ----
+ * Narrow screens: the rail runs down the left edge, from the two dots together at the top to the
+ * end of the last moment, and each moment's tick sits on it, level with its label.
+ */
+.story {
+  --dot: var(--space-4);
+  --tick: var(--space-2);
+  --rail-gap: var(--space-5);
+  display: grid;
+  grid-template-columns: [rail] var(--dot) [body] minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  column-gap: var(--rail-gap);
+}
+
+.rail {
+  position: relative;
+  grid-column: rail;
+  grid-row: 1 / -1;
+}
+
+.rail::before {
+  content: '';
+  position: absolute;
+  top: calc(var(--dot) / 2);
+  bottom: 0;
+  left: calc(50% - var(--border-hairline) / 2);
+  width: var(--border-hairline);
+  background: var(--color-border-strong);
+}
+
+/* The two dots: you, where you met, and the person you met. */
+.you,
+.them {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--dot);
+  height: var(--dot);
+  border-radius: var(--radius-full);
+}
+
+.you {
+  background: var(--color-brand-solid);
+}
+
+/* At rest the story has ended: the second dot is at the far end of the rail, faded. */
+.them {
+  top: calc(100% - var(--dot));
+  background: var(--color-accent-decor);
+  opacity: 0.4;
+}
+
+.met,
+.when {
+  color: var(--color-text-secondary);
+  font-size: var(--type-label-small-size);
+  line-height: var(--type-label-small-line);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--type-label-small-tracking);
+}
+
+/* Level with where the two dots touch. */
+.met {
+  grid-column: body;
+  grid-row: 1;
+  padding-top: calc(var(--dot) - var(--type-label-small-line) / 2);
+  padding-bottom: var(--space-10);
+}
+
+.moments {
+  grid-column: body;
+  grid-row: 2;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
   list-style: none;
 }
 
-.item {
+.moment {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* The moment's tick on the rail, level with its label. */
+.moment::before {
+  content: '';
+  position: absolute;
+  top: calc((var(--type-label-small-line) - var(--tick)) / 2);
+  left: calc(-1 * (var(--rail-gap) + (var(--dot) + var(--tick)) / 2));
+  width: var(--tick);
+  height: var(--tick);
+  border-radius: var(--radius-full);
+  background: var(--color-border-strong);
+}
+
+.when {
+  margin-bottom: var(--space-3);
+}
+
+.words {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
-  padding-block: var(--space-6);
-  border-top: var(--border-hairline) solid var(--color-border-subtle);
+  max-width: var(--content-reading);
+  margin-top: var(--space-6);
 }
 
-@media (min-width: 1024px) {
-  .list {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+.momentTitle {
+  text-wrap: balance;
+}
+
+/*
+ * ---- The pictures ----
+ * Each is a surface from the previews (warm white, hairline), with the name of the app it is in
+ * at the top, small and quiet, like the top of a screen.
+ */
+.picture {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  cursor: default;
+  user-select: none;
+}
+
+.app {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-bottom: var(--space-3);
+  border-bottom: var(--border-hairline) solid var(--color-border-subtle);
+  color: var(--color-text-tertiary);
+  font-size: var(--type-label-small-size);
+  line-height: var(--type-label-small-line);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--type-label-small-tracking);
+}
+
+.post {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.personText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* The contact's head, as a contacts app shows a person: the avatar over the name, centred. */
+.contactHead {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  text-align: center;
+}
+
+/* The contact's fields, a label beside each value; the note was never written. */
+.fields {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: baseline;
+  gap: var(--space-2) var(--space-4);
+}
+
+.field {
+  display: contents;
+}
+
+.fieldLabel {
+  color: var(--color-text-tertiary);
+  font-size: var(--type-caption-size);
+  line-height: var(--type-caption-line);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--type-caption-tracking);
+}
+
+.empty {
+  align-self: end;
+  height: var(--type-body-small-line);
+  border-bottom: var(--border-hairline) dashed var(--color-border-strong);
+}
+
+.memoryLabel,
+.noiseLabel,
+.lastMessage {
+  color: var(--color-text-tertiary);
+  font-size: var(--type-caption-size);
+  line-height: var(--type-caption-line);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--type-caption-tracking);
+}
+
+/* What you remember sits at the foot of the contact: nothing in the contact holds it. */
+.memoryLabel {
+  margin-top: auto;
+  margin-bottom: calc(-1 * var(--space-2));
+}
+
+.memories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* A memory: a capsule whose words fade, leaving only its dashed outline. */
+.memory {
+  position: relative;
+  display: flex;
+  border-radius: var(--radius-full);
+}
+
+.memory::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: var(--border-hairline) dashed var(--color-border-strong);
+  border-radius: inherit;
+}
+
+.memoryFill {
+  position: relative;
+  padding: var(--space-1) var(--space-3);
+  border-radius: inherit;
+  background: var(--color-surface-sunken);
+  color: var(--color-text-secondary);
+  font-size: var(--type-body-small-size);
+  line-height: var(--type-body-small-line);
+  opacity: 0;
+}
+
+/*
+ * The feed: rows of suggestions, sponsored posts and trends, sized from the caption line so the
+ * picture keeps its proportions at any text size. At rest five of them sit above Sari's post,
+ * which shows only its name before the feed cuts it off. The feed is the tallest picture, so the
+ * cut always falls at its bottom edge.
+ */
+.feedWindow {
+  --feed-bar: calc(var(--type-caption-line) / 2);
+  --feed-bar-gap: calc(var(--type-caption-line) / 4);
+  --feed-row: calc(var(--type-caption-line) + 2 * (var(--feed-bar) + var(--feed-bar-gap)));
+  --feed-gap: calc(var(--type-caption-line) * 3 / 4);
+  --feed-step: calc(var(--feed-row) + var(--feed-gap));
+  display: block;
+  height: calc(5 * var(--feed-step) + 2 * var(--type-caption-line));
+  overflow: hidden;
+}
+
+.feed {
+  display: flex;
+  flex-direction: column;
+  gap: var(--feed-gap);
+}
+
+.noise {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  height: var(--feed-row);
+}
+
+.thumb {
+  flex: none;
+  width: var(--feed-row);
+  height: var(--feed-row);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-sunken);
+}
+
+.noiseText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--feed-bar-gap);
+  min-width: 0;
+}
+
+.noiseLabel {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.bar {
+  height: var(--feed-bar);
+  border-radius: var(--radius-full);
+  background: var(--color-surface-sunken);
+}
+
+.barShort {
+  width: 60%;
+}
+
+/* The chat on the day you met: two pleasantries and a "kapan-kapan" from each side. */
+.chatWith {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.thread {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* The day of the conversation, the day you met, as a chat marks a new day. */
+.day {
+  align-self: center;
+  margin-bottom: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  background: var(--color-surface-sunken);
+  color: var(--color-text-secondary);
+  font-size: var(--type-caption-size);
+  line-height: var(--type-caption-line);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--type-caption-tracking);
+}
+
+.bubble {
+  max-width: 85%;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-lg);
+  color: var(--color-text-primary);
+  font-size: var(--type-body-small-size);
+  line-height: var(--type-body-small-line);
+}
+
+.mine {
+  align-self: flex-end;
+  border-bottom-right-radius: var(--radius-xs);
+  background: var(--color-surface-sunken);
+}
+
+.theirs {
+  align-self: flex-start;
+  border: var(--border-hairline) solid var(--color-border-subtle);
+  border-bottom-left-radius: var(--radius-xs);
+}
+
+/* How long ago the last message was: one line at a time, a year on at rest. */
+.lastMessage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  margin-top: auto;
+}
+
+.age {
+  display: block;
+  height: var(--type-caption-line);
+  overflow: hidden;
+  color: var(--color-text-secondary);
+}
+
+.ages {
+  display: flex;
+  flex-direction: column;
+  translate: 0 calc(-3 * var(--type-caption-line));
+}
+
+/*
+ * From 48em: the rail stays on the left, and each moment's picture stands beside its words.
+ */
+@media (min-width: 48em) and (max-width: 63.99em) {
+  .moment {
+    display: grid;
+    grid-template-columns: minmax(0, 22rem) minmax(0, 1fr);
+    grid-template-rows: auto auto;
     column-gap: var(--space-8);
-    max-width: none;
-    margin-top: var(--space-16);
+    align-items: start;
   }
 
-  .item {
-    padding-block: var(--space-6) 0;
+  .when {
+    grid-column: 1 / -1;
+  }
+
+  .picture {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .words {
+    grid-column: 2;
+    grid-row: 2;
+    margin-top: 0;
+  }
+}
+
+/*
+ * From 64em: the heading and its lede side by side, and the story reads left to right. The rail
+ * runs across the top, from the two dots together over "Hari kalian bertemu" to the far edge, and
+ * the three moments stand on it in their own columns. Their labels, pictures and words share
+ * rows (subgrid), so each lines up across the three.
+ */
+@media (min-width: 64em) {
+  .intro {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--space-8);
+    align-items: end;
+    padding-bottom: var(--space-16);
+  }
+
+  .title {
+    grid-column: 1 / span 7;
+  }
+
+  .lede {
+    grid-column: 8 / span 5;
+  }
+
+  .stage {
+    padding-block: var(--space-16) calc(var(--space-16) + var(--space-8));
+  }
+
+  .story {
+    grid-template-columns: [meet] calc(var(--space-16) * 2) repeat(3, minmax(0, 1fr));
+    grid-template-rows: [rail] var(--dot) [when] auto [picture] auto [words] auto;
+    column-gap: var(--space-8);
+  }
+
+  .rail {
+    grid-column: 1 / -1;
+    grid-row: rail;
+  }
+
+  .rail::before {
+    top: calc(50% - var(--border-hairline) / 2);
+    right: 0;
+    bottom: auto;
+    left: calc(var(--dot) / 2);
+    width: auto;
+    height: var(--border-hairline);
+  }
+
+  .them {
+    top: 0;
+    left: calc(100% - var(--dot));
+  }
+
+  .met {
+    grid-column: meet;
+    grid-row: when;
+    margin-top: var(--space-3);
+    padding: 0;
+  }
+
+  .moments {
+    grid-column: 2 / -1;
+    grid-row: 1 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+    grid-template-rows: subgrid;
+    gap: 0 var(--space-8);
+  }
+
+  .moment {
+    grid-row: 1 / -1;
+    display: grid;
+    grid-template-rows: subgrid;
+  }
+
+  .moment::before {
+    position: static;
+    grid-row: rail;
+    align-self: center;
+    justify-self: start;
+  }
+
+  .when {
+    grid-row: when;
+    margin: var(--space-3) 0 var(--space-4);
+  }
+
+  .picture {
+    grid-row: picture;
+  }
+
+  .words {
+    grid-row: words;
+  }
+}
+
+/*
+ * ---- Motion: time passes as the reader scrolls ----
+ * Tied to scrolling (scroll-driven animations), so it needs no script, keeps the reader's pace,
+ * and runs backwards when they scroll back. Each picture's part names where in its moment it
+ * plays (--a to --b, from 0 to 1). With reduced motion, or in a browser without scroll-driven
+ * animations, nothing moves and everything shows how it ends.
+ *
+ * Narrow and medium screens: the second dot follows the middle of the window down the rail, and
+ * each picture plays as it rises from the bottom of the window to the middle.
+ */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    /*
+     * The whole window counts: by default a view timeline leaves out the page's scroll padding,
+     * which is kept for the floating header (and the header steps aside on the way down).
+     */
+    .story {
+      view-timeline: --story block;
+      view-timeline-inset: 0;
+    }
+
+    .picture {
+      view-timeline: --scene block;
+      view-timeline-inset: 0;
+    }
+
+    /* The dot's middle is on the middle of the window, from where it starts to where it ends. */
+    .them {
+      animation: drift-down linear both;
+      animation-timeline: --story;
+      animation-range: cover calc(50vh + var(--dot) * 3 / 2) cover
+        calc(100% - 50vh - var(--dot) / 2);
+    }
+
+    .picture [data-part] {
+      animation-duration: auto;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: --scene;
+      animation-range: cover calc(15% + var(--a) * 35%) cover calc(15% + var(--b) * 35%);
+    }
+
+    .memory:nth-child(1) .memoryFill {
+      --a: 0;
+      --b: 0.5;
+    }
+
+    .memory:nth-child(2) .memoryFill {
+      --a: 0.25;
+      --b: 0.75;
+    }
+
+    .memory:nth-child(3) .memoryFill {
+      --a: 0.5;
+      --b: 1;
+    }
+
+    .memoryFill {
+      animation-name: memory-fades;
+    }
+
+    .feed {
+      --a: 0;
+      --b: 1;
+      animation-name: feed-fills;
+    }
+
+    .ages {
+      --a: 0;
+      --b: 1;
+      animation-name: time-passes;
+    }
+
+    /*
+     * Side by side: the dot crosses the rail as the story comes into view, and the moments play
+     * one after another as it passes them, finished once the whole story is in view.
+     */
+    @media (min-width: 64em) {
+      .them {
+        animation-name: drift-across;
+        animation-range: entry 0% entry 100%;
+      }
+
+      .moment:nth-child(1) {
+        --from: 0%;
+      }
+
+      .moment:nth-child(2) {
+        --from: 30%;
+      }
+
+      .moment:nth-child(3) {
+        --from: 60%;
+      }
+
+      .picture [data-part] {
+        animation-timeline: --story;
+        animation-range: entry calc(var(--from) + var(--a) * 40%) entry
+          calc(var(--from) + var(--b) * 40%);
+      }
+    }
+  }
+}
+
+@keyframes drift-down {
+  from {
+    top: var(--dot);
+    opacity: 1;
+  }
+}
+
+@keyframes drift-across {
+  from {
+    left: var(--dot);
+    opacity: 1;
+  }
+}
+
+/* A memory blurs and fades, and its outline is all that is left. */
+@keyframes memory-fades {
+  from {
+    opacity: 1;
+    filter: blur(0);
+  }
+
+  to {
+    opacity: 0;
+    filter: blur(var(--space-1));
+  }
+}
+
+/* Five posts arrive at the top one after another, each pushing Sari's post further down. */
+@keyframes feed-fills {
+  0%,
+  8% {
+    translate: 0 calc(-5 * var(--feed-step));
+    animation-timing-function: var(--ease-out);
+  }
+
+  20%,
+  26% {
+    translate: 0 calc(-4 * var(--feed-step));
+    animation-timing-function: var(--ease-out);
+  }
+
+  38%,
+  44% {
+    translate: 0 calc(-3 * var(--feed-step));
+    animation-timing-function: var(--ease-out);
+  }
+
+  56%,
+  62% {
+    translate: 0 calc(-2 * var(--feed-step));
+    animation-timing-function: var(--ease-out);
+  }
+
+  74%,
+  80% {
+    translate: 0 calc(-1 * var(--feed-step));
+    animation-timing-function: var(--ease-out);
+  }
+
+  92%,
+  100% {
+    translate: 0 0;
+  }
+}
+
+/* "hari ini", then a week, a month and a year: nothing new in between. */
+@keyframes time-passes {
+  0%,
+  12% {
+    translate: 0 0;
+    animation-timing-function: var(--ease-out);
+  }
+
+  30%,
+  42% {
+    translate: 0 calc(-1 * var(--type-caption-line));
+    animation-timing-function: var(--ease-out);
+  }
+
+  60%,
+  72% {
+    translate: 0 calc(-2 * var(--type-caption-line));
+    animation-timing-function: var(--ease-out);
+  }
+
+  90%,
+  100% {
+    translate: 0 calc(-3 * var(--type-caption-line));
   }
 }
