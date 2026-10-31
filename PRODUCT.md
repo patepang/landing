@@ -70,8 +70,8 @@ Patepang sudah hadir dan bisa diunduh.
   halaman. Desain diperbaiki bertahap per section (header, lalu footer, hero, dan section lain),
   sebagai perbaikan, bukan redesign. Setelah putaran hero, pemilik menegaskan bahwa ini produk
   jadi: setiap section harus digarap tata letak, ukuran huruf, jarak, gerak, animasi, dan
-  ilustrasinya, bukan sekadar kumpulan teks. Keputusan ini menggantikan keputusan 22 Oktober di
-  bawah.
+  ilustrasinya, bukan sekadar kumpulan teks, dengan kata seminimal mungkin. Keputusan ini
+  menggantikan keputusan 22 Oktober di bawah.
 - **Landing (keputusan pemilik, 22 Oktober 2026; diganti 30 Oktober).** Landing tampil sebagai
   halaman produk pra-rilis, bukan tur prototipe: fitur dijelaskan sebagai produk Patepang, tanpa
   label "Pratinjau prototipe". Statusnya tetap disebut jujur sebagai "Segera hadir": belum ada

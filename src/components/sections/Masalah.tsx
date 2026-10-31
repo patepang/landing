@@ -150,13 +150,13 @@ const moments: readonly {
   {
     when: 'Seminggu kemudian',
     title: 'Kontaknya tersimpan, ceritanya hilang.',
-    body: 'Nama dan nomor ada di HP, tetapi kapan dan di mana kalian bertemu tidak tercatat di mana pun.',
+    body: 'Nama dan nomor ada di HP. Kapan dan di mana kalian bertemu tidak tercatat.',
     Picture: ContactPicture,
   },
   {
     when: 'Sebulan kemudian',
     title: 'Kabarnya tenggelam.',
-    body: 'Di media sosial, kabar dari orang yang benar-benar kamu temui bercampur dengan orang asing, angka pengikut, dan feed yang tidak ada ujungnya.',
+    body: 'Kabar dari orang yang kamu temui bercampur dengan orang asing dan feed tanpa ujung.',
     Picture: FeedPicture,
   },
   {
@@ -182,8 +182,7 @@ export function Masalah() {
           Setelah pamit, kabar sering berhenti begitu saja.
         </h2>
         <p className={`type-body-large tone-secondary ${styles.lede}`}>
-          Kenalan di sebuah acara, teman lama yang kebetulan bertemu lagi, saudara dari kota lain.
-          Pertemuannya hangat, tetapi setelah berpisah, hubungan itu perlahan hilang.
+          Pertemuannya hangat. Setelah berpisah, hubungannya perlahan hilang.
         </p>
       </div>
       <div className={styles.stage}>

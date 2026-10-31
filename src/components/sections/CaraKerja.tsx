@@ -1,43 +1,53 @@
 import { ArrowCounterClockwiseIcon } from '@phosphor-icons/react/dist/ssr/ArrowCounterClockwise';
 import { CheckIcon } from '@phosphor-icons/react/dist/ssr/Check';
-import { DeviceMobileIcon } from '@phosphor-icons/react/dist/ssr/DeviceMobile';
 import { PlayIcon } from '@phosphor-icons/react/dist/ssr/Play';
-import { ScanIcon } from '@phosphor-icons/react/dist/ssr/Scan';
 import { VibrateIcon } from '@phosphor-icons/react/dist/ssr/Vibrate';
 
 import { TempelDemo, type TempelDemoProps } from '@/components/demo/TempelDemo';
 import { Icon } from '@/components/Icon';
+import { QR_SIZE, qrPath, qrSeed } from '@/components/preview/qr';
+import { fiction } from '@/content/fiction';
 
 import styles from './CaraKerja.module.css';
 
-/** The three steps, worded as in the app's TapRitualPreview. */
+/** The three steps, after the app's TapRitualPreview, as briefly as they can be said. */
 const steps: TempelDemoProps['steps'] = [
   {
     id: 'scan',
     title: 'Pindai kode',
-    body: 'Satu HP menampilkan kode; HP lainnya memindainya.',
+    body: 'Satu HP menampilkan kode, HP lain memindainya.',
   },
   {
     id: 'shake',
     title: 'Goyang bersama',
-    body: 'Pegang kedua HP berdempetan, lalu goyangkan bersama selama dua detik.',
+    body: 'Dempetkan kedua HP, goyangkan dua detik.',
   },
   {
     id: 'done',
     title: 'Terhubung',
-    body: 'Koneksi kalian dan momen pertama tercatat di kedua HP.',
+    body: 'Koneksi dan momen pertama tercatat di kedua HP.',
   },
 ];
 
 const icons: TempelDemoProps['icons'] = {
-  phone: <Icon glyph={DeviceMobileIcon} size="lg" />,
-  scan: <Icon glyph={ScanIcon} />,
-  shake: <Icon glyph={VibrateIcon} />,
+  shake: <Icon glyph={VibrateIcon} size="lg" />,
   check: <Icon glyph={CheckIcon} weight="bold" />,
   stepCheck: <Icon glyph={CheckIcon} size="xs" weight="bold" />,
   play: <Icon glyph={PlayIcon} size="sm" />,
   replay: <Icon glyph={ArrowCounterClockwiseIcon} size="sm" />,
 };
+
+/** The demo code pattern (the hero's), drawn on the server and shown on both phones. */
+const code = (
+  <svg
+    viewBox={`0 0 ${String(QR_SIZE)} ${String(QR_SIZE)}`}
+    shapeRendering="crispEdges"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <path d={qrPath(qrSeed(fiction.codeOwner, 0))} />
+  </svg>
+);
 
 /** The answer to the problem: one way to connect, and only face to face. */
 export function CaraKerja() {
@@ -51,14 +61,13 @@ export function CaraKerja() {
                 Sebelum pamit, tempel dulu.
               </h2>
               <p className="type-body-large tone-secondary">
-                Patepang hanya menghubungkan orang yang <span className="nowrap">benar-benar</span>{' '}
-                bertemu. Caranya satu: tempel, saat kalian berhadapan. Tidak ada pencarian, dan
-                tidak ada permintaan pertemanan dari orang asing.
+                Satu cara terhubung, hanya saat kalian berhadapan.
               </p>
             </>
           }
           steps={steps}
           icons={icons}
+          code={code}
         />
       </div>
     </section>

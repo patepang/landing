@@ -84,10 +84,13 @@ for (const { name, setting, size, layout } of cases) {
       .evaluate((stage) => {
         stage.scrollIntoView({ block: 'center' });
       });
-    // The sentence on screen (the live region stays quiet for a run nobody asked for).
+    // It reaches its last step, marked current in the list.
     await expect(
-      page.locator('section[aria-labelledby="cara-kerja"] p[aria-hidden="true"]'),
-    ).toHaveText(/^Langkah 3 dari 3/, { timeout: 8000 });
+      page.locator('section[aria-labelledby="cara-kerja"] div[data-phase]').first(),
+    ).toHaveAttribute('data-phase', 'done', { timeout: 8000 });
+    await expect(
+      page.locator('section[aria-labelledby="cara-kerja"] li[aria-current="step"]'),
+    ).toContainText('Terhubung');
     await context.close();
   });
 }

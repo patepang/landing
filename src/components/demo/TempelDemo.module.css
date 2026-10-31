@@ -1,9 +1,10 @@
+/* Narrow screens: the words, then the phones, then the steps that name what they show. */
 .demo {
   display: grid;
   grid-template-areas:
     'intro'
-    'steps'
-    'player';
+    'player'
+    'steps';
   gap: var(--space-8);
 }
 
@@ -69,7 +70,7 @@
   gap: var(--space-1);
 }
 
-/* ---- Player: the stage, the button and what is happening, in words ---- */
+/* ---- Player: the stage and its button ---- */
 
 .player {
   grid-area: player;
@@ -79,69 +80,161 @@
 }
 
 /*
- * Geometry of TapRitualPreview: 64px phones, a 40px centre, 16px gaps, a 24px approach, a 5°
- * shake of 70ms steps (three cycles). Wide screens scale the same picture by 1.5. Below the
- * phones, the brand's two dots move as on the app's shake screen: apart, near, met.
+ * The ritual stage (forest mist, as in the app's TapRitualPreview) with two phones in the hero's
+ * frame: a dark bezel 8px wide whose curve is concentric with the screen's (20 + 8 = 28). The
+ * approach brings them almost together; the shake is the app's, 5° in 70ms steps, three times.
  */
 .stage {
-  --phone: var(--space-16);
-  --center: var(--space-10);
-  --gap: var(--space-4);
-  --approach: var(--space-6);
+  --phone: calc(var(--space-16) * 2 + var(--space-4));
+  --bezel: var(--space-2);
+  --gap: var(--space-6);
+  --approach: calc(var(--gap) / 2 - var(--space-1));
   --shake-angle: 5deg;
   --shake-step: 70ms;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-8);
-  padding-block: var(--space-10);
+  display: grid;
+  place-items: center;
+  padding-block: var(--space-12);
   border-radius: var(--shape-card);
   background: var(--color-brand-subtle);
 }
 
 .phones {
   display: flex;
-  align-items: center;
-  justify-content: center;
   gap: var(--gap);
 }
 
-/* Raised like the app's raised IconButton: tone, hairline and the soft shadow (light only). */
 .phone {
-  display: grid;
-  place-items: center;
+  display: block;
   width: var(--phone);
-  height: var(--phone);
-  border: var(--border-hairline) solid var(--color-border-subtle);
-  border-radius: var(--radius-full);
-  background: var(--color-surface-raised);
-  box-shadow: var(--elevation-raised);
-  color: var(--color-brand-text);
+  aspect-ratio: 1 / 2;
+  padding: var(--bezel);
+  border-radius: var(--radius-xxl);
+  background: var(--color-device);
+  box-shadow:
+    var(--elevation-overlay),
+    inset 0 0 0 var(--border-hairline) var(--color-device-edge);
 }
 
-.phone svg {
-  width: 50%;
-  height: 50%;
+/* Each screen holds its views in one cell; the phase decides which one shows. */
+.screen {
+  display: grid;
+  height: 100%;
+  overflow: hidden;
+  border-radius: var(--shape-card);
+  background: var(--color-canvas);
 }
 
-/* Above both phones, so the check mark lands where they meet. */
-.center {
+.shows,
+.camera,
+.ritual {
+  grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  padding: var(--space-3);
+  transition: opacity var(--duration-selection) var(--ease-out);
+}
+
+.demo[data-phase='shake'] :is(.shows, .camera),
+.demo[data-phase='done'] :is(.shows, .camera),
+.ritual {
+  opacity: 0;
+}
+
+.demo[data-phase='shake'] .ritual,
+.demo[data-phase='done'] .ritual {
+  opacity: 1;
+}
+
+/* QrCodeView on one phone: dark on light in both themes, on a card with a hairline. */
+.codeCard {
+  width: 100%;
+  padding: var(--space-2);
+  border: var(--border-hairline) solid var(--color-code-border);
+  border-radius: var(--radius-md);
+  background: var(--color-code-surface);
+}
+
+.codeCard svg,
+.seen svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  fill: var(--color-code-ink);
+}
+
+/*
+ * The other phone's camera: a dark view, a shade lighter than the frame so the screen still reads
+ * as on, with the scan frame. As the scan starts, the code comes into view, the frame closes on
+ * it, and one line passes over it.
+ */
+.camera {
+  background: color-mix(in srgb, var(--color-device), var(--color-code-surface) 10%);
+}
+
+.viewfinder {
   position: relative;
-  z-index: 1;
   display: grid;
   place-items: center;
-  width: var(--center);
-  height: var(--center);
-  color: var(--color-text-tertiary);
+  width: 100%;
+  aspect-ratio: 1;
 }
 
-.center svg {
-  width: 60%;
-  height: 60%;
+.seen {
+  width: 70%;
+  padding: var(--space-1);
+  border-radius: var(--radius-xs);
+  background: var(--color-code-surface);
+  opacity: 0;
+  transition: opacity var(--duration-enter) var(--ease-out);
 }
 
-.demo[data-phase='scan'] .center,
-.demo[data-phase='shake'] .center {
+.corners {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: var(--color-code-surface);
+  stroke-width: var(--border-thick);
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  scale: 1.1;
+  transition: scale var(--duration-overlay-enter) var(--ease-out) var(--duration-press);
+}
+
+.sweep {
+  position: absolute;
+  top: 12%;
+  left: 12%;
+  width: 76%;
+  height: var(--border-thick);
+  border-radius: var(--radius-full);
+  background: var(--color-code-surface);
+  opacity: 0;
+}
+
+.demo[data-phase='scan'] .seen {
+  opacity: 1;
+}
+
+.demo[data-phase='scan'] .corners {
+  scale: 1;
+}
+
+.demo[data-phase='scan'] .sweep {
+  animation: sweep var(--duration-overlay-enter) var(--ease-in-out)
+    calc(var(--duration-press) + var(--duration-overlay-enter)) both;
+}
+
+/* Both screens once the code is read: the dots draw near, then meet, and the check lands. */
+.sign {
+  display: grid;
+  place-items: center;
+  width: var(--space-12);
+  height: var(--space-12);
   color: var(--color-brand-text);
 }
 
@@ -252,6 +345,22 @@
   }
 }
 
+/* One pass of the scan line, top to bottom, fading at both ends. */
+@keyframes sweep {
+  0% {
+    top: 12%;
+    opacity: 0;
+  }
+  20%,
+  80% {
+    opacity: 1;
+  }
+  100% {
+    top: 88%;
+    opacity: 0;
+  }
+}
+
 @keyframes pop {
   from {
     opacity: 0;
@@ -274,32 +383,13 @@
 
 .controls {
   display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  column-gap: var(--space-4);
-}
-
-/*
- * Room for two lines, so the last, longer step does not push the section's end down. The top inset
- * centres the first line on the button beside it (whose height follows the text size); when the
- * status wraps under the button, the same inset is the gap between them.
- */
-.status {
-  --button-height: max(
-    var(--control-md),
-    var(--type-label-line) + 2 * (var(--space-3) + var(--border-thin))
-  );
-  --inset: calc((var(--button-height) - var(--type-body-small-line)) / 2);
-  flex: 1 1 calc(var(--space-16) * 3);
-  min-height: calc(var(--inset) + var(--type-body-small-line) * 2);
-  padding-top: var(--inset);
-  color: var(--color-text-secondary);
+  justify-content: center;
 }
 
 /*
  * The button works only once the page has hydrated, so it is not shown before then (or ever, if
  * the script fails to load); its space is kept, so nothing moves when it appears. Without
- * JavaScript at all the steps are all on the page, and the button and its status take no space.
+ * JavaScript at all the steps are all on the page, and the button takes no space.
  */
 .controls[data-hydrating] {
   visibility: hidden;
@@ -311,7 +401,10 @@
   }
 }
 
-/* Reduced motion: every step still shows, with no travel, shake or scale; the check fades in. */
+/*
+ * Reduced motion: every step still shows, with no travel, shake, scan line or closing frame; the
+ * views cross-fade and the check fades in.
+ */
 @media (prefers-reduced-motion: reduce) {
   .step {
     transition: none;
@@ -323,14 +416,41 @@
     transform: none;
   }
 
+  .shows,
+  .camera,
+  .ritual,
+  .seen {
+    transition-duration: var(--duration-reduced-fade);
+  }
+
+  .corners {
+    scale: none;
+    transition: none;
+  }
+
+  .demo[data-phase='scan'] .sweep {
+    animation: none;
+  }
+
   .check {
     animation: fade var(--duration-reduced-fade) var(--ease-out) both;
   }
 }
 
-@media (min-width: 1024px) {
+/* From 48em the phones are larger. */
+@media (min-width: 48em) {
+  .stage {
+    --phone: calc(var(--space-16) * 2 + var(--space-12));
+    --gap: var(--space-8);
+    padding-block: var(--space-16);
+  }
+}
+
+/* From 64em: the words and steps together on the left, centred against the stage on the right. */
+@media (min-width: 64em) {
   .demo {
     grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-rows: 1fr auto auto 1fr;
     grid-template-areas: none;
     column-gap: var(--space-8);
     row-gap: var(--space-8);
@@ -339,25 +459,17 @@
 
   .intro {
     grid-column: 1 / span 5;
-    grid-row: 1;
+    grid-row: 2;
   }
 
   .steps {
     grid-column: 1 / span 5;
-    grid-row: 2;
+    grid-row: 3;
   }
 
   .player {
     grid-column: 7 / span 6;
-    grid-row: 1 / span 2;
+    grid-row: 1 / -1;
     align-self: center;
-  }
-
-  .stage {
-    --phone: calc(var(--space-16) + var(--space-8));
-    --center: calc(var(--space-12) + var(--space-3));
-    --gap: var(--space-6);
-    --approach: calc(var(--space-8) + var(--space-1));
-    padding-block: var(--space-16);
   }
 }

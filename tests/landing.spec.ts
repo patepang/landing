@@ -10,11 +10,8 @@ const FAQ = 'section[aria-labelledby="tanya-jawab"]';
 /** The walk-through moves on at 0.9s and 1.9s; waits allow far more, since order is checked. */
 const STEP_TIMEOUT = 8000;
 
-const STEPS = [
-  'Langkah 1 dari 3: pindai kode. | Pindai kode',
-  'Langkah 2 dari 3: goyang bersama. | Goyang bersama',
-  'Langkah 3 dari 3: terhubung. Koneksi dan momen pertama tercatat di kedua HP. | Terhubung',
-];
+/** Each phase the phones show, with the step marked current at that moment. */
+const STEPS = ['scan | Pindai kode', 'shake | Goyang bersama', 'done | Terhubung'];
 
 declare global {
   interface Window {
@@ -30,7 +27,7 @@ declare global {
 }
 
 /**
- * Records, from inside the page, every status the walk-through shows together with the step marked
+ * Records, from inside the page, every phase the walk-through shows together with the step marked
  * current at that same moment (`tempelLog`), and everything its live region announces
  * (`tempelSpoken`). Each phase lasts about a second, too short to sample reliably from the test
  * under load, so the page writes the sequence down itself.
@@ -40,22 +37,27 @@ async function recordDemo(page: Page) {
     window.tempelLog = [];
     window.tempelSpoken = [];
     const section = document.querySelector(demo);
-    const shown = section?.querySelector('p[aria-hidden="true"]');
+    const player = section?.querySelector('div[data-phase]');
     const spoken = section?.querySelector('[role="status"]');
-    if (!section || !shown || !spoken) throw new Error('No status');
-    const watch = { childList: true, characterData: true, subtree: true };
+    if (!section || !player || !spoken) throw new Error('No walk-through');
     new MutationObserver(() => {
       const current = section.querySelector('li[aria-current="step"] .type-body-strong');
-      window.tempelLog.push(`${shown.textContent ?? ''} | ${current?.textContent ?? '-'}`);
-    }).observe(shown, watch);
+      window.tempelLog.push(
+        `${player.getAttribute('data-phase') ?? '-'} | ${current?.textContent ?? '-'}`,
+      );
+    }).observe(player, { attributes: true, attributeFilter: ['data-phase'] });
     new MutationObserver(() => {
       if (spoken.textContent) window.tempelSpoken.push(spoken.textContent);
-    }).observe(spoken, watch);
+    }).observe(spoken, { childList: true, characterData: true, subtree: true });
   }, DEMO);
 }
 
-/** The status sentences of STEPS, as the live region announces them. */
-const SPOKEN = STEPS.map((step) => step.split(' | ')[0]);
+/** What the live region announces at each step, for runs started by a press. */
+const SPOKEN = [
+  'Langkah 1 dari 3: pindai kode.',
+  'Langkah 2 dari 3: goyang bersama.',
+  'Langkah 3 dari 3: terhubung. Koneksi dan momen pertama tercatat di kedua HP.',
+];
 
 /** `#RRGGBB` as the browser reports computed colours. */
 function rgb(hex: string) {
@@ -661,7 +663,7 @@ test.describe('landing', () => {
     // The pictures are pictures only: what reaches assistive technology is the words.
     await expect(page.locator(PROBLEM)).toMatchAriaSnapshot(`
       - heading "Setelah pamit, kabar sering berhenti begitu saja." [level=2]
-      - paragraph: /^Kenalan di sebuah acara/
+      - paragraph: Pertemuannya hangat. Setelah berpisah, hubungannya perlahan hilang.
       - list:
         - listitem:
           - paragraph: Seminggu kemudian
@@ -670,7 +672,7 @@ test.describe('landing', () => {
         - listitem:
           - paragraph: Sebulan kemudian
           - heading "Kabarnya tenggelam." [level=3]
-          - paragraph: /^Di media sosial/
+          - paragraph: /^Kabar dari orang yang kamu temui/
         - listitem:
           - paragraph: Setahun kemudian
           - heading "Bertemu lagi terus tertunda." [level=3]
@@ -972,16 +974,16 @@ test.describe('landing', () => {
     const problems = watchProblems(page, baseURL ?? '');
     await openLanding(page);
     const demo = page.locator(`${DEMO} div[data-phase]`).first();
-    const shown = page.locator(`${DEMO} p[aria-hidden="true"]`);
     const spoken = page.getByRole('status');
     await expect(demo).toHaveAttribute('data-phase', 'idle');
-    await expect(shown).toHaveText('');
     await recordDemo(page);
 
-    // Brought on screen, it plays by itself: each step shown in words with the same step marked
+    // Brought on screen, it plays by itself: each phase on the phones with the same step marked
     // current. Nobody asked for it, so the live region stays silent.
     await showStage(page);
-    await expect(shown).toHaveText(/^Langkah 3 dari 3: terhubung\./, { timeout: STEP_TIMEOUT });
+    await expect(demo).toHaveAttribute('data-phase', 'done', { timeout: STEP_TIMEOUT });
+    // Both phones end on the two dots met.
+    await expect(page.locator(`${DEMO} span[data-phase="meet"]`)).toHaveCount(2);
     expect(await page.evaluate(() => window.tempelLog)).toEqual(STEPS);
     expect(await page.evaluate(() => window.tempelSpoken)).toEqual([]);
     await expect(spoken).toHaveText('');
@@ -1000,7 +1002,7 @@ test.describe('landing', () => {
     const replay = page.getByRole('button', { name: 'Putar lagi cara tempel' });
     await replay.click();
     await expect(replay).toBeFocused();
-    await expect(shown).toHaveText(/^Langkah 3 dari 3/, { timeout: STEP_TIMEOUT });
+    await expect(spoken).toHaveText(/^Langkah 3 dari 3/, { timeout: STEP_TIMEOUT });
     expect(await page.evaluate(() => window.tempelLog)).toEqual([...STEPS, ...STEPS]);
     expect(await page.evaluate(() => window.tempelSpoken)).toEqual(SPOKEN);
     expect(problems).toEqual([]);
@@ -1074,7 +1076,7 @@ test.describe('landing', () => {
           return `${style.animationName} ${style.transform}`;
         }),
       );
-    expect(phones).toEqual(['none none', 'none none', 'none none']);
+    expect(phones).toEqual(['none none', 'none none']);
     await context.close();
   });
 

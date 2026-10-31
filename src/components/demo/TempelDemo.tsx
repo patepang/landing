@@ -50,9 +50,9 @@ function useHydrated() {
 }
 
 /**
- * Shown beside the button as the walk-through moves on. Screen readers hear it only for runs
- * started by a press: the run that starts by itself stays quiet, since the steps list above
- * already says the same and an unasked announcement would interrupt whatever is being read.
+ * Announced as the walk-through moves on, for runs started by a press only: the run that starts by
+ * itself stays quiet, since the steps list already says the same and an unasked announcement would
+ * interrupt whatever is being read. On screen, the phones and the current step say it.
  */
 const status: Record<Phase, string> = {
   idle: '',
@@ -66,18 +66,21 @@ export interface TempelDemoProps {
   intro: ReactNode;
   steps: readonly { id: TempelStepId; title: string; body: string }[];
   /** Icons rendered on the server, so no icon code ships to the browser. */
-  icons: Record<'phone' | 'scan' | 'shake' | 'check' | 'stepCheck' | 'play' | 'replay', ReactNode>;
+  icons: Record<'shake' | 'check' | 'stepCheck' | 'play' | 'replay', ReactNode>;
+  /** The code pattern, drawn on the server: on one phone's screen, and in the other's camera. */
+  code: ReactNode;
 }
 
 /**
- * An illustrated walk-through of tempel, after the app's TapRitualPreview: two phones move
- * together, shake, and a check mark lands. It plays by itself once, the first time the stage is
- * well on screen (unless a press already played it), and again on every press of the button; it
- * never loops. Pressing the button while it plays starts it over, and the button stays enabled,
- * so keyboard focus never drops to the page. Under reduced motion the CSS keeps every step but
- * drops the travel and the shake.
+ * An illustrated walk-through of tempel, after the app's TapRitualPreview, on two phones: one
+ * shows its code and the other's camera finds it; the phones move together and shake; the two
+ * dots on both screens meet and a check mark lands. It plays by itself once, the first time the
+ * stage is well on screen (unless a press already played it), and again on every press of the
+ * button; it never loops. Pressing the button while it plays starts it over, and the button stays
+ * enabled, so keyboard focus never drops to the page. Under reduced motion the CSS keeps every
+ * step but drops the travel, the shake and the scan.
  */
-export function TempelDemo({ intro, steps, icons }: TempelDemoProps) {
+export function TempelDemo({ intro, steps, icons, code }: TempelDemoProps) {
   const [phase, setPhase] = useState<Phase>('idle');
   /** Set by the first press; from then on every run was asked for, so it is announced. */
   const [pressed, setPressed] = useState(false);
@@ -132,6 +135,16 @@ export function TempelDemo({ intro, steps, icons }: TempelDemoProps) {
 
   const current = order[phase];
 
+  /* Both screens once the code is read: the dots draw near as the phones shake, then meet. */
+  const ritual = (
+    <span className={styles.ritual}>
+      <TwoDots phase={dots[phase]} size="md" />
+      <span className={styles.sign}>
+        {phase === 'done' ? <span className={styles.check}>{icons.check}</span> : icons.shake}
+      </span>
+    </span>
+  );
+
   return (
     <div className={styles.demo} data-phase={phase}>
       <div className={styles.intro}>{intro}</div>
@@ -163,19 +176,32 @@ export function TempelDemo({ intro, steps, icons }: TempelDemoProps) {
       <div className={styles.player}>
         <div ref={stage} className={styles.stage} aria-hidden="true">
           <div className={styles.phones}>
-            <span className={`${styles.phone} ${styles.left}`}>{icons.phone}</span>
-            <span className={styles.center}>
-              {phase === 'done' ? (
-                <span className={styles.check}>{icons.check}</span>
-              ) : phase === 'shake' ? (
-                icons.shake
-              ) : (
-                icons.scan
-              )}
+            <span className={`${styles.phone} ${styles.left}`}>
+              <span className={styles.screen}>
+                {/* The Tempel tab: the dots apart over the code. */}
+                <span className={styles.shows}>
+                  <TwoDots phase="apart" size="sm" />
+                  <span className={styles.codeCard}>{code}</span>
+                </span>
+                {ritual}
+              </span>
             </span>
-            <span className={`${styles.phone} ${styles.right}`}>{icons.phone}</span>
+            <span className={`${styles.phone} ${styles.right}`}>
+              <span className={styles.screen}>
+                {/* The camera, finding the other phone's code. */}
+                <span className={styles.camera}>
+                  <span className={styles.viewfinder}>
+                    <span className={styles.seen}>{code}</span>
+                    <span className={styles.sweep} />
+                    <svg className={styles.corners} viewBox="0 0 100 100" focusable="false">
+                      <path d="M0 24V0H24M76 0H100V24M100 76V100H76M24 100H0V76" />
+                    </svg>
+                  </span>
+                </span>
+                {ritual}
+              </span>
+            </span>
           </div>
-          <TwoDots phase={dots[phase]} size="lg" />
         </div>
         <div className={styles.controls} data-hydrating={hydrated ? undefined : ''}>
           <button type="button" className={`${button.button} ${button.primary}`} onClick={press}>
@@ -183,9 +209,6 @@ export function TempelDemo({ intro, steps, icons }: TempelDemoProps) {
             {phase === 'idle' ? 'Putar' : 'Putar lagi'}
             <span className="visually-hidden">{' cara tempel'}</span>
           </button>
-          <p className={`type-body-small ${styles.status}`} aria-hidden="true">
-            {status[phase]}
-          </p>
           <p className="visually-hidden" role="status">
             {pressed ? status[phase] : ''}
           </p>

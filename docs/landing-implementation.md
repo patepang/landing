@@ -43,7 +43,8 @@ Satu route `/` berisi seluruh halaman, ditambah 404:
 3. **Masalah**: "Setelah pamit, kabar sering berhenti begitu saja.", dengan tiga masalah. Tanpa
    klaim riset. **Direvisi 30 Oktober 2026** (§8.6): satu pertemuan yang memudar, dari hari kalian
    bertemu sampai setahun kemudian, dengan gambar dan gerak yang mengikuti guliran.
-4. **Solusi / Cara kerja**:
+4. **Solusi / Cara kerja** (**direvisi 31 Oktober 2026**, §8.7: dua HP sungguhan, lebih sedikit
+   kata):
    - "Sebelum pamit, tempel dulu." dengan tiga langkah dari `TapRitualPreview`;
    - ilustrasi bergerak yang berputar sendiri sekali saat panggungnya terlihat, lalu bisa diputar
      ulang dengan "Putar lagi".
@@ -709,14 +710,51 @@ dan teks ketiga masalah tidak berubah.
   - judul satu baris terpisah dari teksnya karena baris grid bersama;
   - obrolan diberi tanggal hari itu (3 Mar 2025).
 
-### 8.7 Belum dikerjakan
+### 8.7 Cara kerja (putaran kelima, 31 Oktober 2026)
+
+Permintaan pemilik: "Lanjutkan dong! Pastikan tidak kebanyakan kata-kata."
+
+**Yang dibangun:**
+
+- **Dua HP sungguhan** di panggung ritual (forest mist), dengan bingkai yang sama dengan hero
+  (bezel 8px, sudut konsentris 28/20). Ikon HP dalam lingkaran diganti layar yang menunjukkan
+  tiap langkah:
+  - **Pindai kode:** HP kiri menampilkan kode. Di layar kamera HP kanan, kode itu muncul, bingkai
+    pindai menutup di sekitarnya, dan satu garis lewat sekali.
+  - **Goyang bersama:** kedua HP mendekat dan bergoyang (gerak app: 5°, 70ms, tiga kali). Kedua
+    layar menampilkan dua titik yang mendekat dan ikon getar.
+  - **Terhubung:** dua titik di kedua layar bertemu, dan tanda centang muncul.
+- Perilaku walk-through tidak berubah: berputar sendiri sekali saat 60% panggung terlihat,
+  "Putar lagi" mengulangnya, dan hanya putaran yang diminta yang diumumkan ke pembaca layar.
+- **Lebih sedikit kata:**
+  - lede dari tiga kalimat menjadi "Satu cara terhubung, hanya saat kalian berhadapan.";
+  - teks tiap langkah dipangkas;
+  - baris status di samping tombol dihapus, karena HP dan langkah yang ditandai sudah
+    menunjukkannya. Pembaca layar tetap mendengar status untuk putaran yang diminta.
+- Di HP, panggung muncul sebelum daftar langkah. Mulai 64em teks dan langkah berpusat terhadap
+  panggung di kanan.
+- **Masalah (§8.6) ikut dipangkas:** lede dari 24 menjadi 7 kata, dan dua teks masalah dipendekkan.
+
+**Verifikasi putaran kelima:**
+
+- Tes walk-through kini mencatat fase di HP (`data-phase`) bersama langkah yang ditandai, karena
+  baris status yang terlihat dihapus. Di akhir, kedua HP menampilkan dua titik yang bertemu.
+- Tes gerak dikurangi memeriksa dua HP yang tidak bergerak (sebelumnya dua HP dan ikon tengah).
+- Tes zoom dan teks 200% memeriksa bahwa walk-through mencapai langkah terakhir dan menandainya.
+- Tinjauan visual: 390, 768, dan 1440px, terang dan gelap, tiga fase, dan teks 200%. Yang
+  diperbaiki dari tinjauan itu:
+  - layar kamera sewarna bingkai sehingga HP terlihat mati, jadi kini satu tingkat lebih terang;
+  - di 1440px ada celah besar antara lede dan langkah;
+  - di 768px HP terlalu kecil untuk panggung yang lebar.
+
+### 8.8 Belum dikerjakan
 
 - `docs/screenshots/` belum dibuat ulang, jadi gambarnya masih versi pra-rilis. Gambar akan dibuat
   ulang di akhir revisi bertahap, supaya ±6 MB gambar biner tidak ditulis ulang di setiap putaran.
   `tests/screenshots.spec.ts` sudah menunjuk `#unduh`.
 - Section penutup belum punya tombol toko, karena tautannya belum ada.
 - Section berikutnya menunggu putaran masing-masing, dengan standar yang sama (permintaan pemilik
-  di §8.6): Cara kerja, Fitur, Cerita, Tanya jawab, dan section penutup.
+  di §8.6 dan §8.7): Fitur, Cerita, Tanya jawab, dan section penutup.
 - Hanya Chromium yang diuji. Yang perlu dicek di Safari dan Firefox:
   - `backdrop-filter`, `subgrid`, `:has()`, dan `color-mix()`;
   - properti `translate`/`scale`, unit `cqw`, dan `clip-path` dengan `round`;
