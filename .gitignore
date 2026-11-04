@@ -10,6 +10,9 @@ next-env.d.ts
 # Playwright output (curated screenshots live in docs/screenshots/)
 playwright-report/
 test-results/
+# Full-page shots of every other page (pnpm screenshots), about 20 MB: made locally for review,
+# not kept in the repository.
+docs/screenshots/pages/
 
 # Machine-local tool settings (never commit)
 .claude/settings.local.json

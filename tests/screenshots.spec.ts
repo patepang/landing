@@ -89,19 +89,19 @@ test('tempel walk-through, each step, full and reduced motion', async ({ browser
     const page = await context.newPage();
     await openLanding(page);
     const section = page.locator('section[aria-labelledby="cara-kerja"]');
-    // The sentence on screen; the live region stays quiet for a run nobody asked for.
-    const status = section.locator('p[aria-hidden="true"]');
+    // The phase the phones show (the line of status text beside the button is gone since §8.7).
+    const phase = section.locator('div[data-phase]').first();
     const suffix = reducedMotion === 'reduce' ? '-reduced-motion' : '';
     // On screen, it plays by itself.
     await section.evaluate((el) => {
       el.scrollIntoView({ block: 'center' });
     });
-    await expect(status).toHaveText(/^Langkah 1 dari 3/, { timeout: 3000 });
+    await expect(phase).toHaveAttribute('data-phase', 'scan', { timeout: 3000 });
     await section.screenshot({ path: join(dir, `demo-scan${suffix}.png`) });
-    await expect(status).toHaveText(/^Langkah 2 dari 3/, { timeout: 3000 });
+    await expect(phase).toHaveAttribute('data-phase', 'shake', { timeout: 3000 });
     await page.waitForTimeout(250); // approach done, shaking
     await section.screenshot({ path: join(dir, `demo-shake${suffix}.png`) });
-    await expect(status).toHaveText(/^Langkah 3 dari 3/, { timeout: 3000 });
+    await expect(phase).toHaveAttribute('data-phase', 'done', { timeout: 3000 });
     await page.waitForTimeout(400);
     await section.screenshot({ path: join(dir, `demo-done${suffix}.png`) });
     await context.close();
