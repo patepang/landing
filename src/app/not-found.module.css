@@ -12,3 +12,33 @@
 .inner > p {
   max-width: var(--content-reading);
 }
+
+/* The other ways on: a short list of pages, each a whole 48px row. */
+.more {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+  max-width: var(--content-reading);
+  margin-top: var(--space-6);
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  border-top: var(--border-hairline) solid var(--color-border-subtle);
+}
+
+.links > li {
+  border-bottom: var(--border-hairline) solid var(--color-border-subtle);
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  min-height: calc(var(--touch-target) + var(--space-2));
+  font-size: var(--type-body-large-size);
+  line-height: var(--type-body-large-line);
+  font-weight: var(--weight-semibold);
+}

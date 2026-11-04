@@ -1,0 +1,10 @@
+/* A missing fact: square brackets on the warning pair, held on one line where it can be. */
+.placeholder {
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-xs);
+  background: var(--color-placeholder-bg);
+  color: var(--color-placeholder-text);
+  font-weight: var(--weight-semibold);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
