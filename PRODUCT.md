@@ -28,8 +28,10 @@ Patepang adalah aplikasi HP untuk menjaga hubungan dengan orang yang pernah dite
 bertemu lagi, dan memudar bila kedua orang tidak pernah bertemu lagi.
 
 Landing berhasil bila pengunjung baru, dalam satu kunjungan singkat, paham apa Patepang, bagaimana
-koneksinya terbentuk, apa yang terjadi setelah bertemu, apa yang sengaja tidak ada, dan bahwa
-Patepang sudah hadir dan bisa diunduh.
+koneksinya terbentuk, apa yang terjadi setelah bertemu, apa yang sengaja tidak ada, berapa
+harganya, dan kapan Patepang bisa dipakai. Halaman lain (kebijakan privasi, syarat dan ketentuan,
+pedoman komunitas, keamanan, transparansi, hapus akun, langganan, kontak, tentang, lisensi)
+menjawab pertanyaan sesudahnya, termasuk yang diminta hukum dan toko aplikasi.
 
 ## Positioning
 
@@ -59,12 +61,27 @@ Patepang sudah hadir dan bisa diunduh.
 
 ## Capabilities and Constraints
 
-- **Status (fakta di `patepang/app` @ `262202f`).** Yang ada di commit itu adalah prototipe
+- **Status per 4 November 2026 (lembar fakta koordinator `fakta-produk.md` dan `fakta-data.md`,
+  dari app `b4c6118`, backend `02a41af`, inti `8380813`).** Mode nyata berjalan di build web
+  pengembangan terhadap server lokal: tempel, pesan terenkripsi, kabar, grup, momen, rencana,
+  ruang, pemulihan, laporan, langganan dengan toko tiruan. Belum ada di App Store maupun Google
+  Play, belum ada server produksi, iOS belum pernah dibangun, dan 0 dari 322 butir uji HP
+  terverifikasi. Peluncuran pertama di Indonesia, bahasa Indonesia, untuk umur 18 tahun ke atas,
+  di iPhone dan Android (app ADR 0060 B19, B29, B34). Audit keamanan eksternal dan pembukaan kode
+  (AGPL-3.0-only) dilakukan sebelum dan saat peluncuran publik (B31, B33).
+- **Landing (permintaan pemilik, 4 November 2026; menggantikan keputusan 30 Oktober).** "Landing
+  masih dummy semuanya": landing dibuat nyata, dengan dokumen legal dan halaman lain. Status
+  ketersediaan mengikuti fakta lewat satu sakelar, `src/content/availability.ts`: sekarang
+  "Segera hadir" tanpa tombol unduh; saat pemilik membaliknya dengan tautan kedua toko, tombol
+  unduh muncul di header, hero, dan section penutup. Harga ditampilkan (B21, B22). Dokumen legal
+  adalah draf yang menunggu tinjauan penasihat hukum (B33, B34) dan menandai fakta yang belum ada
+  dengan placeholder.
+- **Status lama (fakta di `patepang/app` @ `262202f`, 22 Oktober 2026).** Yang ada di commit itu adalah prototipe
   aplikasi v0.1.0 dengan data fiktif lokal, mencakup 115 ID layar. Tidak ada backend, akun
   sungguhan, pesan, panggilan, pembayaran, atau kriptografi. Kamera/QR, goyang, NFC, dan biometrik
   disimulasikan. Menurut pemilik (30 Oktober 2026), sekitar 90% Patepang kini sudah selesai.
-- **Landing (keputusan pemilik, 30 Oktober 2026).** Landing menampilkan Patepang sebagai produk
-  yang sudah rilis ke publik ("Sudah hadir"), bukan "Segera hadir". Tautan toko aplikasi belum
+- **Landing (keputusan pemilik, 30 Oktober 2026; diganti 4 November).** Landing menampilkan
+  Patepang sebagai produk yang sudah rilis ke publik ("Sudah hadir"), bukan "Segera hadir". Tautan toko aplikasi belum
   diberikan: tombol "Unduh Patepang" di header dan hero mengarah ke section penutup (`#unduh`),
   yang memuat tombol toko setelah tautannya dikirim pemilik. Teks status sudah diganti di seluruh
   halaman. Desain diperbaiki bertahap per section (header, lalu footer, hero, dan section lain),
@@ -78,18 +95,27 @@ Patepang sudah hadir dan bisa diunduh.
   tanggal rilis dan belum bisa diunduh. Halaman tidak pernah menyatakan aplikasi sudah tersedia.
   (Sebelumnya pemilik memilih status prototipe disebut eksplisit dan fitur ditulis sebagai
   rancangan.)
-- Tautan unduhan (toko aplikasi), daftar tunggu, dan kanal kontak belum ada di landing. Pengguna
-  memilih tanpa formulir dan tanpa pengumpulan data; CTA landing mengarah ke section di halaman
-  itu sendiri sampai tautan toko diberikan.
+- Tautan unduhan (toko aplikasi) dan daftar tunggu belum ada. Tetap tanpa formulir dan tanpa
+  pengumpulan data. Kontak berupa alamat surel di `src/content/contact.ts`: `halo@` dan
+  `security@` diputuskan pemilik (B32); `privasi@` dan `hukum@` ditambahkan atas brief 4 November
+  dan menunggu konfirmasi pemilik. Semua kotak suratnya dibuat pemilik.
 - Karena belum ada pengguna, slot testimoni di landing diisi skenario pemakaian yang ditulis
   sebagai contoh untuk pembaca ("kamu"), bukan kutipan orang.
 - Istilah: **Tempel** (aksinya ditulis huruf kecil di tengah kalimat dan kapital sebagai nama tab),
-  **Kabar**, **Orang**, **Momen**, **lingkaran**, **titik lahir**. Menurut repo, "tepang" berarti
-  "bertemu" dalam bahasa Sunda. Asal-usul nama "Patepang" belum dikonfirmasi.
-- **Belum diputuskan atau belum diberikan:** tautan toko dan platform rilis, negara atau kota
-  awal, harga, kanal kontak, kebijakan privasi, entitas hukum, dan simbol logo final.
-- **Tidak boleh diklaim:** keamanan, privasi, enkripsi, penyimpanan di perangkat, pemulihan akun,
-  angka pengguna, testimoni, mitra, maupun rating.
+  **Kabar**, **Orang**, **Momen**, **lingkaran**, **titik lahir**. Menurut aplikasi, "tepang"
+  berarti "bertemu" dalam bahasa Sunda; whitepaper pemilik menjelaskan nama Patepang dari sana.
+- **Sudah diputuskan (app ADR 0060):** harga Rp49.000 per bulan atau Rp499.000 per tahun, masa
+  coba 14 hari, semua fitur gratis (B21, B22); Indonesia dulu, 18+ (B34); kontak `halo@` dan
+  `security@`, halaman `/kebijakan` dan `/ketentuan` (B32); lisensi AGPL-3.0-only (B33).
+- **Belum diputuskan atau belum diberikan:** tautan toko dan tanggal rilis, kota awal, entitas
+  hukum (nama, alamat, NIB/PSE), pejabat pelindungan data, hasil tinjauan penasihat hukum, dan
+  simbol logo final.
+- **Boleh dijelaskan sebagai fakta rancangan, bukan jaminan:** isi dikunci di HP sebelum dikirim
+  dan server tidak bisa membacanya; server tidak menyimpan alamat IP. Yang diketahui server
+  (siapa tempel dengan siapa dan kapan, keanggotaan grup, penjaga) disebut terus terang.
+- **Tidak boleh diklaim:** "sudah diaudit", "kode terbuka" (sekarang), "server tidak tahu siapa
+  bertemu siapa", "tidak bisa diretas" atau "paling aman", teruji di HP, panggilan di HP, angka
+  pengguna, testimoni, mitra, maupun rating.
 
 ## Brand Commitments
 
@@ -110,8 +136,11 @@ Komitmen berikut mengikat menurut brief pengguna:
 
 ## Evidence on Hand
 
-- Kode dan dokumen prototipe di `patepang/app` @ `262202f`. Rujukan path ada di
-  `docs/product-understanding.md`.
+- Lembar fakta koordinator per 4 November 2026: `fakta-produk.md` (fakta produk dan daftar teks
+  dummy) dan `fakta-data.md` (praktik data untuk kebijakan privasi). Keduanya berada di luar repo;
+  ringkasan dan pemakaiannya di `docs/landing-implementation.md` §9.
+- Kode dan dokumen prototipe di `patepang/app` @ `262202f` (pemahaman lama, 22 Oktober). Rujukan
+  path ada di `docs/product-understanding.md`.
 - Copy produk asli: "Hanya orang yang pernah kamu temui.", "sebelum pamit, tempel dulu", "Selesai
   untuk hari ini", serta FAQ di layar Bantuan dan tentang.
 - **Tidak ada:** pengguna sungguhan, testimoni, logo pelanggan, mitra, liputan pers, rating, angka,
@@ -124,8 +153,9 @@ Komitmen berikut mengikat menurut brief pengguna:
 2. **Betah karena nyaman, bukan karena dipancing.** Tidak ada angka atau feed yang memancing orang
    kembali.
 3. **Jujur tentang keadaan.** Rancangan dan prototipe selalu dibedakan dari layanan yang berjalan.
-4. **Tunjukkan pilihan, jangan janjikan jaminan.** Siapa yang melihat apa boleh dijelaskan,
-   sedangkan jaminan keamanan dan privasi tidak diumumkan.
+4. **Tunjukkan pilihan, jangan janjikan jaminan.** Siapa yang melihat apa boleh dijelaskan, dan
+   cara Patepang dibangun boleh diceritakan, sedangkan jaminan keamanan dan privasi tidak
+   diumumkan.
 
 ## Accessibility & Inclusion
 

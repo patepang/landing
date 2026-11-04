@@ -1,5 +1,12 @@
 # Pemahaman produk Patepang
 
+> **Usang sejak 4 November 2026.** Dokumen ini memotret prototipe `patepang/app` @ `262202f` (22
+> Oktober 2026). Sejak itu mode nyata dibangun, harga dan negara peluncuran diputuskan, dan aturan
+> klaim berubah: fakta rancangan privasi boleh dijelaskan, jaminan tidak. Jangan pakai dokumen ini
+> sebagai dasar klaim baru. Yang berlaku: lembar fakta koordinator `fakta-produk.md` dan
+> `fakta-data.md` (4 November 2026), dirangkum di `docs/landing-implementation.md` §9, dan
+> `PRODUCT.md`.
+
 Dokumen kerja untuk landing `patepang.com`. Isinya hanya hal yang bisa dibuktikan dari repo
 sumber. Yang tidak bisa dibuktikan ditandai sebagai pertanyaan terbuka.
 

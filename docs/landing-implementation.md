@@ -2,9 +2,12 @@
 
 - **Tanggal:** 22 Oktober 2026 (versi pertama dan keputusan versi produksi), 23 Oktober 2026
   (versi produksi selesai dan diverifikasi), 30 Oktober 2026 (revisi bertahap dimulai: teks status
-  dan header, §8).
-- **Status:** sejak 30 Oktober 2026 halaman produk yang sudah hadir (keputusan pemilik). `main`
-  di-deploy otomatis oleh Vercel. Tanpa analytics atau pengumpulan data.
+  dan header, §8), 4 November 2026 (situs nyata: koreksi isi, sakelar ketersediaan, harga, dan
+  sebelas halaman termasuk dokumen legal, §9).
+- **Status:** sejak 4 November 2026 status ketersediaan mengikuti fakta lewat satu sakelar
+  (`src/content/availability.ts`): sekarang "Segera hadir", belum ada di toko. `main` di-deploy
+  otomatis oleh Vercel. Tanpa analytics, cookie, atau pengumpulan data. Bagian §1 sampai §8
+  adalah catatan putaran sebelumnya; yang berubah sejak itu ada di §9.
 - **Arah:** versi pertama memakai arah A, Tur prototipe
   (`docs/superpowers/specs/2026-10-22-landing-design.md` §8; commit `35b4e47`). Pada 22 Oktober 2026
   pemilik meminta halaman tampil "seakan-akan produksi", dengan section header, hero, masalah,
@@ -749,9 +752,7 @@ Permintaan pemilik: "Lanjutkan dong! Pastikan tidak kebanyakan kata-kata."
 
 ### 8.8 Belum dikerjakan
 
-- `docs/screenshots/` belum dibuat ulang, jadi gambarnya masih versi pra-rilis. Gambar akan dibuat
-  ulang di akhir revisi bertahap, supaya ±6 MB gambar biner tidak ditulis ulang di setiap putaran.
-  `tests/screenshots.spec.ts` sudah menunjuk `#unduh`.
+- ~~`docs/screenshots/` belum dibuat ulang~~: dibuat ulang pada 4 November 2026 (§9.8).
 - Section penutup belum punya tombol toko, karena tautannya belum ada.
 - Section berikutnya menunggu putaran masing-masing, dengan standar yang sama (permintaan pemilik
   di §8.6 dan §8.7): Fitur, Cerita, Tanya jawab, dan section penutup.
@@ -760,3 +761,260 @@ Permintaan pemilik: "Lanjutkan dong! Pastikan tidak kebanyakan kata-kata."
   - properti `translate`/`scale`, unit `cqw`, dan `clip-path` dengan `round`;
   - scroll-driven animations di Masalah (Firefox mendapat keadaan akhir tanpa gerak);
   - `prefers-reduced-transparency`, `scrollbar-width`, dan animasi tutup `<details>`.
+
+## 9. Situs nyata dan dokumen legal (4 November 2026)
+
+Permintaan pemilik: "agar landing berjalan. Saat ini landing masih dummy semuanya. Kamu bisa
+menambahkan semua hal terutama dokumen legal (syarat & ketentuan, kebijakan privasi), halaman
+halaman lain juga." Brief koordinator merincinya: koreksi setiap pernyataan yang tidak benar,
+sakelar ketersediaan, bagian harga, sebelas halaman, dokumen legal sesuai UU PDP dan UU
+Perlindungan Konsumen, berkas teknis, tes, dan dokumentasi.
+
+**Sumber kebenaran putaran ini:** dua lembar fakta yang ditulis koordinator dari kode pada 4
+November 2026, `fakta-produk.md` (fakta produk dan daftar 24 teks dummy) dan `fakta-data.md`
+(praktik data, untuk kebijakan privasi dan formulir toko), dari app `b4c6118`, backend `02a41af`,
+dan inti `8380813`. Keduanya ada di luar repo ini. Setiap halaman menyebut bagian lembar fakta yang
+dipakainya dalam komentar di kodenya. Yang ditandai UNCONFIRMED atau diserahkan ke pemilik dan
+penasihat hukum tampil sebagai placeholder bertanda kurung siku, bukan sebagai teks karangan.
+
+Impeccable dijalankan sebagai subagen tanpa alat tanya-jawab, jadi langkah wawancara dan keputusan
+desainnya diganti inferensi dari brief, `PRODUCT.md`, dan `DESIGN.md`. Mode halaman dokumen: Read.
+
+### 9.1 Yang dibangun
+
+| Alamat | Isi | Draf legal |
+|---|---|---|
+| `/` | Halaman utama yang dikoreksi (§9.3), bagian Harga baru | |
+| `/kebijakan` | Indeks semua kebijakan; alamat `policies_url` aplikasi (app ADR 0060 B32) | |
+| `/kebijakan-privasi` | Kebijakan privasi, 17 bagian bernomor, unsur UU PDP lengkap (§9.4) | Ya |
+| `/syarat-ketentuan` | Syarat dan ketentuan, 15 bagian bernomor | Ya |
+| `/ketentuan` | Redirect 308 ke `/syarat-ketentuan` (alamat yang diputuskan B32) | |
+| `/pedoman-komunitas` | Larangan dengan 8 kategori laporan, cara melapor, yang dilihat dan tidak dilihat moderator, sanksi 7/30 hari dan blokir dengan moderator kedua, banding | Ya |
+| `/keamanan` | Cara Patepang melindungi orang, batasnya, keadaan audit, pengungkapan kerentanan, safe harbour, ringkasan bahasa Inggris | Ya |
+| `/transparansi` | Berkas publik dan laporan setengah tahunan yang akan terbit; yang bisa dan tidak bisa diberikan atas permintaan aparat | Ya |
+| `/hapus-akun` | Langkah di aplikasi, yang dihapus dan kapan, yang tersisa, tanpa aplikasi, akun diblokir (halaman yang diminta Google Play) | |
+| `/langganan` | Paket, masa coba, pembayaran lewat toko, berhenti, pengembalian dana, masa tenggang, melebihi kuota, bonus pertemuan kedua, tip | Ya |
+| `/kontak` | `halo@`, `privasi@`, `security@`, `hukum@` sebagai tautan surel; tanpa formulir | |
+| `/tentang` | Siapa yang membangun, prinsip, keadaan sekarang | |
+| `/lisensi` | AGPL-3.0-only, rencana membuka kode, perangkat lunak pihak ketiga situs ini | |
+| `/.well-known/security.txt` | RFC 9116: Contact, Expires, Preferred-Languages, Canonical, Policy | |
+| `/robots.txt`, `/sitemap.xml` | Semua halaman boleh diindeks; sitemap memuat beranda dan semua halaman | |
+
+Semua halaman memakai satu kerangka (`src/components/doc/DocPage.tsx`): header dan footer situs,
+masthead (judul, kegunaan halaman, "Terakhir diperbarui"), pemberitahuan draf untuk dokumen legal
+("Draf: menunggu tinjauan penasihat hukum. Belum berlaku."), lalu kolom baca 680px. Halaman dengan
+lima bagian atau lebih punya daftar isi: terlipat dalam `<details>` di HP, dan rail yang selalu
+terbuka di samping teks mulai 64em. Daftar halaman ada di `src/content/pages.ts`; footer, indeks
+`/kebijakan`, sitemap, dan tes membacanya, sehingga halaman baru tidak bisa lupa ditautkan.
+
+### 9.2 Sakelar ketersediaan
+
+`src/content/availability.ts` berisi `{ state: 'segera' }`. Semua kata yang bergantung padanya
+ada di satu fungsi murni, `statusFor()` di `src/content/status-copy.ts`; `src/content/status.ts`
+memanggilnya untuk keadaan sekarang.
+
+| Tempat | `segera` (sekarang) | `tersedia` (setelah dibalik) |
+|---|---|---|
+| Header | "Segera hadir" (ikon jam pasir), nama aksesibel "Segera hadir: kapan Patepang bisa dipakai", ke `#unduh` | "Unduh" (nama "Unduh Patepang"), ke `#unduh` |
+| Hero | Aksi utama "Lihat cara kerja", lalu "Segera hadir di Indonesia. Belum bisa diunduh." | "Unduh Patepang" dan "Lihat cara kerja" |
+| Section penutup `#unduh` | "Patepang segera hadir di Indonesia." + iPhone dan Android, 18+, belum ada tanggal; tautan "Baca kebijakan privasi" dan "Tanya jawab"; dua titik mendekat | "Patepang sudah hadir." + tombol App Store dan Google Play; dua titik bertemu |
+| Tanya jawab "Kapan Patepang bisa dipakai?" | Belum; belum ada di toko; Indonesia; 18+; belum ada tanggal | Sekarang, di kedua toko, 18+ |
+| Deskripsi halaman | "... Segera hadir di Indonesia." | "... Tersedia di App Store dan Google Play." |
+| `/hapus-akun`, `/langganan` | Catatan "Patepang belum bisa diunduh. Halaman ini menjelaskan cara kerjanya saat aplikasi tersedia." | Tanpa catatan |
+| `/tentang` | "sedang dibangun dan belum bisa diunduh" | "tersedia di App Store dan Google Play" |
+
+Tombol toko berupa kata-kata dengan gaya tombol situs, bukan lencana resmi Apple dan Google; pemilik
+bisa menggantinya dengan lencana resmi dari kit pemasaran kedua toko. Untuk tes, `next.config.ts`
+mengganti modul sakelar dengan `tests/fixtures/availability-tersedia.ts` bila
+`PATEPANG_AVAILABILITY` diisi (alias Turbopack); build produksi tidak pernah mengisinya.
+
+### 9.3 Koreksi halaman utama
+
+Nomor merujuk ke daftar teks dummy di `fakta-produk.md` §11.
+
+| # | Sebelum | Sesudah |
+|---|---|---|
+| 1, 2, 3, 4, 14, 15, 19 | "Sudah bisa diunduh", "Unduh Patepang", "Patepang sudah hadir.", "Sekarang. Patepang sudah bisa diunduh" | Mengikuti sakelar (§9.2); sekarang "Segera hadir" |
+| 5, 6, 13 | "Akunmu lahir ... kapan pun itu", "Tidak ada batas waktu" | Akun dibuat di HP dan lahir saat tempel pertama; dihapus bila 30 hari tanpa tempel |
+| 7 | Pratinjau hero: tab "Tempel" dengan tombol chat dan pengaturan, kartu akun di atas kode | Lembar Tempel versi app `b4c6118`: "Pindai \| QR-mu", "Sebelum pamit, tempel dulu", kode, "Tunjukkan kode ini ke orang yang kamu temui.", "Kode berganti sendiri setiap 30 detik.", lalu akun yang belum lahir di bawah kode. Tiga catatan kini berurutan wajah, kode, akun (§9.6) |
+| 8 | "empat tab: Tempel, Kabar, Orang, dan Momen" | "Kabar, Orang, Pesan, dan Notifikasi, dengan tombol Tempel di sampingnya" |
+| 9, 10 | Momen dengan cerita, tempat, dan foto bersama | Momen di HP kalian berdua: kapan dan dengan siapa; tempat ditulis sendiri; kartu tanpa cerita dan baris foto |
+| 11, 12 | "foto hasil latihannya muncul di Kabarmu"; "Patepang mengingatkan" | "kabarnya tentang hasil latihan"; "kartu sepupumu ... memberi tanda" |
+| 16 | Footer tanpa halaman lain | Footer tiga kelompok (Patepang, Kebijakan, Bantuan) dari `src/content/pages.ts` |
+| 18 | Data contoh tanpa label terlihat | "Contoh tampilan, dengan orang dan tempat rekaan." di bawah panggung Fitur |
+| 20, 21, 22 | `PRODUCT.md` dan `docs/product-understanding.md` usang | `PRODUCT.md` diperbarui; `product-understanding.md` ditandai usang |
+| 23 | Tes melarang kata yang kini benar (harga, privasi, App Store) | Tes melarang yang memang tidak benar ("kapan pun itu", "sudah diaudit", "paling aman", status yang berlawanan dengan sakelar) |
+| 24 | 404: "Semua penjelasan ... ada di halaman utama" | 404 menawarkan Kebijakan privasi, Syarat dan ketentuan, Hapus akun, Kontak, dan indeks kebijakan, lalu footer |
+
+Tambahan: bagian **Harga** ("Semua fitur gratis.") dengan dua paket berdampingan yang barisnya
+sejajar (subgrid): Gratis Rp0, 5 GB ditambah 500 MB per orang yang ditemui lagi sampai 10 GB, berkas
+sampai 100 MB; Langganan Rp49.000 per bulan atau Rp499.000 per tahun (hemat Rp89.000), masa coba 14
+hari, 100 GB, berkas sampai 4 GB; harga ditetapkan di toko. Ukuran memakai "GB" dan "MB" seperti
+aplikasi (`formatBytes`, berbasis 1024). Navigasi header kini Cara kerja, Fitur, Harga, Tanya
+jawab ("Cerita" tetap di halaman, tetapi tidak di header, supaya baris 768px tetap muat dengan
+"Segera hadir"). Tanya jawab mendapat dua pertanyaan baru ("Bisakah Patepang membaca pesanku?" dan
+"Berapa harganya?") dan tautan ke rinciannya. "Yang sengaja tidak ada" mendapat "Angka belum
+dibaca" dan "Iklan".
+
+### 9.4 Dokumen legal
+
+**Kebijakan privasi** (UU No. 27 Tahun 2022) memuat semua unsur yang diminta: identitas pengendali
+(placeholder), data yang tetap di HP, data di server per kategori dengan tujuan dan dasar hukum
+Pasal 20 (usulan penyusun untuk ditinjau), isi yang tidak bisa dibaca dan batasnya, yang bisa
+dilihat orang lain, tabel retensi, penerima dan pemroses beserta lokasinya (AWS Singapura dan
+Frankfurt untuk kunci cadangan, Cloudflare global dengan R2 Asia-Pasifik dan Uni Eropa, Apple,
+Google, Expo, Vercel, penyedia surel dan halaman status), transfer ke luar negeri (Pasal 56), hak
+subjek data dan cara memakainya, keputusan otomatis (tidak ada), anak (18+), keamanan,
+pemberitahuan kebocoran 3 × 24 jam (Pasal 46), perubahan, dan kontak serta pejabat pelindungan
+data (placeholder). Hal yang jujur tetapi tidak enak juga ditulis: server tahu siapa tempel dengan
+siapa sampai ke menit, keanggotaan grup tidak terenkripsi, rantai kunci (termasuk id penjaga)
+publik, token push bisa dibaca server, amplop yang belum diambil tidak kedaluwarsa, cadangan basis
+data sampai 40 hari, entri log transparansi kunci permanen, dan pemeriksaan pembaruan Expo.
+
+**Syarat dan ketentuan**: kelayakan 18+, akun (kunci di HP, PIN, penjaga, dan pernyataan tegas
+bahwa akun tanpa perangkat dan tanpa penjaga tidak bisa dipulihkan), penggunaan, isi (tetap milik
+pengguna; terenkripsi), moderasi dan banding, langganan dan pengembalian dana lewat toko,
+ketersediaan dan perubahan layanan, pengakhiran, tanggung jawab yang tidak mengurangi hak konsumen
+menurut UU No. 8 Tahun 1999 (tanpa klausul pengalihan tanggung jawab), hukum Indonesia, sengketa
+lewat musyawarah lalu BPSK atau pengadilan, bahasa Indonesia yang berlaku, dan kontak.
+
+**Placeholder** (semua bertanda `data-placeholder`, gaya pasangan warna peringatan):
+
+| Placeholder | Di mana | Diisi oleh |
+|---|---|---|
+| `[Nama badan hukum]`, `[Alamat]`, `[NIB/PSE]`, `[Petugas pelindungan data]`, `[Pengadilan negeri yang dipilih]` | Privasi, syarat, hapus akun, kontak, tentang | Pemilik, di `src/content/entity.ts` |
+| Dasar transfer menurut Pasal 56 UU PDP | Privasi §9 | Penasihat hukum |
+| Cara memverifikasi permintaan lewat surel; cara meminta penghapusan tanpa aplikasi | Privasi §10, hapus akun | Pemilik (proses belum ada: `fakta-data` §8.6) |
+| Hak penghapusan bagi akun yang diblokir | Hapus akun | Penasihat hukum (`fakta-data` §8.1, FLAG) |
+| Cara aplikasi menanyakan umur, dan langkah untuk pengguna di bawah 18 | Privasi §12 | Penasihat hukum; gerbang umur belum dibangun |
+| Pemeriksaan pembaruan Expo: diungkapkan atau dimatikan | Privasi §4.14 | Pemilik (`fakta-data` §6.3, FLAG) |
+| Lokasi Expo; lokasi dan retensi log Vercel; penyedia surel dan halaman status; lama penyimpanan surel; aturan retensi log audit | Privasi §4.12, §8, §15 | Pemilik |
+| Jangka waktu pemberitahuan bila layanan berhenti; batas jumlah tanggung jawab | Syarat §8, §10 | Penasihat hukum |
+| Target waktu peninjauan laporan; penanganan konten seksual anak dan pelaporan ke pihak berwenang | Pedoman komunitas | Pemilik dan penasihat hukum |
+| Kebijakan tertulis untuk permintaan aparat dan pemberitahuan kepada pengguna | Transparansi | Pemilik dan penasihat hukum |
+| Daftar pemberitahuan pihak ketiga untuk aplikasi | Lisensi | Pemilik |
+
+### 9.5 Teknis
+
+- **Static export** tetap: semua halaman dan berkas teks (`security.txt` lewat route handler
+  `force-static`, `robots.ts`, `sitemap.ts`) ditulis ke `out/`. `lastmod` sitemap adalah tanggal
+  teks halaman, bukan tanggal build.
+- **security.txt**: `Expires` tanggal tetap 2027-11-01 (kurang dari setahun, sesuai RFC 9116
+  §2.5.5). Tes gagal bila tinggal kurang dari 30 hari, sehingga berkas ditinjau ulang tepat waktu.
+  Tanpa `Encryption` dan tanpa tanda tangan OpenPGP, karena belum ada kunci.
+- **vercel.json** (repo belum punya): `Content-Security-Policy` tanpa pihak ketiga
+  (`default-src 'self'`, `script-src 'self' 'unsafe-inline'`, `style-src 'self'`, `img-src 'self'
+  data:`, `font-src 'self'`, `connect-src 'self'`, `object-src 'none'`, `base-uri 'none'`,
+  `form-action 'none'`, `frame-ancestors 'none'`), `Strict-Transport-Security` dua tahun dengan
+  `includeSubDomains` (tanpa `preload`; itu keputusan pemilik), `X-Content-Type-Options: nosniff`,
+  `Referrer-Policy: no-referrer`, `Permissions-Policy` yang mematikan kamera, mikrofon, lokasi,
+  sensor gerak, pembayaran, USB, dan Topics, `X-Frame-Options: DENY`, `Cross-Origin-Opener-Policy:
+  same-origin`, `Content-Type` eksplisit untuk `security.txt`, dan redirect permanen `/ketentuan`.
+  `'unsafe-inline'` untuk skrip dibutuhkan karena static export Next.js menyisipkan payload RSC
+  sebagai skrip inline; nonce butuh server, dan hash berubah setiap build (dokumentasi CSP Next.js,
+  "Without Nonces"). Tidak ada atribut `style` inline di HTML, jadi `style-src` tanpa
+  `'unsafe-inline'`.
+- **Server lokal** (`scripts/serve-out.mjs`) kini menerapkan header dan redirect `vercel.json`
+  (hanya pola literal dan `(.*)`; pola lain menghentikan server), sehingga seluruh tes berjalan di
+  bawah CSP sungguhan: pelanggaran CSP muncul sebagai error konsol, dan tes memeriksa bahwa tidak
+  ada.
+- **Tanpa cookie dan tanpa penyimpanan browser**: dites di semua halaman. Tautan antarhalaman
+  memakai `<a>` biasa (tanpa prefetch), kecuali tombol 404 ke beranda (`next/link`, aturan lint).
+- **Token baru** (bagian web-only `tokens.css`): `--color-surface-track` dan `--color-surface-thumb`
+  (kontrol segmen app `b4c6118`), `--color-placeholder-text` dan `--color-placeholder-bg` (pasangan
+  peringatan). Masuk `DESIGN.md` setelah disetujui pemilik.
+
+### 9.6 Keputusan dan penyimpangan
+
+| Hal | Keputusan | Alasan |
+|---|---|---|
+| Alamat dokumen | `/kebijakan-privasi` dan `/syarat-ketentuan` (brief), ditambah `/kebijakan` sebagai indeks dan `/ketentuan` sebagai redirect | B32 memutuskan `/kebijakan` (dibuka aplikasi dari "Kebijakan privasi dan ketentuan") dan `/ketentuan`. Keduanya harus tetap hidup. |
+| Alamat surel | `halo@` untuk bantuan (bukan `bantuan@` dari brief); `privasi@` dan `hukum@` ditambahkan | `halo@` dan `security@` diputuskan pemilik (B32); `bantuan@` akan bertentangan. `privasi@` dan `hukum@` tidak bertentangan dengan keputusan mana pun, tetapi menunggu konfirmasi pemilik. Semua di satu berkas. |
+| Pratinjau hero | Mengikuti lembar Tempel app sekarang, dengan enam baris layar yang sama untuk subgrid; catatan berurutan wajah, kode, akun; catatan kode menunjuk tengah kode (pola 192px) | Pratinjau lama menggambarkan tab yang sudah tidak ada (`fakta-produk` #7). Catatan "wajah" merentang sampai baris kode supaya kata-katanya tidak mendorong kode menjauh dari judul. |
+| Status di hero | Satu aksi utama "Lihat cara kerja" dan baris status dengan jam pasir | Tidak ada yang bisa diunduh; tombol unduh palsu dihapus, status dikatakan di tempat yang sama. |
+| Dua titik di penutup | `near` saat segera, `meet` saat tersedia | Belum bertemu sampai Patepang ada; dekoratif dan tersembunyi dari pembaca layar. |
+| Daftar isi dokumen | Dua elemen, hanya satu yang ditampilkan (`display: none` untuk yang lain) | Percobaan pertama memaksa isi `<details>` tertutup tampil di desktop (`::details-content`); axe menandainya `scrollable-region-focusable`, karena tautannya tidak terjangkau keyboard. |
+| Tautan di dalam kalimat | Tidak wajib 48px | Pengecualian tautan dalam kalimat (WCAG 2.5.8). Kontrol lain (header, footer, daftar isi, kartu, tombol) tetap 48px, dan dites. |
+| Ringkasan bahasa Inggris | Hanya di `/keamanan` | Brief menyebutnya opsional; `security.txt` menyebut `Preferred-Languages: id, en`, jadi peneliti keamanan perlu versi Inggris. |
+| Klaim keamanan dan privasi | Ditulis sebagai cara Patepang dibangun, dengan keadaan audit apa adanya, dan batasnya di bagian sendiri | Aturan klaim baru (`fakta-produk` §5): fakta rancangan boleh, jaminan tidak. |
+
+### 9.7 Verifikasi
+
+Lingkungan: Node 22.23.4, pnpm 10.34.6, Playwright 1.56.1 dengan Chromium 153 (build 1243 di
+`/opt/pw-browsers`, dipetakan ke nama build 1194 lewat `PLAYWRIGHT_BROWSERS_PATH` ke folder di luar
+repo; tidak ada berkas repo yang diubah untuk itu).
+
+| Perintah | Hasil |
+|---|---|
+| `pnpm typecheck`, `pnpm lint`, `pnpm format:check` | Lulus |
+| `pnpm check:contrast` | 90 dari 90 pasangan lulus (45 × 2 tema), termasuk pemberitahuan draf, placeholder, nama kelompok footer, dan kontrol segmen |
+| `pnpm test:tersedia` | 3 dari 3 lulus atas build keadaan tersedia |
+| `pnpm test:e2e` | 71 dari 71 lulus (sebelumnya 44): 3 tes ketersediaan, 39 tes beranda (disesuaikan), 24 tes halaman (baru), 5 tes zoom dan ukuran teks 200% |
+| `pnpm check` | Lulus (exit 0): typecheck, lint, format, kontras, `test:tersedia`, lalu `test:e2e` |
+| `pnpm screenshots` | Lihat §9.8 |
+| `impeccable detect` (1280×800 dan 390×844; beranda, privasi, kontak, indeks, langganan) | Hanya `cream-palette`, yaitu kanvas merek dari token app (disengaja, sama seperti sebelumnya) |
+
+Tes baru:
+
+- `tests/pages.spec.ts`: setiap halaman dari daftar halaman terbuka tanpa error konsol, pelanggaran
+  CSP, atau permintaan pihak ketiga; satu H1 dengan judulnya; title, description, canonical, Open
+  Graph, dan kartu Twitter miliknya sendiri; tanggal pembaruan; pemberitahuan draf tepat di dokumen
+  draf; setiap tautan nyata (anchor, halaman yang ada, kotak surat situs, dan beberapa situs yang
+  disebut); tanpa formulir; tanpa klaim terlarang. Juga: footer menautkan semua halaman di beranda
+  dan di halaman lain; daftar isi terlipat di HP dan menjadi rail yang tetap terlihat di layar
+  lebar; placeholder entitas tampil; `security.txt` (tipe isi, semua kolom, `Expires` antara 30 dan
+  366 hari); `robots.txt` dan sitemap (persis beranda dan semua halaman); header keamanan dengan CSP
+  tanpa sumber pihak ketiga; redirect `/ketentuan`; tanpa cookie dan penyimpanan browser; tanpa
+  overflow dan target 48px di 360 dan 1440px; axe-core tanpa pelanggaran di semua halaman, terang
+  dan gelap.
+- `tests/availability.spec.ts`: header, hero, penutup, tanya jawab, deskripsi, dan catatan halaman
+  sesuai keadaan build. Berjalan di proyek `e2e` (sakelar apa adanya, sekarang `segera`) dan proyek
+  `tersedia` (fixture), jadi kedua keadaan dites di setiap `pnpm test`.
+- `tests/landing.spec.ts` disesuaikan: H2 Harga, status dari sakelar, kata terlarang yang baru,
+  tautan halaman, urutan fokus, catatan hero (urutan dan sasaran baru), dan 404.
+
+### 9.8 Gambar tinjauan
+
+`pnpm screenshots` kini juga menulis setiap halaman di `docs/screenshots/pages/`, satu JPEG
+halaman penuh per alamat, lebar (390 dan 1440), dan tema (terang dan gelap), misalnya
+`kebijakan-privasi-390-dark.jpg`: 44 gambar, sekitar 20 MB. Folder itu diabaikan git dan dibuat
+ulang kapan saja dengan `pnpm screenshots`, supaya repo tidak membawa 20 MB gambar biner di setiap
+perubahan teks. Set beranda yang dikurasi di `docs/screenshots/` dibuat ulang dari versi ini dan
+tetap di-commit. Tes walk-through di `tests/screenshots.spec.ts` kini menunggu fase di HP
+(`data-phase`), karena baris status yang ditunggunya sudah dihapus sejak §8.7.
+
+### 9.9 Yang harus dilakukan pemilik
+
+1. **Entitas**: isi `src/content/entity.ts` (nama badan hukum, alamat, NIB dan pendaftaran PSE,
+   pejabat pelindungan data, pengadilan negeri). Placeholder di semua halaman ikut terisi.
+2. **Kotak surat**: buat `halo@patepang.com`, `privasi@patepang.com`, `security@patepang.com`, dan
+   `hukum@patepang.com` sebelum produksi, atau ubah `src/content/contact.ts` bila `privasi@` dan
+   `hukum@` tidak diinginkan.
+3. **Tinjauan penasihat hukum** atas kebijakan privasi, syarat dan ketentuan, pedoman komunitas,
+   langganan, keamanan (safe harbour), dan transparansi, termasuk placeholder bagian hukum di §9.4.
+   Setelah itu, ubah `draft` menjadi `false` di `src/content/pages.ts` dan perbarui `updated`.
+4. **Keputusan terbuka**: pemeriksaan pembaruan Expo (ungkapkan atau matikan), proses
+   permintaan data lewat surel, penghapusan untuk akun yang diblokir, kebijakan permintaan aparat,
+   penyedia surel dan halaman status, `preload` HSTS.
+5. **Membalik ketersediaan** saat kedua toko sudah menayangkan Patepang: isi
+   `src/content/availability.ts` (README, "Sakelar ketersediaan"), jalankan `pnpm check`, periksa
+   pratinjau Vercel, lalu gabungkan. Opsional: ganti tombol toko dengan lencana resmi.
+6. **Produksi Vercel**: cabang ini belum di-push; koordinator mendorong cabang pratinjau. Setelah
+   pratinjau diperiksa dan poin 1 sampai 3 beres, gabungkan ke `main` (yang langsung tayang).
+   Pastikan juga domain `patepang.com` tersambung ke proyek Vercel, dan header `vercel.json`
+   terkirim (periksa dengan `curl -I https://patepang.com/`).
+7. **security.txt**: tinjau dan perpanjang `Expires` di `src/content/security.ts` sebelum
+   1 Oktober 2027.
+
+### 9.10 Batas
+
+- Dokumen legal adalah draf penyusun, bukan nasihat hukum, dan belum berlaku.
+- Fakta di halaman adalah fakta kode dan keputusan per 4 November 2026; layanan produksi belum ada.
+  Tinjau ulang saat peluncuran (`fakta-data`, "Status caveat").
+- Hanya Chromium yang diuji. Yang baru dan perlu dicek di Safari dan Firefox: `subgrid` di bagian
+  Harga, `text-wrap: balance` di pratinjau, dan rail daftar isi yang `sticky`.
+- Pemeriksaan otomatis (axe, kontras, target sentuh) bukan bukti kepatuhan aksesibilitas
+  menyeluruh; pembaca layar sungguhan belum dipakai.
+- Header `vercel.json` hanya diuji lewat server lokal yang menirunya, bukan di Vercel. Di
+  deployment pratinjau, Vercel Toolbar (skrip dari `vercel.live`) akan ditolak CSP; situsnya tetap
+  berjalan. Matikan toolbar di pengaturan proyek, atau abaikan error konsolnya di pratinjau.
