@@ -2,6 +2,7 @@ import { DocPage, type DocSection } from '@/components/doc/DocPage';
 import { LinkCards } from '@/components/doc/LinkCards';
 import { pageMetadata } from '@/content/metadata';
 import { pageAt } from '@/content/pages';
+import { released } from '@/content/status';
 
 /*
  * Every policy in one place. This is the address the app opens from "Kebijakan privasi dan
@@ -24,6 +25,9 @@ const order = [
   '/lisensi',
   '/kontak',
 ] as const;
+
+/** Whether the privacy policy or the terms still wait for counsel. */
+const policiesInDraft = pageAt('/kebijakan-privasi').draft || pageAt('/syarat-ketentuan').draft;
 
 const sections: DocSection[] = [
   {
@@ -48,8 +52,8 @@ const sections: DocSection[] = [
     title: 'Tentang draf',
     body: (
       <p>
-        Dokumen bertanda Draf sedang menunggu tinjauan penasihat hukum dan belum berlaku. Patepang
-        belum diluncurkan; dokumen ini berlaku setelah ditinjau dan diumumkan di aplikasi.
+        Dokumen bertanda Draf sedang menunggu tinjauan penasihat hukum dan baru berlaku setelah
+        ditinjau.{released ? null : ' Patepang belum diluncurkan.'}
       </p>
     ),
   },
@@ -62,7 +66,8 @@ export default function KebijakanPage() {
       lede={
         <p>
           Semua kebijakan dan ketentuan Patepang di satu tempat. Kebijakan privasi dan syarat dan
-          ketentuan berlaku bersama, untuk aplikasi dan untuk langganan.
+          ketentuan berlaku bersama{policiesInDraft ? ' setelah ditinjau penasihat hukum' : ''},
+          untuk aplikasi dan untuk langganan.
         </p>
       }
       sections={sections}

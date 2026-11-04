@@ -2,6 +2,7 @@ import { DocPage, type DocSection } from '@/components/doc/DocPage';
 import { External, Placeholder } from '@/components/doc/parts';
 import { pageMetadata } from '@/content/metadata';
 import { pageAt } from '@/content/pages';
+import { released } from '@/content/status';
 
 /*
  * Licences: Patepang's own code (app ADR 0060 B33: AGPL-3.0-only for the app and the core, as
@@ -37,10 +38,17 @@ const sections: DocSection[] = [
           berlisensi sama. Kode server Patepang juga memakai AGPL-3.0-only, sebagai pilihan
           keterbukaan.
         </p>
-        <p>
-          Kode Patepang akan dibuka saat peluncuran publik, setelah audit keamanan oleh pihak luar.
-          Sampai saat itu kodenya belum terbuka untuk umum.
-        </p>
+        {released ? (
+          <p>
+            Kode Patepang dibuka saat peluncuran publik, setelah audit keamanan oleh pihak luar.{' '}
+            <Placeholder>Alamat kode sumber: diisi pemilik saat peluncuran</Placeholder>
+          </p>
+        ) : (
+          <p>
+            Kode Patepang akan dibuka saat peluncuran publik, setelah audit keamanan oleh pihak
+            luar. Sampai saat itu kodenya belum terbuka untuk umum.
+          </p>
+        )}
       </>
     ),
   },

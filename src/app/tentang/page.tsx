@@ -2,7 +2,7 @@ import { DocPage, type DocSection } from '@/components/doc/DocPage';
 import { Entity } from '@/components/doc/parts';
 import { pageMetadata } from '@/content/metadata';
 import { pageAt } from '@/content/pages';
-import { aboutStatus } from '@/content/status';
+import { aboutStatus, released } from '@/content/status';
 
 /*
  * Who builds Patepang and what it holds to. The principles are the owner's (1 November 2026) and
@@ -87,9 +87,20 @@ const sections: DocSection[] = [
     title: 'Keadaan sekarang',
     body: (
       <p>
-        {aboutStatus} Sebelum peluncuran publik, keamanannya diaudit pihak luar, lalu kodenya dibuka
-        dengan lisensi AGPL-3.0 (lihat <a href="/lisensi">Lisensi</a>). Pertanyaan bisa dikirim
-        lewat halaman <a href="/kontak">Kontak</a>.
+        {aboutStatus}{' '}
+        {released ? (
+          <>
+            Audit keamanan oleh pihak luar dan pembukaan kode dengan lisensi AGPL-3.0 adalah syarat
+            peluncuran publik (lihat <a href="/keamanan">Keamanan</a> dan{' '}
+            <a href="/lisensi">Lisensi</a>).
+          </>
+        ) : (
+          <>
+            Sebelum peluncuran publik, keamanannya akan diaudit pihak luar, lalu kodenya akan dibuka
+            dengan lisensi AGPL-3.0 (lihat <a href="/lisensi">Lisensi</a>).
+          </>
+        )}{' '}
+        Pertanyaan bisa dikirim lewat halaman <a href="/kontak">Kontak</a>.
       </p>
     ),
   },

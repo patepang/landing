@@ -1,7 +1,38 @@
 import { expect, test } from '@playwright/test';
 
+import { sitePages } from '../src/content/pages';
+
 import { built, builtAvailability } from './built';
 import { openLanding, watchProblems } from './helpers';
+
+/**
+ * Words that belong to the other state: a page of the launched build that still says Patepang is
+ * not out, or a page of today's build that says it is. Every page is read, closed answers and all,
+ * so a sentence a page says for itself (not through status-copy.ts) cannot be left behind when the
+ * switch flips.
+ */
+const otherState =
+  builtAvailability.state === 'tersedia'
+    ? [
+        'belum diluncurkan',
+        'setelah patepang diluncurkan',
+        'belum berjalan',
+        'belum diaudit',
+        'belum terbuka untuk umum',
+        'belum bisa diunduh',
+        'segera hadir',
+        'saat aplikasi tersedia',
+        'has not launched',
+        'has not been externally audited',
+      ]
+    : [
+        'sudah diluncurkan',
+        'sejak peluncuran',
+        'sudah hadir',
+        'sudah bisa diunduh',
+        'tersedia di app store',
+        'has launched',
+      ];
 
 /**
  * The owner's availability switch, in whichever state this build was made with: `pnpm test:e2e`
@@ -76,6 +107,14 @@ test.describe(`availability: ${builtAvailability.state}`, () => {
     }
     await openLanding(page, '/tentang');
     await expect(page.locator('main').getByText(built.aboutStatus)).toBeVisible();
+  });
+
+  test('no page says what belongs to the other state', async ({ page }) => {
+    for (const path of ['/', ...sitePages.map((entry) => entry.path)]) {
+      await openLanding(page, path);
+      const text = (await page.locator('body').textContent())?.toLowerCase() ?? '';
+      for (const words of otherState) expect(text, `${path}: ${words}`).not.toContain(words);
+    }
   });
 
   test('nothing overflows on a phone in this state', async ({ browser, baseURL }) => {
