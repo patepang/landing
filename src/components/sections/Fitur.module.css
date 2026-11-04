@@ -40,7 +40,7 @@
   gap: var(--space-6);
 }
 
-/* Said once, under the pictures: the people and places in them are made up. */
+/* Said once, before the pictures: the people and places in them are made up. */
 .sample {
   color: var(--color-brand-on-subtle);
 }
@@ -122,15 +122,15 @@
     display: contents;
   }
 
-  .exhibit:nth-child(1) > * {
+  .exhibit:nth-of-type(1) > * {
     grid-row: 1;
   }
 
-  .exhibit:nth-child(2) > * {
+  .exhibit:nth-of-type(2) > * {
     grid-row: 2;
   }
 
-  .exhibit:nth-child(3) > * {
+  .exhibit:nth-of-type(3) > * {
     grid-row: 3;
   }
 
@@ -146,7 +146,7 @@
     background: none;
   }
 
-  .exhibit:first-child .plinth {
+  .exhibit:first-of-type .plinth {
     padding-top: var(--space-16);
   }
 

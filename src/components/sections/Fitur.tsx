@@ -77,6 +77,14 @@ export function Fitur() {
         </div>
 
         <div className={styles.exhibits}>
+          {/*
+           * Said before the first picture, so it is read before them on a phone; on wide screens
+           * the grid sets it under the stage. The exhibits are counted by type (nth-of-type), so
+           * this paragraph does not move them.
+           */}
+          <p className={`type-body-small ${styles.sample}`}>
+            Contoh tampilan, dengan orang dan tempat rekaan.
+          </p>
           <Exhibit title="Kabar yang punya akhir" preview={<KabarEndPreview />}>
             <p className="type-body-large tone-secondary">
               Kabar hanya datang dari orang yang pernah kamu temui, urut waktu. Kamu memilih siapa
@@ -104,10 +112,6 @@ export function Fitur() {
               Saat kalian bertemu dan tempel lagi, koneksinya segar kembali.
             </p>
           </Exhibit>
-          {/* After the three exhibits, so their order (nth-child) on wide screens is unchanged. */}
-          <p className={`type-body-small ${styles.sample}`}>
-            Contoh tampilan, dengan orang dan tempat rekaan.
-          </p>
         </div>
 
         <div className={styles.leftOut}>

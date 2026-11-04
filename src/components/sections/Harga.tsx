@@ -13,7 +13,9 @@ interface Plan {
 /**
  * The two plans, side by side with their rows level (subgrid), so the one difference reads at a
  * glance: every feature is in both, and the subscription only adds space and file size (app ADR
- * 0060 B21, B22). The stores hold the final prices.
+ * 0060 B21, B22). The stores hold the final prices. The free plan's space reads as its true
+ * ceiling: the 10 GB cap is the bonus's, on top of 5 GB. Files above 64 MB go up in parts, which
+ * the app does not do yet (backend ADR 0130), so the sizes above that are said as coming.
  */
 const plans: readonly Plan[] = [
   {
@@ -24,7 +26,7 @@ const plans: readonly Plan[] = [
       { term: 'Fitur', value: 'Semua' },
       {
         term: 'Ruang media di server',
-        value: `${pricing.free.storage}, ditambah ${pricing.free.bonusPerPair} untuk setiap orang yang kamu temui lagi, sampai ${pricing.free.bonusMax}`,
+        value: `${pricing.free.storage}, ditambah ${pricing.free.bonusPerPair} untuk setiap orang yang kamu temui lagi, sampai total ${pricing.free.storageMax}`,
       },
       { term: 'Ukuran berkas', value: `Sampai ${pricing.free.file}` },
     ],
@@ -56,7 +58,8 @@ export function Harga() {
           </p>
           <p className="type-body-small tone-secondary">
             Pembayaran, perpanjangan, dan penghentian lewat App Store atau Google Play. Harga
-            ditetapkan di toko; di luar Indonesia harganya setara.
+            ditetapkan di toko; di luar Indonesia harganya setara. Pengiriman berkas di atas 64 MB
+            menyusul.
           </p>
           <a className={styles.more} href="/langganan">
             Rincian langganan

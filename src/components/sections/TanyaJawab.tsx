@@ -43,7 +43,7 @@ const faq: readonly Question[] = [
   {
     question: 'Bisakah Patepang membaca pesanku?',
     answer:
-      'Tidak. Pesan, kabar, foto, dan berkas dikunci di HP sebelum dikirim, jadi server tidak bisa membacanya. Server tetap tahu beberapa hal, misalnya akun mana pernah tempel dengan akun mana dan kapan.',
+      'Server Patepang tidak bisa membacanya. Pesan, kabar, foto, dan berkas dikunci di HP sebelum dikirim. Isinya hanya terbaca orang lain bila penerimanya melaporkannya (moderator membaca salinan yang dilaporkan) atau menyimpannya sebagai bukti. Server tetap tahu beberapa hal, misalnya akun mana pernah tempel dengan akun mana dan kapan.',
     more: { href: '/kebijakan-privasi', label: 'Yang diketahui server' },
   },
   {

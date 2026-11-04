@@ -16,7 +16,8 @@ const { person, firstMeeting } = fiction;
  * The pictures show one meeting after it ends: Sari's, the same one the previews further down
  * keep. They are the everyday tools where a meeting fades (a contact, a feed, a chat), drawn in
  * the page's neutral tones; none of them is a Patepang screen or a real product. They are
- * pictures only, hidden from assistive technology: the words under each carry the meaning.
+ * pictures only, hidden from assistive technology: the words under each carry the meaning. A
+ * line under them says, where everyone sees it, that they are drawings with a made-up person.
  */
 
 /** What you remember of the meeting, and nothing in the contact holds it. */
@@ -209,6 +210,10 @@ export function Masalah() {
             ))}
           </ol>
         </div>
+        {/* About the pictures, which are hidden from assistive technology, so hidden with them. */}
+        <p className={`page type-body-small tone-secondary ${styles.sample}`} aria-hidden="true">
+          Gambar ilustrasi, dengan orang rekaan.
+        </p>
       </div>
     </section>
   );

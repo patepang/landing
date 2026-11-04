@@ -282,6 +282,7 @@ test.describe('landing', () => {
     }
     // The pictures with made-up people and places say so where everyone can see it.
     await expect(page.getByText('Contoh tampilan, dengan orang dan tempat rekaan.')).toBeVisible();
+    await expect(page.getByText('Gambar ilustrasi, dengan orang rekaan.')).toBeVisible();
     // No forms, waitlists, ratings or quotes: the situations in "Cerita" are examples told to the
     // reader, not testimonials.
     await expect(page.locator('form, input, textarea, select')).toHaveCount(0);
