@@ -1,5 +1,5 @@
 /*
- * The header: the brand mark, the section links and the download action.
+ * The header: the brand mark, the section links and the action (download, or the launch status).
  *
  * At the top of the page it rests on the canvas. With JavaScript (HeaderShell), once the page
  * scrolls it stays at the top of the window and a floating capsule gathers around the same row; on
@@ -176,7 +176,7 @@
   transition: none;
 }
 
-/* ---- The download action ---- */
+/* ---- The action: download, or the launch status ---- */
 
 .cta {
   position: relative;
@@ -463,8 +463,8 @@
     background: var(--color-brand-solid-pressed);
   }
 
-  /* The arrow dips toward the download, a hint of what the action does. */
-  .cta:hover .ctaIcon {
+  /* The arrow dips toward the download, a hint of what the action does (not the hourglass). */
+  .cta[data-released='true']:hover .ctaIcon {
     translate: 0 calc(var(--space-1) / 2);
   }
 }
@@ -684,7 +684,7 @@
     scale: none;
   }
 
-  .cta:hover .ctaIcon {
+  .cta[data-released='true']:hover .ctaIcon {
     translate: none;
   }
 

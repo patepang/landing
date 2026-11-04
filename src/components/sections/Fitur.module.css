@@ -40,6 +40,11 @@
   gap: var(--space-6);
 }
 
+/* Said once, under the pictures: the people and places in them are made up. */
+.sample {
+  color: var(--color-brand-on-subtle);
+}
+
 .text {
   display: flex;
   flex-direction: column;
@@ -143,6 +148,14 @@
 
   .exhibit:first-child .plinth {
     padding-top: var(--space-16);
+  }
+
+  /* Under the stage, on the canvas, level with its left edge. */
+  .sample {
+    grid-column: 7 / span 6;
+    grid-row: 4;
+    padding-top: var(--space-3);
+    color: var(--color-text-secondary);
   }
 
   .leftOut {

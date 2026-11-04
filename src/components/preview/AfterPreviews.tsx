@@ -4,7 +4,6 @@ import { CaretRightIcon } from '@phosphor-icons/react/dist/ssr/CaretRight';
 import { CheckIcon } from '@phosphor-icons/react/dist/ssr/Check';
 import { HandshakeIcon } from '@phosphor-icons/react/dist/ssr/Handshake';
 import { HourglassMediumIcon } from '@phosphor-icons/react/dist/ssr/HourglassMedium';
-import { ImageSquareIcon } from '@phosphor-icons/react/dist/ssr/ImageSquare';
 import { MapPinIcon } from '@phosphor-icons/react/dist/ssr/MapPin';
 
 import { TwoDots } from '@/components/brand/TwoDots';
@@ -44,13 +43,17 @@ export function KabarEndPreview() {
   );
 }
 
-/** One meeting, remembered (MomenCard, origin "tap", no photo yet). */
+/**
+ * One meeting, remembered (MomenCard, origin "tap"): when, the place the two of them typed, and
+ * with whom, as a live build records it at a tempel. A story and a shared photo come later in the
+ * app (fakta-produk §3), so the card shows neither.
+ */
 export function MomenPreview() {
   return (
     <div
       className={`${surfaceClass} ${styles.momen}`}
       role="img"
-      aria-label={`Contoh kartu momen di aplikasi Patepang: ${firstMeeting.longDate}, di ${firstMeeting.place}, bersama ${person.firstName}, dengan catatan singkat, belum ada foto, dan tanda “Tempel langsung”.`}
+      aria-label={`Contoh kartu momen di aplikasi Patepang: ${firstMeeting.longDate}, di ${firstMeeting.place}, bersama ${person.firstName}, dengan tanda “Tempel langsung”.`}
     >
       <span className={styles.titleBlock}>
         <span className="type-headline">{firstMeeting.longDate}</span>
@@ -59,14 +62,9 @@ export function MomenPreview() {
           <span className="type-body-small tone-secondary">{firstMeeting.place}</span>
         </span>
       </span>
-      <span className="type-body">{firstMeeting.note}</span>
       <span className={styles.people}>
         <Avatar name={person.name} size="sm" tone={person.avatarTone} />
         <span className="type-body-small tone-secondary">Bersama {person.firstName}</span>
-      </span>
-      <span className={styles.photo}>
-        <Icon glyph={ImageSquareIcon} size="sm" className={styles.mutedIcon} />
-        <span className="type-body-small tone-tertiary">Foto bersama belum ditambahkan</span>
       </span>
       <Badge
         label="Tempel langsung"

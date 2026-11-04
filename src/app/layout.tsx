@@ -1,21 +1,20 @@
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 
+import { homeDescription as description, homeTitle as title, siteUrl } from '@/content/metadata';
 import { canvasColor } from '@/design/tokens';
 
 import { jakarta } from './fonts';
 import './globals.css';
 
-const title = 'Patepang: hanya orang yang pernah kamu temui';
-const description =
-  'Patepang adalah aplikasi untuk menjaga hubungan dengan orang yang benar-benar pernah kamu temui langsung. Koneksi hanya lahir saat kalian bertemu. Sudah bisa diunduh.';
-
 /*
- * `metadataBase` names the site's domain. No social image exists yet, so none is declared. The
- * empty icon stops the browser from requesting /favicon.ico until a real icon is made.
+ * The landing's metadata, which every other page replaces with its own (src/content/metadata.ts).
+ * `metadataBase` names the site's domain. The description ends with the launch status
+ * (src/content/status.ts). No social image exists yet, so none is declared. The empty icon stops
+ * the browser from requesting /favicon.ico until a real icon is made.
  */
 export const metadata: Metadata = {
-  metadataBase: new URL('https://patepang.com'),
+  metadataBase: new URL(siteUrl),
   title,
   description,
   alternates: { canonical: '/' },

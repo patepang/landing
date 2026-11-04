@@ -33,7 +33,7 @@
  * 360px screen. From 600px the closing line takes the hero step.
  */
 .title {
-  max-width: 14ch;
+  max-width: 18ch;
 }
 
 @media (min-width: 600px) {
@@ -56,4 +56,15 @@
   justify-content: center;
   gap: var(--space-2) var(--space-4);
   margin-top: var(--space-2);
+}
+
+/* On phones the actions take the column's width, one under the other, like the opening's. */
+@media (max-width: 37.49em) {
+  .actions {
+    align-self: stretch;
+  }
+
+  .actions > * {
+    flex: 1 1 100%;
+  }
 }

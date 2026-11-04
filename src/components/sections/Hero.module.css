@@ -27,6 +27,20 @@
   gap: var(--space-2) var(--space-4);
 }
 
+/* The launch status, under the actions while Patepang cannot be installed yet. */
+.status {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin-top: calc(-1 * var(--space-2));
+}
+
+/* As tall as the line it stands on, so the hourglass sits on its middle. */
+.statusIcon {
+  height: var(--type-body-small-line);
+  color: var(--color-text-secondary);
+}
+
 /* Each action's arrow points where it leads and dips toward it under the pointer. */
 .actions svg {
   transition: translate var(--duration-selection) var(--ease-out);
@@ -94,7 +108,7 @@
   color: var(--color-brand-on-subtle);
 }
 
-.noteBorn {
+.noteFace {
   margin-top: var(--space-4);
 }
 
@@ -119,8 +133,8 @@
 
 /*
  * ---- A note and its part of the screen ----
- * Pointing at a note lights the part of the screen it explains: a forest ring inside the card it
- * is about, or the forest ink on the line it is about. Nothing moves; colour only.
+ * Pointing at a note lights the part of the screen it explains: a forest ring inside the code's
+ * card, or the forest ink on the line it is about. Nothing moves; colour only.
  */
 .exhibit [data-target] {
   --ring: var(--color-brand-solid);
@@ -135,12 +149,12 @@
 }
 
 @media (hover: hover) {
-  .exhibit:has([data-note='born']:hover) [data-target='born'],
   .exhibit:has([data-note='code']:hover) [data-target='code'] {
     box-shadow: inset 0 0 0 var(--border-thick) var(--ring);
   }
 
-  .exhibit:has([data-note='face']:hover) [data-target='face'] {
+  .exhibit:has([data-note='face']:hover) [data-target='face'],
+  .exhibit:has([data-note='born']:hover) [data-target='born'] {
     color: var(--color-brand-text);
   }
 }
@@ -170,15 +184,15 @@
  * From 48em the notes stand beside the phone, each level with the part of the screen it is about,
  * at any text size: the stage's rows are the screen's six parts (TempelScreenPreview), passed
  * down to the phone and its screen as a subgrid, 16px apart as on the screen, and each note sits
- * in the rows of its part, its first line centred on a line of that part. A note taller than its
- * part makes room by growing its rows: the code's note grows the last row, which shows more of
- * the code; the others open the screen a little, which only very large text sizes need.
+ * in the rows of its part, its first line centred on a line of that part. The note about the
+ * heading spans the code's row too, so its words never push the code away from the heading; a
+ * note taller than its rows makes room by growing them, which only very large text sizes need.
  */
 @media (min-width: 48em) {
   .exhibit {
     --leader: var(--space-12);
     grid-template-columns: var(--phone) minmax(0, 1fr);
-    grid-template-rows: [status] auto [bar] auto [born] auto [face] auto [dots] auto [code] 1fr;
+    grid-template-rows: [status] auto [sides] auto [face] auto [code] auto [under] auto [born] 1fr;
     column-gap: var(--leader);
     row-gap: var(--space-4);
     align-items: start;
@@ -206,36 +220,31 @@
     max-width: 20rem;
   }
 
+  /* Centred on the first line of "Sebelum pamit, tempel dulu", and on to the code's row. */
+  .noteFace {
+    grid-row: face / under;
+    margin-top: calc((var(--type-headline-line) - var(--type-body-line)) / 2);
+  }
+
   /*
-   * Level with the card's title: past the card's 20px padding, its 32px icon and the 8px above
-   * the title, then centred on the title's first line.
+   * Level with the middle of the code: past the card's hairline and 16px padding, then half of the
+   * pattern's 192px.
    */
-  .noteBorn {
-    grid-row: born / face;
+  .noteCode {
+    grid-row: code / under;
     margin-top: calc(
-      var(--space-5) + var(--space-8) + var(--space-2) +
-        (var(--type-headline-line) - var(--type-body-line)) / 2
+      var(--border-hairline) + var(--space-4) + var(--space-16) + var(--space-8) -
+        var(--type-body-line) / 2
     );
   }
 
-  /* Centred on the first line of "sebelum pamit, tempel dulu". */
-  .noteFace {
-    grid-row: face / code;
-    margin-top: calc((var(--type-title-large-line) - var(--type-body-line)) / 2);
-  }
-
   /*
-   * Level with the middle of the code's top corner squares: past the card's hairline and 16px
-   * padding, then 42px into the pattern (2 + 3.5 of its 29 modules, 222px across). 32px of the
-   * stage stay below it.
+   * Level with "Akunmu lahir saat tempel pertama", the first line of its block, which is as tall
+   * as the note's own first line. 32px of the stage stay below it.
    */
-  .noteCode {
-    grid-row: code / -1;
-    margin-block: calc(
-        var(--border-hairline) + var(--space-4) + var(--space-10) + var(--space-1) / 2 -
-          var(--type-body-line) / 2
-      )
-      var(--space-8);
+  .noteBorn {
+    grid-row: born / -1;
+    margin-bottom: var(--space-8);
   }
 
   .note::after {
@@ -284,19 +293,19 @@
   }
 
   /* Notes left of the phone hug their leader line, as callouts do. */
-  .noteBorn,
-  .noteCode {
+  .noteFace,
+  .noteBorn {
     grid-column: 1;
     justify-self: end;
     text-align: end;
   }
 
-  .noteFace {
+  .noteCode {
     grid-column: 3;
   }
 
-  .noteBorn::after,
-  .noteCode::after {
+  .noteFace::after,
+  .noteBorn::after {
     right: auto;
     left: calc(100% + var(--space-4));
     transform-origin: right center;
@@ -307,7 +316,7 @@
  * ---- Opening ----
  * Once, as the page opens: the phone rises out of the stage; then, beside it, each leader line is
  * drawn out from the phone, its part of the screen lights, and its note appears, in the order of
- * the screen (born, face, code). Each move stays within the app's durations. The notes only
+ * the screen (face, code, born). Each move stays within the app's durations. The notes only
  * stand beside the phone from 48em, so narrower screens get the rise alone; with reduced motion,
  * nothing moves and everything is simply there.
  */
@@ -324,15 +333,15 @@
     --after-rise: calc(var(--duration-press) + var(--duration-overlay-enter));
   }
 
-  .noteBorn {
+  .noteFace {
     --at: var(--after-rise);
   }
 
-  .noteFace {
+  .noteCode {
     --at: calc(var(--after-rise) + var(--duration-press));
   }
 
-  .noteCode {
+  .noteBorn {
     --at: calc(var(--after-rise) + var(--duration-press) * 2);
   }
 
@@ -346,26 +355,26 @@
       calc(var(--at) + var(--duration-press)) backwards;
   }
 
-  .exhibit [data-target='born'],
   .exhibit [data-target='code'] {
     animation: target-rings calc(var(--duration-overlay-enter) * 3) var(--ease-out) var(--at-target)
       backwards;
   }
 
-  .exhibit [data-target='face'] {
+  .exhibit [data-target='face'],
+  .exhibit [data-target='born'] {
     animation: target-inks calc(var(--duration-overlay-enter) * 3) var(--ease-out) var(--at-target)
       backwards;
   }
 
-  .exhibit [data-target='born'] {
+  .exhibit [data-target='face'] {
     --at-target: var(--after-rise);
   }
 
-  .exhibit [data-target='face'] {
+  .exhibit [data-target='code'] {
     --at-target: calc(var(--after-rise) + var(--duration-press));
   }
 
-  .exhibit [data-target='code'] {
+  .exhibit [data-target='born'] {
     --at-target: calc(var(--after-rise) + var(--duration-press) * 2);
   }
 }

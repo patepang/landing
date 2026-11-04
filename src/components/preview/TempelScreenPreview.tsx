@@ -1,11 +1,10 @@
 import { BatteryFullIcon } from '@phosphor-icons/react/dist/ssr/BatteryFull';
 import { CellSignalFullIcon } from '@phosphor-icons/react/dist/ssr/CellSignalFull';
-import { ChatCircleIcon } from '@phosphor-icons/react/dist/ssr/ChatCircle';
-import { GearSixIcon } from '@phosphor-icons/react/dist/ssr/GearSix';
+import { QrCodeIcon } from '@phosphor-icons/react/dist/ssr/QrCode';
+import { ScanIcon } from '@phosphor-icons/react/dist/ssr/Scan';
 import { SparkleIcon } from '@phosphor-icons/react/dist/ssr/Sparkle';
 import { WifiHighIcon } from '@phosphor-icons/react/dist/ssr/WifiHigh';
 
-import { TwoDots } from '@/components/brand/TwoDots';
 import { Icon } from '@/components/Icon';
 import { fiction } from '@/content/fiction';
 
@@ -15,22 +14,23 @@ import styles from './TempelScreenPreview.module.css';
 const codePath = qrPath(qrSeed(fiction.codeOwner, 0));
 
 /**
- * The Tempel tab as a new person first sees it (screen 1.9 in the app, TempelScreen.tsx), held in
- * a phone: the account is not born yet, so a card says it is born at the first tempel; below it,
- * the code to be scanned. The optional "titik lahir" button is left out, as the app does when
- * that screen is unavailable. The phone's frame, island and status bar are the device, not the
- * app. The picture ends inside the code, as if the phone continued below the stage.
+ * The Tempel sheet as a new person first sees it (screen 1.9, app TempelPanel.tsx @ b4c6118),
+ * held in a phone: the two sides "Pindai" and "QR-mu" with the code shown first, "Sebelum pamit,
+ * tempel dulu", the code to be scanned, what to do with it, and, under the code, the account that
+ * is not born yet and the 30 days it has. The optional "Titik lahir di dekatmu" button is left
+ * out, as the app does when that screen is unavailable. The phone's frame, island and status bar
+ * are the device, not the app; the phone continues below the stage.
  *
  * The screen's six parts are the phone's direct children, one per row, so a page can lay them in
- * its own grid rows (subgrid) and stand things level with them. Three carry `data-target` (born,
- * face, code), so the notes around the phone can point them out.
+ * its own grid rows (subgrid) and stand things level with them. Three carry `data-target` (face,
+ * code, born), so the notes around the phone can point them out.
  */
 export function TempelScreenPreview({ className }: { className?: string }) {
   return (
     <div
       className={className ? `${styles.device} ${className}` : styles.device}
       role="img"
-      aria-label="Contoh layar Tempel di aplikasi Patepang untuk orang yang belum punya akun: kartu “Akunmu lahir saat tempel pertama”, judul “sebelum pamit, tempel dulu”, dua titik yang masih berjauhan, dan kode yang dipindai HP lain saat tempel."
+      aria-label="Contoh lembar Tempel di aplikasi Patepang untuk orang yang belum punya akun: pilihan “Pindai” dan “QR-mu”, judul “Sebelum pamit, tempel dulu”, kode yang dipindai HP lain, “Tunjukkan kode ini ke orang yang kamu temui. Kode berganti sendiri setiap 30 detik.”, lalu “Akunmu lahir saat tempel pertama. Bila tidak ada tempel dalam 30 hari sejak akun dibuat, akunnya dihapus.”"
     >
       <div className={styles.statusBar}>
         <span>09.41</span>
@@ -41,45 +41,49 @@ export function TempelScreenPreview({ className }: { className?: string }) {
         </span>
       </div>
 
-      <div className={styles.appHeader}>
-        <span className={`type-title ${styles.appTitle}`}>Tempel</span>
-        <span className={styles.headerActions}>
-          <span className={styles.iconButton}>
-            <Icon glyph={ChatCircleIcon} />
-          </span>
-          <span className={styles.iconButton}>
-            <Icon glyph={GearSixIcon} />
-          </span>
+      {/* SegmentedControl: a neutral pill raised on a ringed groove, never the brand fill. */}
+      <span className={styles.sides}>
+        <span className={styles.side}>
+          <Icon glyph={ScanIcon} size="sm" />
+          Pindai
         </span>
-      </div>
-
-      <div className={styles.unborn} data-target="born">
-        <Icon glyph={SparkleIcon} size="lg" className={styles.unbornIcon} />
-        <span className={`type-headline ${styles.unbornTitle}`}>
-          Akunmu lahir saat tempel pertama
+        <span className={styles.side} data-selected="">
+          <Icon glyph={QrCodeIcon} size="sm" />
+          QR-mu
         </span>
-        <span className="type-body">
-          Temui seseorang yang kamu kenal, lalu tempel. Tidak ada batas waktu dan tidak ada yang
-          perlu dikejar.
-        </span>
-      </div>
-
-      <span className={`type-title-large ${styles.codeTitle}`} data-target="face">
-        sebelum pamit, tempel dulu
       </span>
-      <TwoDots phase="apart" size="md" className={styles.codeDots} />
-      {/* The only deliberate crop on the page: the code continues below the stage edge. */}
-      <span className={styles.codeCrop} data-intentional-crop="">
-        <span className={styles.codeCard} data-target="code">
-          <svg
-            className={styles.codeSvg}
-            viewBox={`0 0 ${String(QR_SIZE)} ${String(QR_SIZE)}`}
-            shapeRendering="crispEdges"
-            aria-hidden="true"
-            focusable="false"
-          >
-            <path className={styles.codeInk} d={codePath} />
-          </svg>
+
+      <span className={`type-headline ${styles.codeTitle}`} data-target="face">
+        Sebelum pamit, tempel dulu
+      </span>
+      <span className={styles.codeCard} data-target="code">
+        <svg
+          className={styles.codeSvg}
+          viewBox={`0 0 ${String(QR_SIZE)} ${String(QR_SIZE)}`}
+          shapeRendering="crispEdges"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path className={styles.codeInk} d={codePath} />
+        </svg>
+      </span>
+      <span className={styles.under}>
+        <span className={`type-body ${styles.balanced}`}>
+          Tunjukkan kode ini ke&nbsp;orang yang kamu temui.
+        </span>
+        <span className="type-body-small tone-secondary">
+          Kode berganti sendiri setiap 30&nbsp;detik.
+        </span>
+      </span>
+
+      {/* Not born yet: said once, under the code, as the app does. */}
+      <span className={styles.unborn} data-target="born">
+        <Icon glyph={SparkleIcon} size="sm" className={styles.unbornIcon} />
+        <span className={styles.unbornWords}>
+          <span className="type-body-strong">Akunmu lahir saat tempel pertama</span>
+          <span className="type-body-small tone-secondary">
+            Bila tidak ada tempel dalam 30&nbsp;hari sejak akun dibuat, akunnya dihapus.
+          </span>
         </span>
       </span>
     </div>

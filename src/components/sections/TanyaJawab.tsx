@@ -2,20 +2,33 @@ import { CaretDownIcon } from '@phosphor-icons/react/dist/ssr/CaretDown';
 
 import { Icon } from '@/components/Icon';
 import { KeepHyphenated } from '@/components/KeepHyphenated';
+import { pricing } from '@/content/pricing';
+import { whenAnswer } from '@/content/status';
 
 import styles from './TanyaJawab.module.css';
 
-/** Questions a first-time visitor is likely to have. The name's origin is left out: unconfirmed. */
-const faq = [
+interface Question {
+  readonly question: string;
+  readonly answer: string;
+  /** Where the full answer lives, when it is longer than this page should be. */
+  readonly more?: { readonly href: string; readonly label: string };
+}
+
+/**
+ * Questions a first-time visitor is likely to have, answered with what is true today (fakta-produk,
+ * 4 November 2026). Privacy is told as how Patepang is built, with what the server still knows,
+ * never as a guarantee.
+ */
+const faq: readonly Question[] = [
   {
     question: 'Apa itu Patepang?',
     answer:
-      'Aplikasi untuk tetap dekat dengan orang yang benar-benar pernah kamu temui. Koneksi hanya lahir saat kalian bertemu langsung, lalu terjaga lewat kabar, momen, dan rencana bertemu lagi.',
+      'Aplikasi untuk tetap dekat dengan orang yang benar-benar pernah kamu temui. Koneksi hanya lahir saat kalian bertemu langsung, lalu terjaga lewat kabar, pesan, momen, dan rencana bertemu lagi.',
   },
   {
     question: 'Apa itu tempel?',
     answer:
-      'Cara dua orang terhubung di Patepang saat bertemu langsung. Satu HP menampilkan kode, HP lain memindainya, lalu kalian menggoyangkan kedua HP bersama selama dua detik.',
+      'Cara dua orang terhubung di Patepang saat bertemu langsung. Satu HP menampilkan kode, HP lain memindainya, lalu kalian menggoyangkan kedua HP bersama selama dua detik. Di pertemuan berikutnya, cukup pindai kodenya lagi.',
   },
   {
     question: 'Kenapa tidak ada pencarian orang?',
@@ -25,19 +38,29 @@ const faq = [
   {
     question: 'Apakah aku perlu email atau nomor telepon?',
     answer:
-      'Tidak. Akunmu lahir saat tempel pertama dengan orang yang kamu temui, kapan pun itu. Untuk yang belum punya kenalan di Patepang, ada titik lahir: pertemuan terbuka tempat orang melakukan tempel pertamanya. Jadwalnya belum ada.',
+      'Tidak. Akunmu dibuat di HP-mu, tanpa email atau nomor telepon, lalu lahir saat tempel pertama. Bila dalam 30 hari belum ada tempel, akun itu dihapus. Untuk yang belum punya kenalan di Patepang, ada titik lahir: pertemuan terbuka tempat orang melakukan tempel pertamanya. Jadwalnya belum ada.',
+  },
+  {
+    question: 'Bisakah Patepang membaca pesanku?',
+    answer:
+      'Tidak. Pesan, kabar, foto, dan berkas dikunci di HP sebelum dikirim, jadi server tidak bisa membacanya. Server tetap tahu beberapa hal, misalnya akun mana pernah tempel dengan akun mana dan kapan.',
+    more: { href: '/kebijakan-privasi', label: 'Yang diketahui server' },
   },
   {
     question: 'Apa yang terjadi kalau kami lama tidak bertemu?',
     answer:
-      'Koneksi memudar setahun setelah pertemuan terakhir, dan Patepang memberi peringatan di bulan ke-11. Bertemu dan tempel lagi menyegarkannya.',
+      'Koneksi memudar setahun setelah pertemuan terakhir, dan Patepang memberi tanda mulai bulan ke-11. Setelah memudar, kabar kalian tidak lagi saling sampai, tetapi percakapan tetap ada. Bertemu dan tempel lagi menyegarkannya.',
+  },
+  {
+    question: 'Berapa harganya?',
+    answer: `Semua fitur gratis. Langganan ${pricing.monthly} per bulan atau ${pricing.yearly} per tahun hanya menambah ruang media di server dan ukuran berkas, dengan masa coba ${String(pricing.trialDays)} hari untuk pelanggan baru. Pembayarannya lewat App Store atau Google Play.`,
+    more: { href: '/langganan', label: 'Rincian langganan' },
   },
   {
     question: 'Kapan Patepang bisa dipakai?',
-    answer:
-      'Sekarang. Patepang sudah bisa diunduh, dan koneksi pertamamu lahir saat kamu tempel dengan orang yang kamu temui berikutnya.',
+    answer: whenAnswer,
   },
-] as const;
+];
 
 /** Native disclosure widgets: they open and close with keyboard and pointer, with or without JS. */
 export function TanyaJawab() {
@@ -54,9 +77,16 @@ export function TanyaJawab() {
                 <span className="type-headline">{item.question}</span>
                 <Icon glyph={CaretDownIcon} size="sm" className={styles.caret} />
               </summary>
-              <p className={`type-body-large tone-secondary ${styles.answer}`}>
-                <KeepHyphenated text={item.answer} />
-              </p>
+              <div className={styles.answer}>
+                <p className="type-body-large tone-secondary">
+                  <KeepHyphenated text={item.answer} />
+                </p>
+                {item.more ? (
+                  <a className={styles.more} href={item.more.href}>
+                    {item.more.label}
+                  </a>
+                ) : null}
+              </div>
             </details>
           ))}
         </div>

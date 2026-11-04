@@ -1,12 +1,13 @@
 import { DownloadSimpleIcon } from '@phosphor-icons/react/dist/ssr/DownloadSimple';
+import { HourglassMediumIcon } from '@phosphor-icons/react/dist/ssr/HourglassMedium';
 import { ListIcon } from '@phosphor-icons/react/dist/ssr/List';
 import { XIcon } from '@phosphor-icons/react/dist/ssr/X';
-import Link from 'next/link';
 import type { ReactNode } from 'react';
 
 import { TwoDots } from '@/components/brand/TwoDots';
 import { Icon } from '@/components/Icon';
-import { download, sections } from '@/content/sections';
+import { closingId, sections } from '@/content/sections';
+import { headerAction, released } from '@/content/status';
 
 import { HeaderShell } from './HeaderShell';
 import { MobileMenu } from './MobileMenu';
@@ -15,13 +16,15 @@ import styles from './SiteHeader.module.css';
 export interface SiteHeaderProps {
   /**
    * `landing`: links are plain #anchors on this page, so the browser moves focus natively.
-   * `elsewhere` (the 404 page): links lead back into the landing's sections.
+   * `elsewhere` (every other page): links lead back into the landing's sections.
    */
   on?: 'landing' | 'elsewhere';
 }
 
 /**
- * The brand mark, the section links and the download action. The mark is the two dots alone,
+ * The brand mark, the section links and the action: "Unduh" once Patepang is in the stores,
+ * "Segera hadir" until then (src/content/status.ts), both leading to the closing section, which
+ * holds the store links or says when. The mark is the two dots alone,
  * met, as the owner asked (30 October 2026): the header names Patepang to screen readers, while
  * the full lockup stays in the footer. The links sit in a row from 48em and behind a menu button
  * below that; the breakpoints are in em, so a larger reader text size moves the header to its
@@ -30,23 +33,22 @@ export interface SiteHeaderProps {
  */
 export function SiteHeader({ on = 'landing' }: SiteHeaderProps) {
   /**
-   * A link into the landing: an #anchor on it, or the route plus the anchor from elsewhere.
-   * Section links carry `data-section`, so HeaderShell can mark the one the reader is in.
+   * A link into the landing: an #anchor on it, or the route plus the anchor from elsewhere, as a
+   * plain link: the site is static, so a page loads whole, and nothing is fetched ahead of a
+   * click. Section links carry `data-section`, so HeaderShell can mark the one the reader is in.
    */
   function into(
     id: string,
     className: string | undefined,
     children: ReactNode,
-    extra: { 'data-section'?: string; 'aria-label'?: string } = { 'data-section': id },
+    extra: { 'data-section'?: string; 'aria-label'?: string; 'data-released'?: string } = {
+      'data-section': id,
+    },
   ) {
-    return on === 'landing' ? (
-      <a className={className} href={`#${id}`} {...extra}>
+    return (
+      <a className={className} href={on === 'landing' ? `#${id}` : `/#${id}`} {...extra}>
         {children}
       </a>
-    ) : (
-      <Link className={className} href={`/#${id}`} {...extra}>
-        {children}
-      </Link>
     );
   }
 
@@ -62,15 +64,9 @@ export function SiteHeader({ on = 'landing' }: SiteHeaderProps) {
     <HeaderShell className={styles.header}>
       <div className={`page ${styles.frame}`}>
         <div className={styles.bar}>
-          {on === 'landing' ? (
-            <a className={styles.home} href="#atas">
-              {mark}
-            </a>
-          ) : (
-            <Link className={styles.home} href="/">
-              {mark}
-            </Link>
-          )}
+          <a className={styles.home} href={on === 'landing' ? '#atas' : '/'}>
+            {mark}
+          </a>
           <nav aria-label="Utama" className={styles.nav}>
             <div className={styles.track} data-nav-track>
               <ul className={styles.links}>
@@ -92,19 +88,19 @@ export function SiteHeader({ on = 'landing' }: SiteHeaderProps) {
               </span>
             </div>
             {into(
-              download.id,
+              closingId,
               styles.cta,
               <>
                 <Icon
-                  glyph={DownloadSimpleIcon}
+                  glyph={released ? DownloadSimpleIcon : HourglassMediumIcon}
                   size="xs"
                   weight="bold"
                   className={styles.ctaIcon}
                 />
-                {/* "Unduh" on screen; the name stays whole for screen readers. */}
-                <span>Unduh</span>
+                {/* A short label on screen; the name says it in full for screen readers. */}
+                <span>{headerAction.label}</span>
               </>,
-              { 'aria-label': download.label },
+              { 'aria-label': headerAction.name, 'data-released': released ? 'true' : 'false' },
             )}
             <MobileMenu
               icons={{
