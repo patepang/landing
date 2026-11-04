@@ -1,3 +1,4 @@
+import { BracketsSquareIcon } from '@phosphor-icons/react/dist/ssr/BracketsSquare';
 import { CaretDownIcon } from '@phosphor-icons/react/dist/ssr/CaretDown';
 import { HourglassMediumIcon } from '@phosphor-icons/react/dist/ssr/HourglassMedium';
 import { ScalesIcon } from '@phosphor-icons/react/dist/ssr/Scales';
@@ -92,9 +93,8 @@ export function DocPage({ page, lede, sections, numbered = false, appNote = fals
                   <strong className={styles.draftTitle}>
                     Draf: menunggu tinjauan penasihat hukum. Belum berlaku.
                   </strong>{' '}
-                  Isinya bisa berubah setelah ditinjau. Bagian bertanda kurung siku, seperti{' '}
-                  <span className={styles.sample}>[Nama badan hukum]</span>, menunggu data dari
-                  pemilik Patepang.
+                  Isinya bisa berubah setelah ditinjau. Bagian yang masih menunggu keputusan
+                  ditandai kurung siku, <span className={styles.sample}>[seperti ini]</span>.
                 </span>
               </p>
             ) : null}
@@ -104,6 +104,20 @@ export function DocPage({ page, lede, sections, numbered = false, appNote = fals
                 <span>{note}</span>
               </p>
             ) : null}
+            {/*
+             * A page in force can still hold a placeholder (a fact or a decision nobody has given
+             * yet): the same words then say what its brackets mean. Shown only while the page
+             * holds one (DocPage.module.css, :has).
+             */}
+            {page.draft ? null : (
+              <p className={styles.pending} data-pending-note="">
+                <Icon glyph={BracketsSquareIcon} size="md" className={styles.noticeIcon} />
+                <span>
+                  Bagian yang masih menunggu keputusan ditandai kurung siku,{' '}
+                  <span className={styles.sample}>[seperti ini]</span>.
+                </span>
+              </p>
+            )}
           </div>
 
           <div className={`page ${styles.body}`} data-toc={toc ? '' : undefined}>

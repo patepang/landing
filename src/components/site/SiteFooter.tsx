@@ -1,6 +1,7 @@
 import { ArrowUpIcon } from '@phosphor-icons/react/dist/ssr/ArrowUp';
 
 import { Icon } from '@/components/Icon';
+import { entity } from '@/content/entity';
 import { sitePages, type SitePage } from '@/content/pages';
 import { sections } from '@/content/sections';
 
@@ -76,7 +77,7 @@ export function SiteFooter({ on = 'landing' }: SiteFooterProps) {
             patepang
           </p>
           <div className={styles.base}>
-            <p className="type-body-small tone-secondary">© 2026 Patepang</p>
+            <p className="type-body-small tone-secondary">© 2026 {entity.name ?? 'Patepang'}</p>
             <a className={styles.top} href="#atas">
               <Icon glyph={ArrowUpIcon} size="xs" weight="bold" className={styles.topIcon} />
               Kembali ke atas

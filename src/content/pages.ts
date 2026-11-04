@@ -2,7 +2,8 @@
  * The site's pages other than the landing, in one list: the footer, the policies index
  * (/kebijakan), the sitemap and the tests all read it, so a page cannot be added without being
  * linked and listed. `draft` marks the documents that are waiting for counsel's review: they show
- * the draft notice and are not in force yet.
+ * the draft notice and are not in force yet. A page in force that still holds a placeholder says
+ * what its brackets mean (DocPage), and a part of it still waiting for counsel says so in place.
  *
  * Relative imports only: the Playwright tests import this file directly.
  */
@@ -28,7 +29,7 @@ const FIRST_DRAFT = '2026-11-04';
 export const sitePages = [
   {
     path: '/tentang',
-    title: 'Tentang Patepang',
+    title: 'Tentang',
     label: 'Tentang',
     description:
       'Siapa yang membangun Patepang, prinsip yang dipegang, dan keadaan Patepang sekarang.',
@@ -103,7 +104,9 @@ export const sitePages = [
     description:
       'Cara Patepang melindungi orang yang memakainya, batasnya, dan cara melaporkan kerentanan dengan aman.',
     group: 'bantuan',
-    draft: true,
+    // In force: the disclosure deadlines are the owner's (app ADR 0060 B32), and security.txt names
+    // this page as its policy. Only its safe harbour waits for counsel, and says so itself.
+    draft: false,
     updated: FIRST_DRAFT,
   },
   {

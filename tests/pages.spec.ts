@@ -1,6 +1,6 @@
 import { expect, test, type Browser, type Page } from '@playwright/test';
 
-import { contact } from '../src/content/contact';
+import { confirmed, contact, unconfirmedMailboxes } from '../src/content/contact';
 import { redirects, sitePages, type SitePage } from '../src/content/pages';
 
 import { openLanding, watchProblems } from './helpers';
@@ -40,6 +40,9 @@ const EXTERNAL_HOSTS = new Set([
 ]);
 
 const DRAFT_NOTICE = 'Draf: menunggu tinjauan penasihat hukum. Belum berlaku.';
+
+/** What a page in force says about its brackets while it holds one. */
+const PENDING_NOTE = 'Bagian yang masih menunggu keputusan ditandai kurung siku, [seperti ini].';
 
 async function newPage(browser: Browser, baseURL: string | undefined, options: object = {}) {
   const context = await browser.newContext({ baseURL, ...options });
@@ -200,10 +203,52 @@ test('missing facts stand as marked placeholders, never as made-up text', async 
     '[Nama badan hukum]',
     '[Alamat]',
     '[NIB/PSE]',
-    '[Petugas pelindungan data]',
+    '[Nama atau jabatan pejabatnya]',
   ]) {
     expect(placeholders).toContain(fact);
   }
+});
+
+test('a page in force explains its brackets exactly while it holds one', async ({ page }) => {
+  for (const entry of sitePages.filter((candidate) => !candidate.draft)) {
+    await openLanding(page, entry.path);
+    const held = await page.locator('main [data-placeholder]').count();
+    const note = page.locator('[data-pending-note]');
+    if (held > 0) {
+      await expect(note, entry.path).toBeVisible();
+      await expect(note, entry.path).toHaveText(PENDING_NOTE);
+    } else {
+      await expect(note, entry.path).toBeHidden();
+    }
+  }
+});
+
+test('the security policy is in force, and its safe harbour says it is not yet', async ({
+  page,
+}) => {
+  await openLanding(page, '/keamanan');
+  await expect(page.getByRole('note').filter({ hasText: DRAFT_NOTICE })).toHaveCount(0);
+  const harbour = page.locator('section[aria-labelledby="safe-harbour"]');
+  await expect(harbour.getByRole('note')).toContainText('Belum berlaku.');
+  await expect(page.locator('section[aria-labelledby="in-english"]')).toContainText(
+    'this safe harbour is a draft awaiting legal review and is not in force yet',
+  );
+});
+
+test('each address is listed once, and the production build waits for its mailbox', async ({
+  page,
+}) => {
+  const shown = [...new Set(Object.values(contact))];
+  await openLanding(page, '/kontak');
+  const cards = await page
+    .locator('section[aria-labelledby="alamat-surel"] a[href^="mailto:"]')
+    .evaluateAll((links) => links.map((link) => link.getAttribute('href') ?? ''));
+  expect(cards.sort()).toEqual(shown.map((address) => `mailto:${address}`).sort());
+  // Every address shown has a flag, so the gate in next.config.ts cannot miss one.
+  for (const address of shown) expect(Object.keys(confirmed), address).toContain(address);
+  expect(unconfirmedMailboxes().sort()).toEqual(
+    shown.filter((address) => confirmed[address] !== true).sort(),
+  );
 });
 
 test('security.txt is plain text with the fields RFC 9116 asks for', async ({ request }) => {

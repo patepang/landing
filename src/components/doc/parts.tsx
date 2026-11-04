@@ -18,6 +18,18 @@ export function Placeholder({ children }: { children: string }) {
   );
 }
 
+/**
+ * A part of a page in force that is still a draft, said where it stands: what it waits for, and
+ * that it does not apply yet.
+ */
+export function SectionDraft({ children }: { children: ReactNode }) {
+  return (
+    <p className={styles.sectionDraft} role="note">
+      {children}
+    </p>
+  );
+}
+
 /** A fact about the entity behind Patepang: its value once given, its placeholder until then. */
 export function Entity({ field }: { field: keyof typeof entity }) {
   const value = entity[field];

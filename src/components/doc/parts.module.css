@@ -8,3 +8,14 @@
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
 }
+
+/*
+ * A part of a page in force that is still a draft (the safe harbour on /keamanan): the draft
+ * notice's warning pair, inside the reading column.
+ */
+.sectionDraft {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--shape-banner);
+  background: var(--color-warning-subtle);
+  color: var(--color-warning-text);
+}

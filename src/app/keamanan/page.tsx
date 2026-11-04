@@ -1,13 +1,17 @@
 import { DocPage, type DocSection } from '@/components/doc/DocPage';
-import { Mail } from '@/components/doc/parts';
+import { Mail, Placeholder, SectionDraft } from '@/components/doc/parts';
 import { pageMetadata } from '@/content/metadata';
 import { pageAt } from '@/content/pages';
+import { released } from '@/content/status';
 
 /*
  * How Patepang protects people, its limits, and the coordinated disclosure policy with its safe
- * harbour (backend docs/security/disclosure.md; app ADR 0060 B32 approved the deadlines). The
- * design facts come from fakta-produk §5 and fakta-data §3, §11; nothing here is a guarantee, and
- * the audit status is said as it is. security.txt points here (Policy).
+ * harbour (backend docs/security/disclosure.md). The owner approved the disclosure deadlines (app
+ * ADR 0060 B32), so the page is in force and security.txt's Policy points to something that
+ * applies; only the safe harbour waits for counsel, and says so in both languages. The design
+ * facts come from fakta-produk §5 and fakta-data §3, §11, as corrected after the review of 4
+ * November 2026, and the limits from backend spec §5.4, §8 ("What a tap proves") and core ADR 0012;
+ * nothing here is a guarantee, and the audit status is said as it is.
  */
 
 const page = pageAt('/keamanan');
@@ -22,8 +26,8 @@ const sections: DocSection[] = [
     body: (
       <>
         <p>
-          Yang di bawah ini adalah cara Patepang dibangun. Semuanya sudah ada di kode, tetapi belum
-          diaudit pihak luar dan belum berjalan di layanan sungguhan.
+          Yang di bawah ini adalah cara Patepang dibangun: fakta rancangan, bukan jaminan. Batasnya
+          ada di bagian berikutnya, dan keadaan audit di bagian Keadaan sekarang.
         </p>
         <ul>
           <li>
@@ -32,8 +36,10 @@ const sections: DocSection[] = [
             triple ratchet). Server hanya meneruskan isi yang tidak bisa dibacanya.
           </li>
           <li>
-            <strong>Pengirim tersegel.</strong> Untuk pesan, server tahu penerimanya, tetapi tidak
-            tahu pengirimnya.
+            <strong>Pengirim tersegel.</strong> Untuk pesan, server Patepang tahu penerimanya,
+            tetapi tidak mencatat pengirimnya. Pengecualiannya: pesan pertama setelah tempel (paling
+            banyak 20 dalam 24 jam) memakai token yang terikat pada tempel itu, jadi server tahu
+            pesan itu dari orang yang kamu tempel.
           </li>
           <li>
             <strong>Kunci yang bisa diperiksa.</strong> Kunci setiap akun tercatat di log
@@ -53,8 +59,10 @@ const sections: DocSection[] = [
           </li>
           <li>
             <strong>Sedikit yang tersimpan.</strong> Tanpa email, nomor telepon, atau nama di
-            server. Server tidak mencatat alamat IP, hanya tanggal terakhir aktif, dan log server
-            disimpan 7 hari.
+            server. Server tidak menyimpan alamat IP, log masuk, atau riwayat pemakaian aplikasi,
+            dan log server, tanpa alamat IP dan id akun, disimpan 7 hari. Yang tetap disimpan:
+            tanggal terakhir aktif, riwayat tempel (dengan siapa dan kapan), dan waktu perubahan
+            kunci, yang publik.
           </li>
           <li>
             <strong>Notifikasi tersegel.</strong> Apple dan Google hanya mengantar 176 byte
@@ -68,19 +76,24 @@ const sections: DocSection[] = [
           <li>
             <strong>Mode perjalanan dan percakapan terkunci.</strong> Dengan enam kata, orang,
             percakapan, kabar, dan momen bisa disegel sehingga HP hanya menampilkan pengganti.
-            Percakapan juga bisa dikunci di balik PIN.
+            Sampai penguatan berikutnya selesai, orang yang memegang HP yang terbuka masih bisa
+            menghitung jumlah koneksimu (id akun, tanpa nama). Percakapan juga bisa dikunci di balik
+            PIN.
           </li>
           <li>
             <strong>Pemulihan lewat orang yang kamu temui.</strong> Tiga penjaga, dua cukup, dengan
-            masa tunggu 48 jam yang bisa dibatalkan HP lamamu, dan kunci darurat 72 jam bila HP-mu
-            hilang.
+            masa tunggu 48 jam yang bisa dibatalkan HP lamamu. Ada juga kunci darurat, bila salah
+            satu perangkatmu hilang atau direbut: dari perangkat yang masih kamu pegang, semua
+            perangkat lain dikeluarkan, lalu penautan perangkat, perubahan penjaga, dan pemulihan
+            ditolak selama 72 jam.
           </li>
         </ul>
       </>
     ),
   },
   {
-    // fakta-produk §5.2, §5.3; fakta-data §14
+    // fakta-produk §5.2, §5.3; fakta-data §2, §4.6, §6.3, §14; backend spec §8 ("What a tap
+    // proves"), ADR 0128 item 6; core ADR 0012 item 11
     id: 'batasnya',
     title: 'Batasnya',
     body: (
@@ -89,16 +102,35 @@ const sections: DocSection[] = [
         <ul>
           <li>
             Server tahu akun mana pernah tempel dengan akun mana dan kapan, siapa anggota grup mana,
-            dan siapa penjaga siapa. Isinya tidak, tetapi hubungan antarakun ya.
+            dan siapa penjaga siapa. Isinya tidak, tetapi hubungan antarakun ya. Bila kamu memutus
+            koneksi pada hari kalian bertemu, server juga bisa menyimpulkannya.
+          </li>
+          <li>
+            Cloudflare, jaringan di depan server, membuka enkripsi koneksi. Ia melihat setiap
+            permintaan kecuali isi yang terenkripsi: alamat IP, waktu, token masuk, id akun,
+            penerima setiap pesan, dan kunci setiap media. Jadi, lewat alamat IP, Cloudflare bisa
+            menghubungkan pengirim dengan penerima, dan pengunggah media dengan pengunduhnya.
+          </li>
+          <li>
+            Apple dan Google melihat alamat IP dan waktu notifikasi, pembelian, dan pemeriksaan
+            keaslian aplikasi. Expo melihat alamat IP dan pengenal acak pemasangan setiap kali
+            aplikasi memeriksa pembaruan (lihat Kebijakan privasi bagian 4.14), dan Vercel mencatat
+            alamat IP pengunjung situs ini.
+          </li>
+          <li>
+            Tempel membuktikan bahwa dua HP digoyang bersama, atau bahwa dua orang sengaja bekerja
+            sama dari jauh untuk menirunya, misalnya dengan berlatih irama goyangan lewat telepon.
+            Tuan rumah ruang acara bisa memasukkan orang yang tidak hadir, dan penjaga bisa dibujuk
+            melakukan tempel pemulihan dari jauh oleh orang yang mengaku sebagai kamu.
+          </li>
+          <li>
+            Dua penjagamu yang bersekongkol, dengan aplikasi yang diubah, bisa membuka cadangan
+            akunmu tanpa pemulihan dan tanpa kamu tahu. Pilih penjaga yang kamu percaya.
           </li>
           <li>
             Salinan di HP penerima ada di tangan penerima. &ldquo;Hapus untuk semua&rdquo; dan pesan
             yang menghilang bergantung pada aplikasi di HP mereka, dan tangkapan layar tetap
             mungkin.
-          </li>
-          <li>
-            Cloudflare, Apple, dan Google melihat alamat IP dan waktu lalu lintas yang melewati
-            mereka.
           </li>
           <li>HP yang sudah dibobol bisa membaca apa pun yang tampil di layarnya.</li>
         </ul>
@@ -112,7 +144,14 @@ const sections: DocSection[] = [
     // fakta-produk §0 items 1 and 7, §9
     id: 'keadaan-sekarang',
     title: 'Keadaan sekarang',
-    body: (
+    body: released ? (
+      <p>
+        Patepang sudah diluncurkan. Audit keamanan oleh pihak luar adalah syarat sebelum peluncuran
+        publik, dan kode Patepang dibuka dengan lisensi AGPL-3.0 setelah audit itu, supaya siapa pun
+        bisa memeriksanya (lihat <a href="/lisensi">Lisensi</a>).{' '}
+        <Placeholder>Ringkasan hasil audit: diisi pemilik saat peluncuran</Placeholder>
+      </p>
+    ) : (
       <p>
         Patepang belum diluncurkan. Audit keamanan oleh pihak luar adalah syarat sebelum peluncuran
         publik, dan belum dilakukan. Kode Patepang akan dibuka dengan lisensi AGPL-3.0 saat
@@ -178,6 +217,10 @@ const sections: DocSection[] = [
     title: 'Perlindungan untuk peneliti (safe harbour)',
     body: (
       <>
+        <SectionDraft>
+          <strong>Belum berlaku.</strong> Bagian ini masih draf yang menunggu tinjauan penasihat
+          hukum. Cara melapor dan tenggat di atas sudah berlaku.
+        </SectionDraft>
         <p>
           Kami tidak akan menempuh atau mendukung langkah hukum terhadap siapa pun yang, dengan
           itikad baik, melaporkan kerentanan sesuai kebijakan ini. Itikad baik berarti: hanya
@@ -210,8 +253,12 @@ const sections: DocSection[] = [
           high findings normally within 30 days and others within 90, keep you informed at least
           every two weeks, and agree a disclosure date with you (normally once the fix reaches
           users, or 90 days after your report, whichever comes first). We will not pursue or support
-          legal action against good-faith research under this policy. Patepang has not launched yet
-          and has not been externally audited; the audit comes before public launch.
+          legal action against good-faith research under this policy; this safe harbour is a draft
+          awaiting legal review and is not in force yet, while the reporting process and the
+          timelines above apply now.{' '}
+          {released
+            ? 'The audit status is under “Keadaan sekarang” above.'
+            : 'Patepang has not launched yet and has not been externally audited; the audit comes before public launch.'}
         </p>
       </div>
     ),

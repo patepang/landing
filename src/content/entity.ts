@@ -3,7 +3,7 @@
  * entity, its address, its registrations and a data protection officer are not in any repository),
  * so every value is `null`, and the pages show a marked placeholder in its place. Fill a value
  * here and every page that names it updates; the placeholders and the draft notice stay until the
- * counsel review is done (src/content/legal.ts).
+ * counsel review is done (the `draft` flags in src/content/pages.ts).
  */
 export const entity: {
   /** The company or foundation that runs Patepang and controls the data (pengendali data). */
@@ -29,6 +29,7 @@ export const entityPlaceholder = {
   name: 'Nama badan hukum',
   address: 'Alamat',
   registration: 'NIB/PSE',
-  dpo: 'Petugas pelindungan data',
+  // Named after the label the pages give it ("Pejabat pelindungan data pribadi: …"), one term.
+  dpo: 'Nama atau jabatan pejabatnya',
   court: 'Pengadilan negeri yang dipilih',
 } as const satisfies Record<keyof typeof entity, string>;

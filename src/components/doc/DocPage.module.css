@@ -36,7 +36,8 @@
  * it reads as "not settled" at a glance; the launch note is quieter, on the sunken surface.
  */
 .draft,
-.appNote {
+.appNote,
+.pending {
   display: flex;
   align-items: flex-start;
   gap: var(--space-3);
@@ -53,9 +54,19 @@
   color: var(--color-warning-text);
 }
 
-.appNote {
+.appNote,
+.pending {
   background: var(--color-surface-sunken);
   color: var(--color-text-secondary);
+}
+
+/* The brackets explained on a page in force, only while the page holds a placeholder. */
+.pending {
+  display: none;
+}
+
+article:has([data-placeholder]) .pending {
+  display: flex;
 }
 
 .draftTitle {
