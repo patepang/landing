@@ -7,7 +7,10 @@ import { pricing } from '@/content/pricing';
 /*
  * Plans, store billing, stopping, refunds, the grace period and what happens over quota (app ADR
  * 0060 B21 to B25; fakta-produk §6; fakta-data §4.14, §4.15). Part of the terms. The stores bill,
- * renew and refund under their own rules; Patepang never sees payment details.
+ * renew and refund under their own rules; Patepang never sees payment details. Every stored media
+ * object counts against its uploader's quota while it is kept, chat and room media too (backend
+ * spec §3.5, media service); the kinds of media still being built, and uploads in parts above
+ * 64 MiB (backend ADR 0130, the app's part still being built), are said as coming.
  */
 
 const page = pageAt('/langganan');
@@ -50,8 +53,8 @@ const sections: DocSection[] = [
             <tr>
               <th scope="row">Ruang media di server</th>
               <td>
-                {pricing.free.storage}, ditambah bonus pertemuan kedua sampai{' '}
-                {pricing.free.bonusMax}
+                {pricing.free.storage}, ditambah bonus pertemuan kedua (paling banyak{' '}
+                {pricing.free.bonusMax}), jadi paling banyak {pricing.free.storageMax}
               </td>
               <td>{pricing.subscriber.storage}</td>
             </tr>
@@ -62,6 +65,10 @@ const sections: DocSection[] = [
             </tr>
           </tbody>
         </table>
+        <p>
+          Berkas di atas 64 MB dikirim bertahap. Pengiriman bertahap itu sedang dibangun di aplikasi
+          dan menyusul; sampai saat itu, berkas paling besar 64 MB untuk semua paket.
+        </p>
         <p>
           Paket tahunan lebih hemat {pricing.yearlySaving} dibanding 12 bulan. Kamu bisa pindah
           antara paket bulanan dan tahunan di toko. Harga di atas adalah harga di Indonesia; di luar
@@ -95,9 +102,11 @@ const sections: DocSection[] = [
           perubahan untuk langganan yang sedang berjalan mengikuti aturan toko.
         </p>
         <p>
-          Kami tidak menerima dan tidak menyimpan kartu, rekening, atau cara bayarmu. Server hanya
-          mencatat status langgananmu, sampai kapan berlaku, dan pengenal acak yang menghubungkan
-          pembelian dengan akunmu (lihat <a href="/kebijakan-privasi">Kebijakan privasi</a>).
+          Kami tidak menerima dan tidak menyimpan kartu, rekening, atau cara bayarmu. Server
+          mencatat status langgananmu, sampai kapan berlaku, toko tempat kamu membeli, apakah masa
+          coba sudah dipakai, pengenal acak yang menghubungkan pembelian dengan akunmu, dan, selama
+          langganan berjalan, hash id langganan dari toko (lihat{' '}
+          <a href="/kebijakan-privasi">Kebijakan privasi</a>).
         </p>
       </>
     ),
@@ -180,8 +189,9 @@ const sections: DocSection[] = [
           </li>
         </ul>
         <p>
-          Setiap pemberitahuan menawarkan <strong>Simpan ke HP</strong>. Foto di album grup dan
-          bagianmu di momen bersama juga hilang bagi orang lain bila terhapus.
+          Setiap pemberitahuan menawarkan <strong>Simpan ke HP</strong>. Saat album grup dan momen
+          bersama tersedia, foto di album grup dan bagianmu di momen bersama juga hilang bagi orang
+          lain bila terhapus.
         </p>
       </>
     ),
@@ -193,9 +203,15 @@ const sections: DocSection[] = [
     body: (
       <>
         <p>
-          Ruang media dipakai media yang disimpan server: kabar, momen, stiker, foto profil, dan
-          cadangan akun. Media di pesan hanya disimpan sampai semua penerima mengambilnya, paling
-          lama 30 hari.
+          Ruang media dipakai semua media yang disimpan server untukmu, selama media itu disimpan:
+          foto, suara, dan berkas yang kamu kirim di pesan dan grup (sampai semua penerima
+          mengambilnya, paling lama 30 hari), media ruang acara selama ruangnya ada, cadangan akun,
+          dan media kabar, momen, stiker, dan foto profil. Bila ruangmu penuh, kamu juga tidak bisa
+          mengirim foto atau berkas di pesan sampai ada ruang lagi.
+        </p>
+        <p>
+          Kabar dengan foto, momen bersama, stiker, foto profil, dan album ruang acara sedang
+          dibangun dan menyusul.
         </p>
         <p>
           <strong>Bonus pertemuan kedua</strong>: saat kamu tempel lagi dengan seseorang, setidaknya

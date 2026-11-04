@@ -3,12 +3,16 @@ import { Entity, Mail, Placeholder } from '@/components/doc/parts';
 import { pageMetadata } from '@/content/metadata';
 import { pageAt } from '@/content/pages';
 import { pricing } from '@/content/pricing';
+import { released } from '@/content/status';
 
 /*
  * The terms of service. The product facts (age, account, guardians, sanctions, prices, stores)
- * come from fakta-produk.md and fakta-data.md of 4 November 2026; the legal choices (governing
- * law, disputes, liability) are drafted to fit Indonesian consumer law (UU No. 8 Tahun 1999) and
- * are for counsel to settle. What is not decided stands as a marked placeholder.
+ * come from fakta-produk.md and fakta-data.md of 4 November 2026, as corrected after the review of
+ * the same day; the legal choices (governing law, disputes, liability) are drafted to fit
+ * Indonesian consumer law (UU No. 8 Tahun 1999) and are for counsel to settle. The app has no step
+ * yet where a person agrees to these terms, and no channel for notices in the app (its server
+ * pushes carry no notice kind): both are said as missing, with placeholders, rather than assumed.
+ * What is not decided stands as a marked placeholder.
  */
 
 const page = pageAt('/syarat-ketentuan');
@@ -23,15 +27,24 @@ const sections: DocSection[] = [
       <>
         <p>
           Syarat ini adalah perjanjian antara kamu dan <Entity field="name" /> (&ldquo;kami&rdquo;)
-          tentang pemakaian aplikasi Patepang dan situs patepang.com. Dengan memakai Patepang, kamu
-          menyetujui syarat ini, bersama <a href="/pedoman-komunitas">Pedoman komunitas</a> dan
-          ketentuan <a href="/langganan">Langganan dan pembayaran</a>, yang menjadi bagian darinya.
+          tentang pemakaian aplikasi Patepang dan situs patepang.com. Kamu menyetujui syarat ini,
+          bersama <a href="/pedoman-komunitas">Pedoman komunitas</a> dan ketentuan{' '}
+          <a href="/langganan">Langganan dan pembayaran</a> yang menjadi bagian darinya, saat
+          menyatakan setuju di aplikasi.{' '}
+          <Placeholder>
+            Langkah persetujuan di aplikasi, dan cara aplikasi mencatat versi yang kamu setujui:
+            menunggu keputusan dan pembangunan
+          </Placeholder>{' '}
           Cara kami memproses data dijelaskan di <a href="/kebijakan-privasi">Kebijakan privasi</a>.
         </p>
-        <p>
-          Patepang belum diluncurkan. Syarat ini adalah draf dan baru berlaku setelah ditinjau
-          penasihat hukum dan diumumkan di aplikasi.
-        </p>
+        {released && !page.draft ? null : (
+          <p>
+            {released ? null : 'Patepang belum diluncurkan. '}
+            {page.draft
+              ? 'Syarat ini adalah draf dan baru berlaku setelah ditinjau penasihat hukum.'
+              : null}
+          </p>
+        )}
       </>
     ),
   },
@@ -75,9 +88,11 @@ const sections: DocSection[] = [
           </strong>
         </p>
         <p>
-          Akun yang tidak aktif selama 12 bulan dihapus, dengan pengingat di bulan ke-11. Kamu juga
-          bisa mengunci akunmu dalam keadaan darurat selama 72 jam, dan menghapus akunmu kapan saja
-          (lihat <a href="/hapus-akun">Hapus akun</a>).
+          Akun yang tidak aktif selama 12 bulan dihapus, dengan pengingat lewat notifikasi di bulan
+          ke-11 bila kamu mengizinkan notifikasi. Dalam keadaan darurat, dari perangkat yang masih
+          kamu pegang, kamu bisa mengeluarkan semua perangkat lain dan mengunci penautan perangkat,
+          perubahan penjaga, dan pemulihan selama 72 jam. Kamu juga bisa menghapus akunmu kapan
+          saja, kecuali akun yang diblokir (lihat <a href="/hapus-akun">Hapus akun</a>).
         </p>
       </>
     ),
@@ -126,7 +141,9 @@ const sections: DocSection[] = [
         <p>
           Kamu bertanggung jawab atas isi yang kamu kirim. Isi yang dilaporkan orang lain bisa
           dibaca moderator, sebatas salinan yang dilaporkan. Menghapus isi menghapusnya dari akunmu
-          dan dari server, tetapi salinan yang sudah sampai di HP orang lain ada di HP mereka.
+          dan dari server, dengan batas yang dijelaskan di Kebijakan privasi bagian 5: amplop yang
+          belum diambil penerima tetap di server sampai diambil, dan cadangan menyimpannya untuk
+          sementara. Salinan yang sudah sampai di HP orang lain ada di HP mereka.
         </p>
       </>
     ),
@@ -183,10 +200,13 @@ const sections: DocSection[] = [
           penyedia layanan kami. Gangguan besar kami umumkan di halaman status.
         </p>
         <p>
-          Fitur bisa bertambah, berubah, atau berhenti. Perubahan penting kami umumkan sebelum
-          berlaku. Bila Patepang berhenti beroperasi, kami memberi tahu lebih dulu, supaya kamu
-          sempat mengekspor datamu.{' '}
-          <Placeholder>Jangka waktu pemberitahuan: menunggu tinjauan penasihat hukum</Placeholder>
+          Fitur bisa bertambah, berubah, atau berhenti. Perubahan penting kami umumkan di halaman
+          status dan di situs ini sebelum berlaku. Bila Patepang berhenti beroperasi, kami
+          mengumumkannya lebih dulu dengan cara yang sama, supaya kamu sempat mengekspor datamu.{' '}
+          <Placeholder>
+            Pemberitahuan di dalam aplikasi dan jangka waktunya: menunggu keputusan dan tinjauan
+            penasihat hukum
+          </Placeholder>
         </p>
       </>
     ),
@@ -198,9 +218,10 @@ const sections: DocSection[] = [
     body: (
       <>
         <p>
-          Kamu bisa berhenti kapan saja dengan menghapus akunmu. Penghapusan punya tenggang 7 hari
-          yang bisa dibatalkan, lalu akun dan datanya dihapus seperti dijelaskan di halaman{' '}
-          <a href="/hapus-akun">Hapus akun</a>.
+          Kamu bisa berhenti kapan saja dengan menghapus akunmu, kecuali bila akunmu diblokir.
+          Penghapusan punya tenggang 7 hari yang bisa dibatalkan, lalu akun dan datanya dihapus
+          seperti dijelaskan di halaman <a href="/hapus-akun">Hapus akun</a>, yang juga menjelaskan
+          akun yang diblokir.
         </p>
         <p>
           Kami bisa menangguhkan atau memblokir akun yang melanggar syarat ini atau pedoman
@@ -288,10 +309,14 @@ const sections: DocSection[] = [
     title: 'Perubahan syarat',
     body: (
       <p>
-        Syarat ini bisa berubah. Perubahan penting kami umumkan di aplikasi dan di halaman ini
-        sebelum berlaku. Bila kamu tidak setuju dengan perubahan itu, kamu bisa berhenti memakai
-        Patepang dan menghapus akunmu. Tanggal di bagian atas halaman menunjukkan perubahan
-        terakhir.
+        Syarat ini bisa berubah. Perubahan penting kami umumkan di halaman ini dan di halaman status
+        sebelum berlaku.{' '}
+        <Placeholder>
+          Cara memberi tahu perubahan di aplikasi dan mencatat persetujuanmu atasnya: menunggu
+          keputusan dan pembangunan
+        </Placeholder>{' '}
+        Bila kamu tidak setuju dengan perubahan itu, kamu bisa berhenti memakai Patepang dan
+        menghapus akunmu. Tanggal di bagian atas halaman menunjukkan perubahan terakhir.
       </p>
     ),
   },

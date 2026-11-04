@@ -2,12 +2,15 @@ import { DocPage, type DocSection } from '@/components/doc/DocPage';
 import { Mail, Placeholder } from '@/components/doc/parts';
 import { pageMetadata } from '@/content/metadata';
 import { pageAt } from '@/content/pages';
+import { released } from '@/content/status';
 
 /*
  * What Patepang will publish (the transparency file, the moderator and release lists, the key
  * transparency log, the half-yearly report) and what it can and cannot hand over when lawfully
- * required (fakta-data §4.22, §12). The written law-enforcement policy and how users are told are
- * not decided (fakta-data §12, UNCONFIRMED) and stand as placeholders.
+ * required (fakta-data §4.22, §12). The report's contents are what the server sums for it
+ * (backend transparency service, REPORT_PREFIXES; spec §5.8), not every daily count: those stay
+ * in the admin aggregates. The written law-enforcement policy and how users are told are not
+ * decided (fakta-data §12, UNCONFIRMED) and stand as placeholders.
  */
 
 const page = pageAt('/transparansi');
@@ -22,15 +25,15 @@ const sections: DocSection[] = [
     body: (
       <>
         <p>
-          Sejak peluncuran, server Patepang menyajikan berkas publik yang bisa diperiksa siapa pun,
-          tanpa data pribadi. Berkas untuk layanan sungguhan belum ada, karena layanannya belum
-          berjalan.
+          {released
+            ? 'Server Patepang menyajikan berkas publik yang bisa diperiksa siapa pun, tanpa data pribadi.'
+            : 'Setelah Patepang diluncurkan, server Patepang menyajikan berkas publik yang bisa diperiksa siapa pun, tanpa data pribadi. Berkas untuk layanan sungguhan belum ada, karena layanannya belum berjalan.'}
         </p>
         <dl>
           <div>
             <dt>Berkas transparansi</dt>
             <dd>
-              Kunci akar untuk saksi tempel, pemulihan, log transparansi kunci, dan moderasi; ukuran
+              Kunci akar untuk saksi tempel, pemulihan, log transparansi kunci, dan moderasi; sidik
               (measurement) enklaf yang boleh dipercaya; dan alamat-alamat resmi, termasuk halaman
               kebijakan ini.
             </dd>
@@ -46,7 +49,7 @@ const sections: DocSection[] = [
             <dt>Daftar rilis</dt>
             <dd>
               Setiap versi rilis, sidiknya (hash), dan nomornya di log publik Sigstore Rekor, supaya
-              siapa pun bisa memeriksa bahwa yang terpasang adalah rilis resmi.
+              siapa pun bisa memeriksa bahwa berkas rilis sama dengan yang tercatat di Rekor.
             </dd>
           </div>
           <div>
@@ -69,7 +72,7 @@ const sections: DocSection[] = [
     ),
   },
   {
-    // fakta-data §4.22
+    // fakta-data §4.22; backend transparency service (REPORT_PREFIXES), spec §5.8
     id: 'laporan-transparansi',
     title: 'Laporan transparansi',
     body: (
@@ -79,16 +82,15 @@ const sections: DocSection[] = [
           akun siapa pun. Laporan pertama terbit setelah peluncuran. Isinya:
         </p>
         <ul>
-          <li>jumlah akun: hidup, belum lahir, dibuat, lahir, dihapus, dan aktif;</li>
-          <li>jumlah tempel menurut jenisnya, ruang acara, media, langganan, dan tip;</li>
-          <li>laporan menurut bahasa, keputusan moderasi, dan banding;</li>
-          <li>permintaan dari aparat dan pemerintah, menurut jenis, hasil, dan negara;</li>
-          <li>insiden keamanan.</li>
+          <li>laporan yang diterima, menurut bahasa;</li>
+          <li>keputusan moderasi menurut jenisnya, dan banding menurut hasilnya;</li>
+          <li>
+            permintaan dari aparat dan pemerintah, menurut jenis, hasil, dan negara asal permintaan;
+          </li>
+          <li>insiden keamanan, menurut tingkatnya;</li>
+          <li>perubahan kebijakan yang dipaksakan pihak luar.</li>
         </ul>
-        <p>
-          Negara atau kota yang dipakai kurang dari 5 akun digabung sebagai &ldquo;lainnya&rdquo;,
-          supaya angka kecil tidak menunjuk ke orang tertentu.
-        </p>
+        <p>Laporan hanya berisi jumlah, tanpa akun siapa pun.</p>
       </>
     ),
   },
@@ -99,10 +101,10 @@ const sections: DocSection[] = [
     body: (
       <>
         <p>
-          Kami tidak menyimpan nama, nomor telepon, atau email siapa pun, jadi kami tidak bisa
-          mencari akun berdasarkan identitas. Permintaan harus menyebut id akun. Setiap permintaan
-          dicatat menurut negara, jenis (data pengguna, penghapusan konten, penyimpanan data,
-          darurat, penyadapan, atau lainnya), dan hasilnya (tidak ada data, ditolak, dipenuhi
+          Kami tidak menyimpan nama, nomor telepon, atau email siapa pun, jadi kami sendiri tidak
+          bisa mencari akun berdasarkan identitas. Permintaan harus menyebut id akun. Setiap
+          permintaan dicatat menurut negara, jenis (data pengguna, penghapusan konten, penyimpanan
+          data, darurat, penyadapan, atau lainnya), dan hasilnya (tidak ada data, ditolak, dipenuhi
           sebagian, atau dipenuhi), tanpa menyebut akun, lalu dihitung di laporan transparansi.
         </p>
         <h3>Yang ada di server untuk sebuah id akun</h3>
@@ -114,15 +116,34 @@ const sections: DocSection[] = [
             amplop pesan yang belum diambil (terenkripsi, dengan penerima, ukuran, dan waktu) dan
             data media terenkripsi;
           </li>
-          <li>status langganan, kuota, kasus dan keputusan moderasi, dan token notifikasi.</li>
+          <li>status langganan, kuota, dan kasus serta keputusan moderasi;</li>
+          <li>
+            pengenal acak langganan, yang juga dipegang Apple atau Google bersama pembeliannya, dan
+            token notifikasi HP, yang bisa dibuka server.
+          </li>
         </ul>
+        <p>
+          <strong>Dua data terakhir bisa menghubungkan akun dengan orangnya.</strong> Apple atau
+          Google bisa mencocokkan pengenal langganan dengan akun toko pembelinya (nama, email, dan
+          cara bayar), dan token notifikasi dengan perangkatnya beserta akun Apple atau Google di
+          perangkat itu. Jadi data Patepang yang digabung dengan catatan Apple atau Google bisa
+          menunjukkan siapa pemilik sebuah akun.
+        </p>
         <h3>Yang tidak ada, sehingga tidak bisa diberikan</h3>
         <ul>
           <li>isi pesan, kabar, momen, atau media dalam bentuk yang bisa dibaca;</li>
           <li>nama, foto, nomor telepon, email, atau buku alamat;</li>
-          <li>alamat IP, lokasi, atau catatan panggilan;</li>
-          <li>siapa pengirim sebuah pesan.</li>
+          <li>alamat IP, lokasi HP (GPS), atau catatan panggilan;</li>
+          <li>
+            siapa pengirim sebuah pesan, kecuali pesan pertama setelah tempel, yang terikat pada
+            tempelnya (Kebijakan privasi bagian 4.3).
+          </li>
         </ul>
+        <p>
+          Data lokasi yang ada di server hanya kota: kota yang ditulis akun yang belum lahir untuk
+          daftar tunggu titik lahir (paling lama 90 hari), dan kota setiap titik lahir selama
+          ruangnya ada, yang dirujuk tempel di sana.
+        </p>
         <p>
           Patepang versi pertama tidak punya penahanan data (legal hold): penghapusan yang sudah
           terjadwal tetap berjalan. Bukti laporan hanya bisa dibaca moderator, bukan server.

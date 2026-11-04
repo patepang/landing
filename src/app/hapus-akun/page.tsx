@@ -5,10 +5,12 @@ import { pageAt } from '@/content/pages';
 
 /*
  * How to delete a Patepang account and its data, what goes and when, and what stays (fakta-data
- * §8.1 to §8.4; app DeleteAccountScreen.tsx @ b4c6118 for the steps and words). Google Play asks
- * for this page: it names the app and its developer, the steps, the data deleted and kept, and
- * how long. There is no web sign-in, so the steps are the app's; what to do without the app is
- * said as far as it is decided.
+ * §8.1 to §8.4; app DeleteAccountScreen.tsx @ b4c6118 for the steps and words). It names the app
+ * and its developer, the steps, the data deleted and kept, and how long. Google Play also asks for
+ * a way to request deletion without the app, and there is none yet (the only deletion is the
+ * device-signed one, backend spec §5.2): this page does not meet that requirement, which is a
+ * release blocker (docs/landing-implementation.md §10), and it says plainly that the way is
+ * missing.
  */
 
 const page = pageAt('/hapus-akun');
@@ -79,22 +81,24 @@ const sections: DocSection[] = [
           <li>penjaga (ke dua arah), pecahan kunci cadangan, dan cadangan akunmu;</li>
           <li>keanggotaan grup dan ruang acara, serta ruang yang kamu buka;</li>
           <li>
-            semua media yang kamu simpan; datanya langsung, berkasnya paling lambat seperempat jam
-            setelah jam itu berakhir;
+            semua media yang kamu simpan: catatannya di server langsung dihapus, dan berkasnya
+            dihapus mulai seperempat jam setelah jam itu berakhir, biasanya dalam dua jam setelah
+            penghapusan;
           </li>
           <li>status langganan di server dan kota di daftar tunggu titik lahir;</li>
           <li>kasus moderasi tentang akunmu, beserta buktinya;</li>
           <li>rantai kunci akunmu, kecuali entri penutupnya.</li>
         </ul>
         <p>
-          Orang yang pernah kamu temui tidak lagi melihatmu. Aplikasi di HP-mu menghapus kunci dan
-          datanya sendiri begitu server menyatakan akunnya sudah tidak ada.
+          HP orang yang pernah kamu temui tahu akunmu sudah berakhir; salinan pesan dan media di HP
+          mereka tetap ada. Aplikasi di HP-mu menghapus kunci dan datanya sendiri begitu server
+          menyatakan akunnya sudah tidak ada.
         </p>
       </>
     ),
   },
   {
-    // fakta-data §8.1 (what remains), §4.2, §4.23
+    // fakta-data §8.1 (what remains), §4.2, §4.18, §4.23
     id: 'yang-tersisa',
     title: 'Yang tersisa, dan berapa lama',
     body: (
@@ -129,6 +133,20 @@ const sections: DocSection[] = [
             <td>Tanpa batas waktu, tanpa id akun.</td>
           </tr>
           <tr>
+            <th scope="row">Penanda batas akun di Apple atau Google untuk HP-mu</th>
+            <td>
+              Disimpan Apple atau Google, dan tetap ada setelah aplikasi dan akunmu dihapus. Isinya
+              hanya berapa akun yang dibuat HP itu dalam sebulan (Kebijakan privasi bagian 4.11).
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Log jaringan Cloudflare</th>
+            <td>
+              Menurut aturan Cloudflare sendiri:{' '}
+              <Placeholder>Retensi log Cloudflare: belum dikonfirmasi</Placeholder>
+            </td>
+          </tr>
+          <tr>
             <th scope="row">Pesan dan media di HP orang lain</th>
             <td>Di HP mereka, di luar jangkauan kami.</td>
           </tr>
@@ -158,8 +176,9 @@ const sections: DocSection[] = [
           </li>
         </ul>
         <p>
-          Patepang tidak menyimpan nama, email, atau nomor teleponmu, jadi kami tidak bisa
-          memastikan dari sebuah surel bahwa akun tertentu milikmu.{' '}
+          Patepang tidak menyimpan nama, email, atau nomor teleponmu, jadi dari sebuah surel kami
+          tidak bisa memastikan bahwa akun tertentu milikmu.{' '}
+          <strong>Karena itu, saat ini belum ada cara meminta penghapusan tanpa aplikasi.</strong>{' '}
           <Placeholder>
             Cara meminta penghapusan tanpa aplikasi, dan cara membuktikan pemilik akun: menunggu
             keputusan
@@ -189,8 +208,11 @@ const sections: DocSection[] = [
     title: 'Situs ini',
     body: (
       <p>
-        Situs patepang.com tidak menyimpan apa pun tentangmu, jadi tidak ada yang perlu dihapus di
-        sini. Aplikasi Patepang dikembangkan oleh <Entity field="name" />.
+        Situs patepang.com tidak memakai cookie atau penyimpanan browser, dan tidak punya akun yang
+        perlu dihapus. Penyedia hostingnya, Vercel, mencatat permintaan ke situs ini (alamat IP dan
+        jenis browser), dan surel yang kamu kirim kepada kami disimpan, keduanya seperti dijelaskan
+        di <a href="/kebijakan-privasi">Kebijakan privasi</a>. Aplikasi Patepang dikembangkan oleh{' '}
+        <Entity field="name" />.
       </p>
     ),
   },

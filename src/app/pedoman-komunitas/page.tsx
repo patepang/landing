@@ -4,17 +4,22 @@ import { pageMetadata } from '@/content/metadata';
 import { pageAt } from '@/content/pages';
 
 /*
- * The community guidelines: the eight report categories, reporting, what moderators can and
- * cannot see, decisions and appeals (fakta-produk §8; fakta-data §4.20; backend ADR 0132 for the
- * categories). Response times and reporting to authorities are not decided (fakta-data §4.20,
- * UNCONFIRMED) and stand as placeholders.
+ * The community guidelines: what is not allowed, in the eight categories moderators decide by (the
+ * reason codes of backend spec §3.8; backend ADR 0132), reporting as the app does it now, what
+ * moderators can and cannot see, decisions and appeals (fakta-produk §8; fakta-data §4.20). The
+ * live app asks the reporter only for the content's language (app LiveReport.tsx); the reporter's
+ * category and note are the backend's so far, and wait for the core's and the app's M.11, so they
+ * are said as coming. The moderators' console is not built yet (backend TASKS M.6): this draft
+ * goes in force only once both are merged, with the labels and the note's limit checked against
+ * the app's sheet (docs/landing-implementation.md §10). Response times and reporting to
+ * authorities are not decided (fakta-data §4.20, UNCONFIRMED) and stand as placeholders.
  */
 
 const page = pageAt('/pedoman-komunitas');
 
 export const metadata = pageMetadata(page);
 
-/** The eight categories a report can carry, in the app's order. */
+/** The eight categories moderators decide by, in the backend's order of reason codes. */
 const categories = [
   {
     term: 'Pelecehan',
@@ -30,7 +35,7 @@ const categories = [
   },
   {
     term: 'Konten seksual anak',
-    text: 'Apa pun yang menampilkan atau melibatkan anak secara seksual. Akun yang mengirimnya diblokir.',
+    text: 'Apa pun yang menampilkan atau melibatkan anak secara seksual.',
   },
   {
     term: 'Kekerasan',
@@ -69,12 +74,12 @@ const sections: DocSection[] = [
     ),
   },
   {
-    // backend ADR 0132; fakta-produk §8
+    // backend spec §3.8 (reason codes), ADR 0132; fakta-produk §8
     id: 'yang-tidak-boleh',
     title: 'Yang tidak boleh',
     body: (
       <>
-        <p>Setiap laporan memilih salah satu dari delapan kategori ini:</p>
+        <p>Yang tidak boleh di Patepang, dalam delapan kategori yang dipakai moderator:</p>
         <dl>
           {categories.map((category) => (
             <div key={category.term}>
@@ -91,27 +96,28 @@ const sections: DocSection[] = [
     ),
   },
   {
-    // fakta-produk §8; fakta-data §4.20
+    // fakta-produk §8; fakta-data §4.20; app LiveReport.tsx, ADR 0064 part B13
     id: 'cara-melapor',
     title: 'Cara melapor',
     body: (
       <>
         <p>
-          Di aplikasi, pilih isi yang bermasalah, lalu <strong>Laporkan</strong>. Pilih kategori
-          dan, bila perlu, tulis catatan sampai 500 karakter.
+          Di aplikasi, pilih isi yang bermasalah, lalu <strong>Laporkan</strong>. Pilih bahasa
+          isinya, supaya laporanmu sampai ke moderator yang membacanya. Memilih kategori dan menulis
+          catatan untuk moderator menyusul; sampai saat itu, moderator membaca isinya sendiri.
         </p>
         <ul>
           <li>
-            HP-mu menyegel salinan isi itu, kategori, dan catatanmu untuk para moderator, bersama
-            pernyataan bertanda tangan dari penulis isi itu. Server tidak bisa membacanya.
+            HP-mu menyegel salinan isi itu untuk para moderator, bersama pernyataan bertanda tangan
+            dari penulis isi itu. Server tidak bisa membacanya.
           </li>
           <li>
             Server tidak menyimpan siapa pelapornya, dan orang yang kamu laporkan tidak diberi tahu
             siapa yang melapor.
           </li>
           <li>
-            Isi yang sudah tampil di HP-mu masih bisa dilaporkan sampai 30 hari setelah dihapus
-            pengirimnya, setelah menghilang, atau setelah foto sekali lihat ditutup.
+            Isi yang sudah tampil di HP-mu masih bisa dilaporkan sampai 30 hari sejak isi itu tiba
+            di HP-mu, walaupun pengirimnya sudah menghapusnya atau pesannya sudah menghilang.
           </li>
           <li>
             Laporan tentang satu akun digabung menjadi satu kasus. Satu akun bisa mengirim paling
@@ -133,7 +139,7 @@ const sections: DocSection[] = [
         <p>
           Moderator Patepang adalah manusia. Saat peluncuran, paling sedikit tiga orang yang membaca
           bahasa Indonesia. Daftar moderator ditandatangani dua dari tiga pemegang kunci akar, dan
-          setiap moderator hanya bisa membuka bukti yang disegel untuknya, di konsolnya sendiri.
+          setiap moderator hanya bisa membuka bukti yang disegel untuknya, di konsol moderator.
         </p>
         <h3>Yang dilihat moderator</h3>
         <ul>
@@ -141,7 +147,7 @@ const sections: DocSection[] = [
           <li>
             pernyataan penulisnya: id akun, perangkat, jenis isi, sidik isinya, dan waktu dibuat;
           </li>
-          <li>kategori laporan dan catatan pelapor.</li>
+          <li>bahasa yang dipilih pelapor; kategori dan catatan pelapor menyusul.</li>
         </ul>
         <h3>Yang tidak dilihat moderator</h3>
         <ul>
@@ -246,8 +252,10 @@ const sections: DocSection[] = [
           koneksi, tanpa pemberitahuan.
         </li>
         <li>
-          <strong>Kunci darurat</strong> membekukan akunmu selama 72 jam bila HP-mu hilang atau
-          direbut: pemulihan dan penautan perangkat ditolak.
+          <strong>Kunci darurat</strong>, bila salah satu perangkatmu hilang atau direbut: dari
+          perangkat yang masih kamu pegang, semua perangkat lain dikeluarkan, lalu penautan
+          perangkat, perubahan penjaga, dan pemulihan ditolak selama 72 jam. Pesan untukmu tetap
+          masuk.
         </li>
       </ul>
     ),
@@ -263,8 +271,8 @@ const sections: DocSection[] = [
         </p>
         <p>
           <Placeholder>
-            Penanganan konten seksual anak dan pelaporan ke pihak berwenang: menunggu tinjauan
-            penasihat hukum
+            Penanganan konten seksual anak, sanksinya, dan pelaporan ke pihak berwenang: menunggu
+            tinjauan penasihat hukum
           </Placeholder>
         </p>
         <p>
