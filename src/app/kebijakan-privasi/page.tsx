@@ -675,10 +675,18 @@ const sections: DocSection[] = [
             </dd>
           </div>
           <div>
-            <dt>Penyedia surel dan halaman status</dt>
+            <dt>Zoho Mail</dt>
             <dd>
-              Menerima surel yang kamu kirim ke kami dan menyajikan halaman status layanan.{' '}
-              <Placeholder>Penyedia surel dan halaman status: belum dipilih</Placeholder>
+              Menerima dan menyimpan surel yang kamu kirim ke alamat surel kami. Melihat alamat
+              surelmu, isi suratmu, dan lampirannya. Lokasi: Amerika Serikat (pusat data Zoho untuk
+              surel patepang.com).
+            </dd>
+          </div>
+          <div>
+            <dt>Halaman status</dt>
+            <dd>
+              Menyajikan halaman status layanan.{' '}
+              <Placeholder>Penyedia halaman status: belum dipilih</Placeholder>
             </dd>
           </div>
         </dl>
@@ -704,9 +712,9 @@ const sections: DocSection[] = [
           Data server dari pengguna di Indonesia diproses di luar Indonesia: di Singapura (server
           utama), di pusat data Cloudflare terdekat, di Asia-Pasifik (media terenkripsi), di Uni
           Eropa (cadangan basis data terenkripsi), di Amerika Serikat atau secara global (Apple,
-          Google, dan Expo), dan di lokasi Vercel serta penyedia surel dan halaman status (bagian
-          8). Saat ini hanya ada satu wilayah server, Singapura, dan akun belum bisa dipindahkan ke
-          wilayah lain.
+          Google, dan Expo; Zoho Mail untuk surel yang kamu kirim ke kami), dan di lokasi Vercel
+          serta penyedia halaman status (bagian 8). Saat ini hanya ada satu wilayah server,
+          Singapura, dan akun belum bisa dipindahkan ke wilayah lain.
         </p>
         <p>
           Isi yang kamu kirim terenkripsi ujung ke ujung, dan data di server serta cadangannya

@@ -887,7 +887,7 @@ lewat musyawarah lalu BPSK atau pengadilan, bahasa Indonesia yang berlaku, dan k
 | Hak penghapusan bagi akun yang diblokir | Hapus akun | Penasihat hukum (`fakta-data` §8.1, FLAG) |
 | Cara aplikasi menanyakan umur, dan langkah untuk pengguna di bawah 18 | Privasi §12 | Penasihat hukum; gerbang umur belum dibangun |
 | Pemeriksaan pembaruan Expo: diungkapkan atau dimatikan | Privasi §4.14 | Pemilik (`fakta-data` §6.3, FLAG) |
-| Lokasi Expo; lokasi dan retensi log Vercel; penyedia surel dan halaman status; lama penyimpanan surel; aturan retensi log audit | Privasi §4.12, §8, §15 | Pemilik |
+| Lokasi Expo; lokasi dan retensi log Vercel; penyedia halaman status; lama penyimpanan surel; aturan retensi log audit | Privasi §4.12, §8, §15 | Pemilik |
 | Jangka waktu pemberitahuan bila layanan berhenti; batas jumlah tanggung jawab | Syarat §8, §10 | Penasihat hukum |
 | Target waktu peninjauan laporan; penanganan konten seksual anak dan pelaporan ke pihak berwenang | Pedoman komunitas | Pemilik dan penasihat hukum |
 | Kebijakan tertulis untuk permintaan aparat dan pemberitahuan kepada pengguna | Transparansi | Pemilik dan penasihat hukum |
@@ -995,16 +995,17 @@ tetap di-commit. Tes walk-through di `tests/screenshots.spec.ts` kini menunggu f
    pengesahan Menteri Hukum, surat pernyataan pendirian, dan kartu NPWP perseroan (lihat §9.11).
    Yang tersisa untuk pemilik: mendaftar PSE lewat OSS sebelum peluncuran lalu mengisi nomornya di
    `pse`, dan menunjuk pejabat pelindungan data secara tertulis (sementara: direktur perseroan).
-2. **Kotak surat**: buat `halo@patepang.com` dan `security@patepang.com`, lalu tandai keduanya
-   `true` di `confirmed` (`src/content/contact.ts`); build produksi berhenti sampai itu dilakukan
-   (§10.2). Bila `privasi@` atau `hukum@` diinginkan, buat kotaknya, arahkan `privacy` atau
-   `legal` ke sana, dan tandai juga.
+2. **Kotak surat**: selesai. Pemilik membuat `halo@patepang.com` dan `security@patepang.com`
+   (4 November 2026; surel domain di Zoho Mail, pusat data Amerika Serikat menurut rekaman MX-nya),
+   dan keduanya ditandai `true` di `confirmed` (`src/content/contact.ts`), sehingga build produksi
+   tidak lagi berhenti (§10.2). Kebijakan privasi §8 kini menyebut Zoho Mail. Bila `privasi@` atau
+   `hukum@` diinginkan, buat kotaknya, arahkan `privacy` atau `legal` ke sana, dan tandai juga.
 3. **Tinjauan penasihat hukum** atas kebijakan privasi, syarat dan ketentuan, pedoman komunitas,
    langganan, keamanan (safe harbour), dan transparansi, termasuk placeholder bagian hukum di §9.4.
    Setelah itu, ubah `draft` menjadi `false` di `src/content/pages.ts` dan perbarui `updated`.
 4. **Keputusan terbuka**: pemeriksaan pembaruan Expo (ungkapkan atau matikan), proses
    permintaan data lewat surel, penghapusan untuk akun yang diblokir, kebijakan permintaan aparat,
-   penyedia surel dan halaman status, `preload` HSTS. Penghalang rilis yang baru ditemukan, dan
+   penyedia halaman status, lama penyimpanan surel, `preload` HSTS. Penghalang rilis yang baru ditemukan, dan
    yang harus dibangun di aplikasi atau server sebelum peluncuran, ada di §10.3.
 5. **Membalik ketersediaan** saat kedua toko sudah menayangkan Patepang: isi
    `src/content/availability.ts` (README, "Sakelar ketersediaan"), isi dua placeholder yang baru

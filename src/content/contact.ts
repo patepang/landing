@@ -27,8 +27,10 @@ export type ContactKey = keyof typeof contact;
  * and the tests, are not stopped. Set an address to `true` once its mailbox receives mail.
  */
 export const confirmed: Readonly<Record<string, boolean>> = {
-  'halo@patepang.com': false,
-  'security@patepang.com': false,
+  // Confirmed by the owner on 4 November 2026; the domain's mail is hosted by Zoho Mail (its MX
+  // and SPF records).
+  'halo@patepang.com': true,
+  'security@patepang.com': true,
 };
 
 /** The addresses the site shows that the owner has not confirmed yet. */
