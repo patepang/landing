@@ -3,6 +3,8 @@ import { join } from 'node:path';
 
 import { expect, test, type Page } from '@playwright/test';
 
+import { sitePages } from '../src/content/pages';
+
 import { openWithBrowserSetting } from './browser-settings';
 import { openLanding } from './helpers';
 
@@ -43,6 +45,38 @@ for (const width of [360, 390, 768, 1440]) {
       await context.close();
     });
   }
+}
+
+/*
+ * The other pages, at a phone's and a desktop's width, light and dark: the whole page as JPEG in
+ * docs/screenshots/pages/, named after the address (kebijakan-privasi-390-dark.jpg).
+ */
+const pagesDir = join(dir, 'pages');
+mkdirSync(pagesDir, { recursive: true });
+
+for (const entry of sitePages) {
+  test(`page ${entry.path} at 390 and 1440px, light and dark`, async ({ browser, baseURL }) => {
+    for (const width of [390, 1440]) {
+      for (const colorScheme of ['light', 'dark'] as const) {
+        const context = await browser.newContext({
+          baseURL,
+          colorScheme,
+          reducedMotion: 'reduce',
+          viewport: { width, height: width >= 1024 ? 900 : 844 },
+        });
+        const page = await context.newPage();
+        await openLanding(page, entry.path);
+        await page.screenshot({
+          path: join(pagesDir, `${entry.path.slice(1)}-${String(width)}-${colorScheme}.jpg`),
+          fullPage: true,
+          type: 'jpeg',
+          quality: 70,
+          scale: 'css',
+        });
+        await context.close();
+      }
+    }
+  });
 }
 
 test('tempel walk-through, each step, full and reduced motion', async ({ browser, baseURL }) => {
@@ -93,6 +127,7 @@ test('real 200% browser zoom and 200% text size', async () => {
     '#cara-kerja',
     '#fitur',
     '#cerita',
+    '#harga',
     '#tanya-jawab',
     '#unduh',
   ];
