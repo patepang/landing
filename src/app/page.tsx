@@ -2,6 +2,7 @@ import { Ajakan } from '@/components/sections/Ajakan';
 import { CaraKerja } from '@/components/sections/CaraKerja';
 import { Cerita } from '@/components/sections/Cerita';
 import { Fitur } from '@/components/sections/Fitur';
+import { Harga } from '@/components/sections/Harga';
 import { Hero } from '@/components/sections/Hero';
 import { Masalah } from '@/components/sections/Masalah';
 import { TanyaJawab } from '@/components/sections/TanyaJawab';
@@ -10,7 +11,8 @@ import { SiteHeader } from '@/components/site/SiteHeader';
 
 /**
  * The whole landing, read top to bottom: what Patepang is, the problem, how it works, what it
- * does after a meeting, situations it is made for, questions, and how to start.
+ * does after a meeting, situations it is made for, what it costs, questions, and when and where to
+ * get it.
  */
 export default function HomePage() {
   return (
@@ -31,6 +33,7 @@ export default function HomePage() {
         <CaraKerja />
         <Fitur />
         <Cerita />
+        <Harga />
         <TanyaJawab />
         <Ajakan />
       </main>

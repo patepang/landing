@@ -1,0 +1,113 @@
+/*
+ * Prices: the heading says the one thing to know, and the two plans stand side by side with their
+ * rows level, on the page's own surfaces. Neither plan is dressed up: the subscription is room,
+ * not a better Patepang.
+ */
+.section {
+  padding-block: var(--space-section);
+  border-top: var(--border-hairline) solid var(--color-border-subtle);
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-10);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+  max-width: var(--content-reading);
+}
+
+/* Where the details live: a link with a whole 48px target, its label level with the text. */
+.more {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-target);
+  margin-top: calc(-1 * var(--space-2));
+  font-size: var(--type-label-size);
+  line-height: var(--type-label-line);
+  font-weight: var(--weight-semibold);
+  text-underline-offset: 0.25em;
+}
+
+/*
+ * One plan under the other on phones; side by side from 37.5em, each plan's rows on the shared
+ * rows of the grid (subgrid), so "Ruang media di server" stands level in both.
+ */
+.plans {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+}
+
+.plan {
+  display: grid;
+  align-content: start;
+  gap: var(--space-2);
+  padding: var(--space-6);
+  border: var(--border-hairline) solid var(--color-border-subtle);
+  border-radius: var(--shape-card);
+  background: var(--color-surface-raised);
+  box-shadow: var(--elevation-raised);
+}
+
+.price {
+  margin-top: var(--space-2);
+}
+
+/* The amount in the title-large step. */
+.amount {
+  font-size: var(--type-title-large-size);
+  line-height: var(--type-title-large-line);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--type-title-large-tracking);
+}
+
+/* Each row: what it is, then the plan's value, over a hairline. */
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+  padding-top: var(--space-3);
+  border-top: var(--border-hairline) solid var(--color-border-subtle);
+}
+
+.row dd {
+  margin: 0;
+}
+
+@media (min-width: 37.5em) {
+  .plans {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(6, auto);
+    column-gap: var(--space-4);
+    row-gap: 0;
+  }
+
+  .plan {
+    grid-row: span 6;
+    grid-template-rows: subgrid;
+    row-gap: var(--space-2);
+  }
+}
+
+/* From 64em: the heading on the left of the 12-column grid, the plans on the right. */
+@media (min-width: 64em) {
+  .grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--space-8);
+    align-items: start;
+  }
+
+  .header {
+    grid-column: 1 / span 5;
+  }
+
+  .plans {
+    grid-column: 7 / span 6;
+  }
+}
