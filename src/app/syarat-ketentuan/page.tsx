@@ -41,7 +41,7 @@ const sections: DocSection[] = [
     title: 'Siapa yang boleh memakai Patepang',
     body: (
       <ul>
-        <li>Kamu berumur 18 tahun ke atas dan cakap melakukan perjanjian menurut hukum.</li>
+        <li>Kamu berumur 18 tahun ke atas.</li>
         <li>Satu orang memakai satu akun, dengan paling banyak 3 perangkat aktif.</li>
         <li>
           Kamu tidak sedang dilarang memakai Patepang karena pelanggaran sebelumnya, kecuali
