@@ -1,5 +1,5 @@
 import { DocPage, type DocSection } from '@/components/doc/DocPage';
-import { Entity, Mail, Placeholder } from '@/components/doc/parts';
+import { Entity, Mail, Placeholder, Registration } from '@/components/doc/parts';
 import { pageMetadata } from '@/content/metadata';
 import { pageAt } from '@/content/pages';
 import { released } from '@/content/status';
@@ -63,9 +63,8 @@ const sections: DocSection[] = [
       <>
         <p>
           Patepang dikelola oleh <Entity field="name" />, beralamat di <Entity field="address" />,
-          dengan nomor pendaftaran <Entity field="registration" />. Dalam kebijakan ini,
-          &ldquo;kami&rdquo; berarti badan itu. Kami adalah pengendali data pribadi untuk data yang
-          diproses server Patepang.
+          terdaftar dengan <Registration />. Dalam kebijakan ini, &ldquo;kami&rdquo; berarti badan
+          itu. Kami adalah pengendali data pribadi untuk data yang diproses server Patepang.
         </p>
         <p>
           Kebijakan ini berlaku untuk aplikasi Patepang dan situs patepang.com.

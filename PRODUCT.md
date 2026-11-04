@@ -107,9 +107,11 @@ menjawab pertanyaan sesudahnya, termasuk yang diminta hukum dan toko aplikasi.
 - **Sudah diputuskan (app ADR 0060):** harga Rp49.000 per bulan atau Rp499.000 per tahun, masa
   coba 14 hari, semua fitur gratis (B21, B22); Indonesia dulu, 18+ (B34); kontak `halo@` dan
   `security@`, halaman `/kebijakan` dan `/ketentuan` (B32); lisensi AGPL-3.0-only (B33).
-- **Belum diputuskan atau belum diberikan:** tautan toko dan tanggal rilis, kota awal, entitas
-  hukum (nama, alamat, NIB/PSE), pejabat pelindungan data, hasil tinjauan penasihat hukum, dan
-  simbol logo final.
+- **Entitas hukum (diberikan pemilik 4 November 2026):** PT Pakuan Teknologi Pangrango, perseroan
+  perorangan yang disahkan Menteri Hukum pada 28 Oktober 2026, berkantor di Kabupaten Bogor, NIB
+  2810260094182. Pendaftaran PSE menyusul sebelum peluncuran.
+- **Belum diputuskan atau belum diberikan:** tautan toko dan tanggal rilis, kota awal, hasil
+  tinjauan penasihat hukum, dan simbol logo final.
 - **Boleh dijelaskan sebagai fakta rancangan, bukan jaminan:** isi dikunci di HP sebelum dikirim
   dan server tidak bisa membacanya; server tidak menyimpan alamat IP. Yang diketahui server
   (siapa tempel dengan siapa dan kapan, keanggotaan grup, penjaga) disebut terus terang.

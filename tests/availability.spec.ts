@@ -16,6 +16,7 @@ const otherState =
     ? [
         'belum diluncurkan',
         'setelah patepang diluncurkan',
+        'menyusul sebelum patepang diluncurkan',
         'belum berjalan',
         'belum diaudit',
         'belum terbuka untuk umum',

@@ -194,19 +194,35 @@ test('the contents fold away on phones and stand beside the text on wide screens
   await wide.context.close();
 });
 
-test('missing facts stand as marked placeholders, never as made-up text', async ({ page }) => {
+test('the company behind Patepang is named from its papers, and open facts stay marked', async ({
+  page,
+}) => {
   await openLanding(page, '/kebijakan-privasi');
+  const who = page.locator('section[aria-labelledby="siapa-kami"]');
+  await expect(who).toContainText('Patepang dikelola oleh PT Pakuan Teknologi Pangrango');
+  await expect(who).toContainText('Kabupaten Bogor, Jawa Barat 16620');
+  await expect(who).toContainText('terdaftar dengan NIB 2810260094182');
+  await expect(who).toContainText(
+    'Pejabat pelindungan data pribadi: direktur perseroan, lewat alamat surel yang sama.',
+  );
+  // Not registered as an electronic system operator yet: the page says so instead of a number.
+  await expect(who).toContainText('pendaftaran PSE menyusul sebelum Patepang diluncurkan');
   const placeholders = await page
     .locator('main [data-placeholder]')
     .evaluateAll((spans) => spans.map((span) => span.textContent));
-  for (const fact of [
+  // The entity is no longer a placeholder anywhere on the page...
+  for (const filled of [
     '[Nama badan hukum]',
     '[Alamat]',
     '[NIB/PSE]',
     '[Nama atau jabatan pejabatnya]',
   ]) {
-    expect(placeholders).toContain(fact);
+    expect(placeholders).not.toContain(filled);
   }
+  // ...while facts nobody has decided yet still stand marked, never as made-up text.
+  expect(placeholders).toContain(
+    '[Cara membuktikan pemilik akun untuk permintaan lewat surel: menunggu keputusan]',
+  );
 });
 
 test('a page in force explains its brackets exactly while it holds one', async ({ page }) => {

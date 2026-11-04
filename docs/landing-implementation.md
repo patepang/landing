@@ -882,7 +882,6 @@ lewat musyawarah lalu BPSK atau pengadilan, bahasa Indonesia yang berlaku, dan k
 
 | Placeholder | Di mana | Diisi oleh |
 |---|---|---|
-| `[Nama badan hukum]`, `[Alamat]`, `[NIB/PSE]`, `[Petugas pelindungan data]`, `[Pengadilan negeri yang dipilih]` | Privasi, syarat, hapus akun, kontak, tentang | Pemilik, di `src/content/entity.ts` |
 | Dasar transfer menurut Pasal 56 UU PDP | Privasi §9 | Penasihat hukum |
 | Cara memverifikasi permintaan lewat surel; cara meminta penghapusan tanpa aplikasi | Privasi §10, hapus akun | Pemilik (proses belum ada: `fakta-data` §8.6) |
 | Hak penghapusan bagi akun yang diblokir | Hapus akun | Penasihat hukum (`fakta-data` §8.1, FLAG) |
@@ -992,8 +991,10 @@ tetap di-commit. Tes walk-through di `tests/screenshots.spec.ts` kini menunggu f
 
 ### 9.9 Yang harus dilakukan pemilik
 
-1. **Entitas**: isi `src/content/entity.ts` (nama badan hukum, alamat, NIB dan pendaftaran PSE,
-   pejabat pelindungan data, pengadilan negeri). Placeholder di semua halaman ikut terisi.
+1. **Entitas**: sudah diisi di `src/content/entity.ts` pada 4 November 2026 dari NIB, keputusan
+   pengesahan Menteri Hukum, surat pernyataan pendirian, dan kartu NPWP perseroan (lihat §9.11).
+   Yang tersisa untuk pemilik: mendaftar PSE lewat OSS sebelum peluncuran lalu mengisi nomornya di
+   `pse`, dan menunjuk pejabat pelindungan data secara tertulis (sementara: direktur perseroan).
 2. **Kotak surat**: buat `halo@patepang.com` dan `security@patepang.com`, lalu tandai keduanya
    `true` di `confirmed` (`src/content/contact.ts`); build produksi berhenti sampai itu dilakukan
    (§10.2). Bila `privasi@` atau `hukum@` diinginkan, buat kotaknya, arahkan `privacy` atau
@@ -1030,6 +1031,29 @@ tetap di-commit. Tes walk-through di `tests/screenshots.spec.ts` kini menunggu f
 - Header `vercel.json` hanya diuji lewat server lokal yang menirunya, bukan di Vercel. Di
   deployment pratinjau, Vercel Toolbar (skrip dari `vercel.live`) akan ditolak CSP; situsnya tetap
   berjalan. Matikan toolbar di pengaturan proyek, atau abaikan error konsolnya di pratinjau.
+
+### 9.11 Data entitas (4 November 2026)
+
+Pemilik memberikan empat dokumen perseroan: NIB dari OSS (terbit 28 Oktober 2026), Keputusan
+Menteri Hukum AHU-A135058.AH.01.30.Tahun 2026 tentang pengesahan pendirian badan hukum perseroan
+perorangan (28 Oktober 2026), surat pernyataan pendirian, dan kartu NPWP perseroan. Dokumennya
+tidak disalin ke repo.
+
+| Kolom `entity.ts` | Nilai | Sumber dan alasan |
+|---|---|---|
+| `name` | PT Pakuan Teknologi Pangrango | Nama di NIB dan kartu NPWP perseroan |
+| `address` | Jl. Cihideung Udik RT 004/RW 009, Desa Cihideung Udik, Kecamatan Ciampea, Kabupaten Bogor, Jawa Barat 16620, Indonesia | Alamat perseroan di surat pernyataan pendirian dan NIB (kantor terdaftar, bukan alamat pribadi pendiri) |
+| `registration`, `pse` | NIB 2810260094182; `pse` kosong | NIB; PSE belum didaftarkan (rencana pemilik: saat peluncuran). Sebelum peluncuran halaman privasi berkata pendaftaran PSE menyusul; setelah sakelar ketersediaan dibalik, nomor yang belum diisi menjadi placeholder `[Nomor tanda daftar PSE]`, dan tes keadaan lain menolak kalimat "menyusul" (`Registration` di `src/components/doc/parts.tsx`) |
+| `dpo` | Direktur perseroan, lewat `privasi@patepang.com` | Perseroan perorangan hanya punya satu direktur; perannya disebut, orangnya tidak. Penunjukan tertulis tetap tugas pemilik |
+| `court` | Pengadilan Negeri Cibinong | Pengadilan negeri untuk Kabupaten Bogor, tempat kedudukan perseroan; kalimatnya tetap menjaga hak konsumen menurut hukum acara |
+
+Yang sengaja **tidak** dimuat: nama, NIK, tanggal lahir, alamat rumah, dan NPWP pribadi pendiri;
+nomor telepon di NIB (orang menghubungi lewat alamat surel di `contact.ts`); NPWP perseroan dan
+modal usaha (tidak diperlukan halaman mana pun). Footer kini menulis "© 2026 PT Pakuan Teknologi
+Pangrango". Pemberitahuan draf tidak lagi mencontohkan `[Nama badan hukum]`; contohnya kini
+"[seperti ini]", karena entitas bukan lagi placeholder. Tes `pages.spec.ts` memeriksa nama, alamat,
+NIB, kalimat PSE, dan peran pejabat pelindungan data di halaman privasi, dan bahwa fakta yang belum
+diputuskan tetap bertanda.
 
 ## 10. Koreksi setelah tinjauan (4 November 2026)
 

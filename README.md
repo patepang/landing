@@ -86,11 +86,13 @@ kotak surat sendiri, permintaan data pribadi dan urusan hukum diarahkan ke `halo
 
 ## Yang harus diisi pemilik
 
-Placeholder bertanda kurung siku (misalnya `[Nama badan hukum]`) tampil di halaman sampai datanya
-diisi:
+Placeholder bertanda kurung siku tampil di halaman sampai datanya diisi:
 
-- `src/content/entity.ts`: nama badan hukum, alamat, NIB/PSE, pejabat pelindungan data, dan
-  pengadilan negeri untuk sengketa.
+- `src/content/entity.ts`: **sudah diisi** (4 November 2026) dari dokumen perseroan yang diberikan
+  pemilik: PT Pakuan Teknologi Pangrango, kantor terdaftar di Kabupaten Bogor, NIB 2810260094182,
+  pejabat pelindungan data sebagai peran (direktur perseroan), dan Pengadilan Negeri Cibinong.
+  Data pribadi pendiri dan nomor telepon di NIB sengaja tidak dimuat. Pendaftaran PSE menyusul
+  sebelum peluncuran; halaman menyebutnya begitu.
 - `src/content/contact.ts`: alamat surel. Buat kotak suratnya sebelum produksi.
 - Placeholder lain (fakta yang belum dikonfirmasi, misalnya retensi log Vercel) ada di teks
   halamannya; daftarnya di `docs/landing-implementation.md` §9.

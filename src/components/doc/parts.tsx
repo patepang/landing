@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 
 import { contact, type ContactKey } from '@/content/contact';
 import { entity, entityPlaceholder } from '@/content/entity';
+import { released } from '@/content/status';
 
 import styles from './parts.module.css';
 
@@ -34,6 +35,31 @@ export function SectionDraft({ children }: { children: ReactNode }) {
 export function Entity({ field }: { field: keyof typeof entity }) {
   const value = entity[field];
   return value ?? <Placeholder>{entityPlaceholder[field]}</Placeholder>;
+}
+
+/**
+ * The company's registrations in one phrase: its NIB, then its registration as an electronic
+ * system operator (PSE). Before launch a PSE number not made yet is said to follow; once the site
+ * says Patepang is out, a missing one is a marked placeholder, so a launched page never promises
+ * what should already be done.
+ */
+export function Registration() {
+  if (entity.pse !== null) {
+    return (
+      <>
+        <Entity field="registration" />, tanda daftar PSE {entity.pse}
+      </>
+    );
+  }
+  return released ? (
+    <>
+      <Entity field="registration" />, tanda daftar PSE <Entity field="pse" />
+    </>
+  ) : (
+    <>
+      <Entity field="registration" /> (pendaftaran PSE menyusul sebelum Patepang diluncurkan)
+    </>
+  );
 }
 
 /** One of the site's addresses as a mailto link, inside a sentence. */
