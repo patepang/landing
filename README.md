@@ -67,8 +67,22 @@ export const availability: Availability = {
 };
 ```
 
-Semua kata yang bergantung padanya ada di `src/content/status-copy.ts`. Jalankan `pnpm check`,
-lalu periksa pratinjau Vercel sebelum menggabungkan ke `main`.
+Kata-kata yang dipakai bersama ada di `src/content/status-copy.ts`; halaman yang kalimatnya
+sendiri bergantung pada peluncuran (kebijakan privasi, syarat, indeks kebijakan, keamanan,
+transparansi, tentang, lisensi) membaca `released` dan menulis kedua keadaannya. `pnpm
+test:tersedia` membaca setiap halaman build keadaan tersedia dan gagal bila masih ada kata keadaan
+lain ("belum diluncurkan", "segera hadir", dan seterusnya); `pnpm test:e2e` memeriksa arah
+sebaliknya. Di keadaan tersedia, dua placeholder muncul dan harus diisi saat peluncuran: ringkasan
+hasil audit di `/keamanan` dan alamat kode sumber di `/lisensi`. Jalankan `pnpm check`, lalu
+periksa pratinjau Vercel sebelum menggabungkan ke `main`.
+
+## Gerbang produksi
+
+Build produksi Vercel (`VERCEL_ENV=production`, yaitu build `main`) berhenti selama ada alamat
+surel di `src/content/contact.ts` yang belum ditandai `confirmed`. Vercel lalu tetap menayangkan
+deployment sebelumnya. Buat kotak suratnya, pastikan surel masuk, lalu ubah tandanya menjadi
+`true`. Build pratinjau dan lokal tidak dihentikan. Sampai pemilik memberi `privasi@` dan `hukum@`
+kotak surat sendiri, permintaan data pribadi dan urusan hukum diarahkan ke `halo@`.
 
 ## Yang harus diisi pemilik
 

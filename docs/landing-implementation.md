@@ -790,11 +790,11 @@ desainnya diganti inferensi dari brief, `PRODUCT.md`, dan `DESIGN.md`. Mode hala
 | `/syarat-ketentuan` | Syarat dan ketentuan, 15 bagian bernomor | Ya |
 | `/ketentuan` | Redirect 308 ke `/syarat-ketentuan` (alamat yang diputuskan B32) | |
 | `/pedoman-komunitas` | Larangan dengan 8 kategori laporan, cara melapor, yang dilihat dan tidak dilihat moderator, sanksi 7/30 hari dan blokir dengan moderator kedua, banding | Ya |
-| `/keamanan` | Cara Patepang melindungi orang, batasnya, keadaan audit, pengungkapan kerentanan, safe harbour, ringkasan bahasa Inggris | Ya |
+| `/keamanan` | Cara Patepang melindungi orang, batasnya, keadaan audit, pengungkapan kerentanan, safe harbour, ringkasan bahasa Inggris | Hanya safe harbour (§10.2) |
 | `/transparansi` | Berkas publik dan laporan setengah tahunan yang akan terbit; yang bisa dan tidak bisa diberikan atas permintaan aparat | Ya |
-| `/hapus-akun` | Langkah di aplikasi, yang dihapus dan kapan, yang tersisa, tanpa aplikasi, akun diblokir (halaman yang diminta Google Play) | |
+| `/hapus-akun` | Langkah di aplikasi, yang dihapus dan kapan, yang tersisa, tanpa aplikasi, akun diblokir (halaman yang diminta Google Play; jalur penghapusan tanpa aplikasi yang juga diminta Google Play belum ada, §10.3) | |
 | `/langganan` | Paket, masa coba, pembayaran lewat toko, berhenti, pengembalian dana, masa tenggang, melebihi kuota, bonus pertemuan kedua, tip | Ya |
-| `/kontak` | `halo@`, `privasi@`, `security@`, `hukum@` sebagai tautan surel; tanpa formulir | |
+| `/kontak` | `halo@` (bantuan, data pribadi, urusan hukum) dan `security@` sebagai tautan surel, satu kartu per alamat; tanpa formulir (§10.2) | |
 | `/tentang` | Siapa yang membangun, prinsip, keadaan sekarang | |
 | `/lisensi` | AGPL-3.0-only, rencana membuka kode, perangkat lunak pihak ketiga situs ini | |
 | `/.well-known/security.txt` | RFC 9116: Contact, Expires, Preferred-Languages, Canonical, Policy | |
@@ -893,6 +893,13 @@ lewat musyawarah lalu BPSK atau pengadilan, bahasa Indonesia yang berlaku, dan k
 | Target waktu peninjauan laporan; penanganan konten seksual anak dan pelaporan ke pihak berwenang | Pedoman komunitas | Pemilik dan penasihat hukum |
 | Kebijakan tertulis untuk permintaan aparat dan pemberitahuan kepada pengguna | Transparansi | Pemilik dan penasihat hukum |
 | Daftar pemberitahuan pihak ketiga untuk aplikasi | Lisensi | Pemilik |
+| Perjanjian pemrosesan data dengan setiap penyedia; retensi log dan Security Events Cloudflare; apakah SDK Firebase mengirim data pengiriman notifikasi | Privasi §4.8, §8; hapus akun | Pemilik dan penasihat hukum (§10.3) |
+| Cara menghapus token notifikasi dari server saat izin dicabut; cara meminta salinan data server; cara membuktikan pemilik akun lewat surel; proses dan batas waktu menjawab permintaan | Privasi §4.8, §10; kontak | Pemilik (proses dan rutenya belum ada, §10.3) |
+| Cara meninjau keberatan atas keputusan otomatis (Pasal 10 UU PDP) | Privasi §11 | Penasihat hukum |
+| Saluran pemberitahuan di dalam aplikasi (kebocoran, perubahan kebijakan dan syarat, layanan berhenti) | Privasi §14, §16; syarat §8, §15 | Pemilik dan penasihat hukum (saluran belum ada, §10.3) |
+| Langkah persetujuan syarat di aplikasi dan pencatatan versinya | Syarat §1, §15 | Pemilik (langkahnya belum ada, §10.3) |
+| Alat pembuka dan format berkas ekspor untuk umum | Privasi §10 | Pemilik (terbit bersama kode inti) |
+| Ringkasan hasil audit; alamat kode sumber | Keamanan, lisensi (hanya di keadaan tersedia) | Pemilik, saat peluncuran |
 
 ### 9.5 Teknis
 
@@ -987,18 +994,23 @@ tetap di-commit. Tes walk-through di `tests/screenshots.spec.ts` kini menunggu f
 
 1. **Entitas**: isi `src/content/entity.ts` (nama badan hukum, alamat, NIB dan pendaftaran PSE,
    pejabat pelindungan data, pengadilan negeri). Placeholder di semua halaman ikut terisi.
-2. **Kotak surat**: buat `halo@patepang.com`, `privasi@patepang.com`, `security@patepang.com`, dan
-   `hukum@patepang.com` sebelum produksi, atau ubah `src/content/contact.ts` bila `privasi@` dan
-   `hukum@` tidak diinginkan.
+2. **Kotak surat**: buat `halo@patepang.com` dan `security@patepang.com`, lalu tandai keduanya
+   `true` di `confirmed` (`src/content/contact.ts`); build produksi berhenti sampai itu dilakukan
+   (§10.2). Bila `privasi@` atau `hukum@` diinginkan, buat kotaknya, arahkan `privacy` atau
+   `legal` ke sana, dan tandai juga.
 3. **Tinjauan penasihat hukum** atas kebijakan privasi, syarat dan ketentuan, pedoman komunitas,
    langganan, keamanan (safe harbour), dan transparansi, termasuk placeholder bagian hukum di §9.4.
    Setelah itu, ubah `draft` menjadi `false` di `src/content/pages.ts` dan perbarui `updated`.
 4. **Keputusan terbuka**: pemeriksaan pembaruan Expo (ungkapkan atau matikan), proses
    permintaan data lewat surel, penghapusan untuk akun yang diblokir, kebijakan permintaan aparat,
-   penyedia surel dan halaman status, `preload` HSTS.
+   penyedia surel dan halaman status, `preload` HSTS. Penghalang rilis yang baru ditemukan, dan
+   yang harus dibangun di aplikasi atau server sebelum peluncuran, ada di §10.3.
 5. **Membalik ketersediaan** saat kedua toko sudah menayangkan Patepang: isi
-   `src/content/availability.ts` (README, "Sakelar ketersediaan"), jalankan `pnpm check`, periksa
-   pratinjau Vercel, lalu gabungkan. Opsional: ganti tombol toko dengan lencana resmi.
+   `src/content/availability.ts` (README, "Sakelar ketersediaan"), isi dua placeholder yang baru
+   muncul di keadaan itu (ringkasan hasil audit di `/keamanan`, alamat kode sumber di `/lisensi`),
+   periksa ulang pernyataan yang bergantung pada fitur di §10.4, jalankan `pnpm check` (tesnya
+   membaca setiap halaman untuk kata keadaan lain), periksa pratinjau Vercel, lalu gabungkan.
+   Opsional: ganti tombol toko dengan lencana resmi.
 6. **Produksi Vercel**: cabang ini belum di-push; koordinator mendorong cabang pratinjau. Setelah
    pratinjau diperiksa dan poin 1 sampai 3 beres, gabungkan ke `main` (yang langsung tayang).
    Pastikan juga domain `patepang.com` tersambung ke proyek Vercel, dan header `vercel.json`
@@ -1018,3 +1030,119 @@ tetap di-commit. Tes walk-through di `tests/screenshots.spec.ts` kini menunggu f
 - Header `vercel.json` hanya diuji lewat server lokal yang menirunya, bukan di Vercel. Di
   deployment pratinjau, Vercel Toolbar (skrip dari `vercel.live`) akan ditolak CSP; situsnya tetap
   berjalan. Matikan toolbar di pengaturan proyek, atau abaikan error konsolnya di pratinjau.
+
+## 10. Koreksi setelah tinjauan (4 November 2026)
+
+Tinjauan hukum dan isi atas cabang ini menemukan 43 hal (LGL-01 sampai LGL-28, tanpa LGL-16, dan
+LND-01 sampai LND-16). Semua diperiksa ulang ke sumbernya (spesifikasi dan ADR backend, kode dan
+ADR aplikasi dan inti) sebelum diperbaiki. Lembar fakta `fakta-data.md` dan `fakta-produk.md` di
+luar repo ikut dikoreksi di tempat yang ternyata salah.
+
+### 10.1 Yang diubah di halaman
+
+| Temuan | Halaman | Perubahan |
+|---|---|---|
+| LGL-01, LND-08 | Pedoman, privasi §4.10 | Laporan di aplikasi sekarang: pelapor memilih bahasa isinya, isinya disegel untuk moderator. Kategori dan catatan 500 karakter ditandai menyusul (inti dan aplikasi M.11 belum tergabung). Delapan kategori tetap sebagai larangan, karena moderator memutuskan dengan kode alasan yang sama (spesifikasi backend §3.8) |
+| LGL-02 | Privasi ringkasan, §4.3, §4.5, §8; keamanan | Cloudflare membuka TLS dan melihat setiap permintaan kecuali isi terenkripsi: token masuk, id akun, penerima dan token setiap pesan, kunci media. Bisa menghubungkan HP dengan akun, pengirim dengan penerima, dan pengunggah dengan pengunduh lewat alamat IP. "Pengirim tidak diketahui" dan unduhan anonim kini berlaku untuk server Patepang saja. Placeholder retensi log Cloudflare |
+| LGL-03 | Hapus akun | Klaim kepatuhan Google Play dihapus dari komentar; halaman berkata terus terang bahwa cara meminta penghapusan tanpa aplikasi belum ada. Penghalang rilis (§10.3) |
+| LGL-04 | Transparansi | Pengenal acak langganan dan token notifikasi masuk daftar data server, dengan kalimat bahwa Apple atau Google bisa menghubungkannya dengan orangnya. "Lokasi" menjadi "lokasi HP (GPS)"; kota daftar tunggu dan kota titik lahir disebut |
+| LGL-05 | Privasi §5, pedoman | Laporan sampai 30 hari sejak isi tiba di HP, walaupun pengirimnya menghapusnya; "foto sekali lihat" dihapus |
+| LGL-06, LND-12 | Privasi §4.3; keamanan; transparansi | Pengecualian pengirim tersegel: pesan pertama setelah tempel (20 dalam 24 jam) terikat pada tempelnya; memutus koneksi di hari bertemu bisa disimpulkan server |
+| LGL-07 | Privasi §4.2; keamanan | Batas tempel: dua HP digoyang bersama atau dua orang sengaja bekerja sama dari jauh; tuan rumah ruang bisa memasukkan orang yang tidak hadir; penjaga bisa dibujuk melakukan tempel pemulihan dari jauh |
+| LGL-08 | Privasi §4.7, §5; keamanan | Dua penjaga yang bersekongkol, dengan aplikasi yang diubah, bisa membuka cadangan tanpa pemulihan; saran memilih penjaga |
+| LGL-09, LND-11 | Privasi §10, §11 | Daftar keputusan otomatis (hapus akun belum lahir dan tidak aktif, hapus media lewat kuota, penolakan atestasi, akhir hak sponsor, ambang goyangan), cara mengajukan keberatan, placeholder Pasal 10 untuk penasihat hukum |
+| LGL-10 | Privasi §8 | Kalimat perjanjian pemroses (atas perintah kami, perlindungan setara), dengan placeholder bahwa perjanjiannya belum ada |
+| LGL-11 | Transparansi | Isi laporan setengah tahunan menurut yang memang dijumlahkan server: laporan per bahasa, keputusan, banding, permintaan aparat, insiden, perubahan kebijakan yang dipaksakan |
+| LGL-12 | Privasi ringkasan; keamanan | Tidak ada log masuk, riwayat pemakaian, atau riwayat IP; tetapi riwayat tempel sampai menit, tanggal perangkat, dan waktu publik perubahan kunci disimpan |
+| LGL-13 | Privasi §14, §16; syarat §1, §8, §15 | Pemberitahuan lewat halaman status dan situs; saluran di dalam aplikasi menjadi placeholder |
+| LGL-14 | Syarat §1, §15 | Persetujuan terjadi saat menyatakan setuju di aplikasi; langkahnya belum ada (placeholder, penghalang rilis) |
+| LGL-15, LND-06 | Privasi §4.8, §10 | Mematikan notifikasi di HP tidak menghapus token dari server; izin OS tidak lagi disebut sebagai penarikan persetujuan; placeholder rute hapus token |
+| LGL-17 | Privasi §7 | Baris baru: perangkat dan token notifikasi, token masuk, token tempel, keanggotaan grup dan penjaga, kasus moderasi, penghitung batas akun. Akun belum lahir: entri log transparansi kuncinya permanen |
+| LGL-18 | Privasi ringkasan, §12 | "Server tidak pernah menerima ... dalam bentuk yang bisa dibacanya"; nama panggilan tinggal di HP dan dikirim terenkripsi; ulang tahun pilihan |
+| LGL-19 | Privasi §4.2 | Server tidak menerima lokasi HP, tetapi tahu kota untuk tempel di titik lahir |
+| LGL-20 | Langganan | Media pesan, grup, dan ruang ikut memakai ruang selama disimpan; ruang penuh juga menahan foto di pesan; isi baris langganan lengkap |
+| LGL-21, LND-14 | Hapus akun | Berkas media dihapus mulai seperempat jam setelah jam itu berakhir, biasanya dalam dua jam |
+| LGL-22, LND-03 | Privasi §3, §4.4, §5, §8; syarat §5 | Yang keluar terbuka atas tindakanmu (Simpan bukti, .ics, nama tempat ke aplikasi peta); isi grup ada di server sebagai data terenkripsi; batas penghapusan (amplop belum diambil, cadangan) |
+| LGL-23 | Pedoman, syarat, keamanan | Kunci darurat: dari perangkat yang masih dipegang, perangkat lain dikeluarkan, penautan, perubahan penjaga, dan pemulihan ditolak 72 jam; kotak masuk tetap menerima |
+| LGL-24 | Privasi §7, §11; syarat §3 | Pengingat tidak aktif lewat notifikasi, bila diizinkan |
+| LGL-25 | Hapus akun | Situs tanpa cookie, tetapi Vercel mencatat permintaan dan surel disimpan |
+| LGL-26, LND-13 | Privasi §4.8, §4.11, §8, §9; hapus akun; keamanan | Bit DeviceCheck dan device recall di Apple dan Google (bertahan setelah akun dihapus), SDK Firebase (placeholder metrik), Pub/Sub, Expo dan Vercel di batas keamanan, Vercel dan penyedia surel di transfer |
+| LGL-27, LND-11 | Privasi ringkasan, §10 | Ekspor hanya berisi data HP; disebut arsip JSON terenkripsi, bukan "format terbuka"; janji batas waktu diganti placeholder proses |
+| LGL-28 | Keamanan | Tanpa "semuanya sudah ada di kode"; batas mode perjalanan (jumlah koneksi masih bisa dihitung) |
+| LND-01 | Privasi, syarat, indeks, keamanan, transparansi, tentang, lisensi | Kalimat yang bergantung pada peluncuran membaca `released`; tes membaca setiap halaman kedua keadaan |
+| LND-02 | Tanya jawab; privasi §5 | "Server Patepang tidak bisa membacanya", lalu kapan isi terbaca orang lain (laporan, bukti) |
+| LND-04 | Kontak; privasi §10 | Tidak lagi meminta id akun (aplikasi tidak menampilkannya); placeholder pembuktian pemilik akun |
+| LND-05 | Harga; langganan | "5 GB, ditambah 500 MB ... (bonus paling banyak 10 GB, jadi total paling banyak 15 GB)" |
+| LND-07 | Keamanan; daftar halaman | Halaman berlaku; safe harbour bertanda belum berlaku dalam bahasa Indonesia dan Inggris |
+| LND-08 | Langganan; Harga; privasi §4.5 | Berkas di atas 64 MB, kabar dengan foto, momen bersama, stiker, foto profil, album ruang: menyusul |
+| LND-09 | Kontak; `contact.ts`; `next.config.ts` | `privacy` dan `legal` ke `halo@`; tanda `confirmed` per alamat; build produksi berhenti selama ada yang belum dikonfirmasi |
+| LND-10 | Syarat; hapus akun; pedoman | Kecuali akun yang diblokir; HP orang lain tahu akun berakhir dan salinannya tetap; sanksi konten seksual anak tidak ditetapkan sendiri |
+| LND-14 | Transparansi, indeks, tentang, daftar halaman, `entity.ts` | "Setelah Patepang diluncurkan", "sidik (measurement)", Rekor memeriksa berkas rilis, "berlaku bersama setelah ditinjau", judul "Tentang", "akan diaudit"; placeholder pejabat pelindungan data kini "[Nama atau jabatan pejabatnya]", supaya hanya ada satu istilah |
+| LND-15 | `entity.ts`; footer; `DocPage` | Rujukan `legal.ts` diganti; footer membaca `entity.name`; pemberitahuan draf berkata "Bagian yang masih menunggu keputusan ditandai kurung siku"; halaman berlaku yang memuat placeholder menampilkan kalimat yang sama |
+| LND-16 | Fitur; Masalah | "Contoh tampilan, dengan orang dan tempat rekaan." kini sebelum pratinjau pertama (di HP); "Gambar ilustrasi, dengan orang rekaan." di bawah gambar Masalah |
+
+### 10.2 Keputusan
+
+| Hal | Keputusan | Alasan, dan bila dibalik |
+|---|---|---|
+| `/keamanan` | Berlaku (`draft: false`); hanya safe harbour bertanda belum berlaku, di bagiannya sendiri dan di ringkasan Inggris | Tenggat pengungkapan sudah disetujui pemilik (app ADR 0060 B32), dan `security.txt` menunjuk halaman ini sebagai kebijakannya. Bila dibalik: `draft: true` di `pages.ts`, dan kalimat Inggrisnya menyebut seluruh halaman draf |
+| Kotak surat | `privacy` dan `legal` ke `halo@` (B32) sampai pemilik memberi kotak sendiri; `/kontak` satu kartu per alamat; gerbang `VERCEL_ENV=production` di `next.config.ts` | Hanya `halo@` dan `security@` yang diputuskan; tidak ada yang tercatat sudah dibuat. Bila dibalik: arahkan kembali ke `privasi@` dan `hukum@`, dan tambahkan keduanya di `confirmed` |
+| Halaman berlaku dengan placeholder | Kalimat "Bagian yang masih menunggu keputusan ditandai kurung siku, [seperti ini]." tampil hanya bila halaman memuat placeholder (CSS `:has`), dan dites | `/hapus-akun`, `/kontak`, `/tentang`, dan `/lisensi` berlaku tetapi bisa memuat placeholder; pemberitahuan draf tidak tepat untuk mereka |
+| Kalimat yang bergantung pada peluncuran | Dibaca dari `released` di halamannya; di keadaan tersedia, yang belum bisa diketahui sekarang (hasil audit, alamat kode) menjadi placeholder | Situs tidak bisa tahu apakah audit selesai atau kode dibuka; placeholder memaksa pemilik mengisinya saat membalik sakelar |
+| Delapan kategori di pedoman | Tetap, sebagai larangan yang dipakai moderator, bukan pilihan pelapor | Kode alasan keputusan backend memakai delapan kategori yang sama; pilihan pelapor menyusul bersama M.11 |
+
+### 10.3 Penghalang rilis yang ditemukan tinjauan (di luar repo ini)
+
+Halaman tidak bisa menyelesaikannya; masing-masing butuh keputusan, kode aplikasi atau server, atau
+penasihat hukum. Sampai selesai, halamannya berkata terus terang atau memuat placeholder.
+
+1. **Penghapusan tanpa aplikasi (Google Play, LGL-03).** Play meminta jalur untuk meminta
+   penghapusan tanpa memasang ulang aplikasi. Yang ada hanya `POST /v1/me/delete` bertanda tangan
+   perangkat. Pilihan: "kode penghapusan" (entri `revoke_all` yang ditandatangani aplikasi lebih
+   dulu dan disimpan orangnya, diterima lewat formulir web atau surel), atau alur surel dengan aturan
+   verifikasi yang dinyatakan.
+2. **Id akun tidak tampil di aplikasi (LND-04).** Halaman tidak lagi memintanya; bila pembuktian
+   pemilik akun lewat surel akan memakai id akun, aplikasi harus menampilkan dan menyalinnya.
+3. **Saluran pemberitahuan di aplikasi (LGL-13).** Push server hanya punya delapan jenis tanpa
+   pemberitahuan umum, dan tidak ada rute pemberitahuan. Usul: daftar pemberitahuan bertanda tangan
+   yang dibaca aplikasi saat dibuka, atau jenis push `notice` dengan rute bacanya. Pasal 46 UU PDP
+   meminta pemberitahuan tertulis ke orang yang terdampak dalam 3 × 24 jam.
+4. **Langkah persetujuan syarat di onboarding (LGL-14).** Tautkan syarat, pedoman, dan kebijakan
+   privasi, dan simpan versi yang disetujui di HP. Kebijakan konten buatan pengguna Google Play
+   memintanya.
+5. **Rute untuk melupakan token notifikasi (LGL-15).** Aplikasi memanggilnya saat izin notifikasi
+   dicabut.
+6. **Laporan dengan kategori dan catatan (LGL-01).** Inti dan aplikasi M.11 (bukti laporan versi 2)
+   dan konsol moderator M.6 harus tergabung sebelum pedoman berlaku; lalu cocokkan delapan label dan
+   batas 500 karakter dengan lembar aplikasi.
+7. **Perjanjian pemroses (LGL-10)** dengan setiap penyedia, dan catatan perjanjiannya.
+8. **Keputusan otomatis (LGL-09)**: penasihat hukum menilai Pasal 10 UU PDP dan cara meninjau
+   keberatan.
+9. **Pembuka berkas ekspor (LGL-27)** diterbitkan bersama kode inti, atau pembaca di aplikasi.
+10. **Fakta penyedia yang belum dikonfirmasi**: retensi log dan Security Events Cloudflare, metrik
+    pengiriman SDK Firebase.
+
+### 10.4 Pernyataan yang bergantung pada fitur (periksa ulang sebelum membalik sakelar)
+
+- Kategori dan catatan laporan "menyusul" (pedoman, privasi §4.10): hapus tandanya setelah M.11
+  tergabung, lalu cocokkan label dan batas karakternya.
+- Konsol moderator (pedoman): pastikan M.6 tergabung.
+- Kabar dengan foto, momen bersama, stiker, foto profil, album ruang "menyusul" (privasi §4.5,
+  langganan); album grup dan momen bersama di "Bila ruang melebihi kuota".
+- Berkas di atas 64 MB "menyusul" (Harga, langganan): unggah bertahap di inti dan aplikasi.
+- Mode perjalanan: "sampai penguatan berikutnya selesai" (keamanan), setelah B19.
+- Sekali lihat, panggilan, lokasi sementara: tidak disebut sebagai fitur yang ada.
+- Ekspor di HP: ditulis tetapi belum dijalankan di HP (app ADR 0057).
+
+### 10.5 Verifikasi
+
+| Perintah | Hasil |
+|---|---|
+| `pnpm check` | Lulus (exit 0): typecheck, lint (0 peringatan), format, kontras 90 dari 90, `test:tersedia` 4 dari 4, `test:e2e` 75 dari 75 |
+| `VERCEL_ENV=production next build` | Berhenti dengan pesan "the mailboxes halo@patepang.com, security@patepang.com are not confirmed", seperti dirancang |
+| `pnpm screenshots` | 20 dari 20; gambar beranda yang isinya berubah (halaman penuh, jendela zoom 4 dan 6) di-commit; gambar yang hanya berbeda karena waktu animasi dikembalikan |
+
+Tes baru: setiap halaman di kedua keadaan dibaca untuk kata keadaan lain; halaman berlaku menampilkan
+kalimat kurung siku tepat saat memuat placeholder; `/keamanan` berlaku dengan safe harbour bertanda
+belum berlaku; `/kontak` menampilkan setiap alamat sekali dan setiap alamat punya tanda `confirmed`;
+keterangan gambar Masalah tampil.
