@@ -2,12 +2,13 @@
 export const sections = [
   { id: 'cara-kerja', label: 'Cara kerja' },
   { id: 'fitur', label: 'Fitur' },
-  { id: 'cerita', label: 'Cerita' },
+  { id: 'harga', label: 'Harga' },
   { id: 'tanya-jawab', label: 'Tanya jawab' },
 ] as const;
 
 /**
- * Where the header's download action leads: the closing section. It will hold the store links
- * once they exist; until then it says how to start.
+ * The closing section, where the header's action leads: the store links once Patepang is out,
+ * and until then when it will be (src/content/status.ts). The id stays the same in both states,
+ * so links to it keep working when the switch flips.
  */
-export const download = { id: 'unduh', label: 'Unduh Patepang' } as const;
+export const closingId = 'unduh';

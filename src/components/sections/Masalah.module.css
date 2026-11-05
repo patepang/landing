@@ -28,6 +28,11 @@
   background: var(--color-surface-sunken);
 }
 
+/* Under the pictures: they are drawings, and the person in them is made up. */
+.sample {
+  margin-top: var(--space-10);
+}
+
 /*
  * ---- The story ----
  * Narrow screens: the rail runs down the left edge, from the two dots together at the top to the

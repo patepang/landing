@@ -9,8 +9,10 @@ const port = Number(process.env.TEST_PORT ?? 4174);
  * `pnpm screenshots` build first, and the server is always started fresh, so a run can never pass
  * against an older build.
  *
- * Projects: `e2e` holds the assertions; `screenshots` writes the review images to
- * docs/screenshots/ and is run on its own with `pnpm screenshots`.
+ * Projects: `e2e` holds the assertions; `tersedia` runs the availability tests against a build of
+ * the launched state (`pnpm test:tersedia` builds it with tests/fixtures/availability-tersedia.ts,
+ * see next.config.ts); `screenshots` writes the review images to docs/screenshots/ and is run on
+ * its own with `pnpm screenshots`.
  */
 export default defineConfig({
   testDir: 'tests',
@@ -35,6 +37,11 @@ export default defineConfig({
     {
       name: 'e2e',
       testIgnore: /screenshots\.spec\.ts/,
+      use: { browserName: 'chromium', viewport: { width: 1280, height: 720 } },
+    },
+    {
+      name: 'tersedia',
+      testMatch: /availability\.spec\.ts/,
       use: { browserName: 'chromium', viewport: { width: 1280, height: 720 } },
     },
     {

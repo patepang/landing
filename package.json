@@ -15,8 +15,9 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "check:contrast": "node scripts/check-contrast.mjs",
-    "test": "pnpm run check:contrast && pnpm run test:e2e",
+    "test": "pnpm run check:contrast && pnpm run test:tersedia && pnpm run test:e2e",
     "test:e2e": "next build && playwright test --project=e2e",
+    "test:tersedia": "PATEPANG_AVAILABILITY=./tests/fixtures/availability-tersedia.ts next build && PATEPANG_AVAILABILITY=./tests/fixtures/availability-tersedia.ts playwright test --project=tersedia",
     "screenshots": "next build && playwright test --project=screenshots",
     "check": "pnpm run typecheck && pnpm run lint && pnpm run format:check && pnpm run test"
   },

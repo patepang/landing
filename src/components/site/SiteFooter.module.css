@@ -1,7 +1,7 @@
 /*
- * The footer: the line Patepang stands for beside the section links, the wordmark across the page
- * column, and the last line. It rests; only its controls respond, to the pointer and the keyboard,
- * with the header's capsules and press feedback.
+ * The footer: the line Patepang stands for, every page of the site in three groups, the wordmark
+ * across the page column, and the last line. It rests; only its controls respond, to the pointer
+ * and the keyboard, with the header's capsules and press feedback.
  */
 
 .footer {
@@ -23,13 +23,34 @@
   text-wrap: balance;
 }
 
-/* ---- Section links ---- */
+/* ---- The site's pages, in three groups ---- */
 
-/* Two columns on phones; one column beside the line on wider screens. */
+/* One group under the other on phones, two side by side from 30em, three from 48em. */
+.nav {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-8) var(--space-6);
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* The group's name: a quiet label over its links, in sentence case. */
+.groupTitle {
+  color: var(--color-text-tertiary);
+  font-size: var(--type-label-small-size);
+  line-height: var(--type-label-small-line);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--type-label-small-tracking);
+  text-wrap: wrap;
+}
+
 .links {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: var(--space-4);
+  grid-template-columns: minmax(0, 1fr);
   list-style: none;
 }
 
@@ -168,18 +189,18 @@
   }
 }
 
-/* At very large text sizes on a phone (under 20em), one column keeps each label on one line. */
-@media (max-width: 19.99em) {
-  .links {
-    grid-template-columns: minmax(0, 1fr);
+/*
+ * Breakpoints in em, so a larger reader text size keeps the narrower layout longer and every
+ * label stays on one line: two groups side by side from 30em, three from 48em, and from 80em the
+ * line on the left of the 12-column grid with the groups beside it, their names level with the
+ * top of the line.
+ */
+@media (min-width: 30em) {
+  .nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-/*
- * From 48em (in em, so a larger reader text size keeps the narrow layout longer): the line on
- * the left of a 12-column grid and the links in one column on the right, their first label level
- * with the top of the line.
- */
 @media (min-width: 48em) {
   .footer {
     padding-top: calc(var(--space-16) + var(--space-8));
@@ -192,20 +213,28 @@
   }
 
   .line {
-    grid-column: 1 / span 7;
+    grid-column: 1 / -1;
+    max-width: 18ch;
   }
 
   .nav {
-    grid-column: 9 / span 4;
-    margin-top: calc(-1 * (var(--pill-inset) + var(--space-2)));
-  }
-
-  .links {
-    grid-template-columns: minmax(0, 1fr);
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: var(--space-8);
   }
 
   .end {
     grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 80em) {
+  .line {
+    grid-column: 1 / span 5;
+  }
+
+  .nav {
+    grid-column: 6 / -1;
   }
 }
 

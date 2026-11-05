@@ -238,6 +238,18 @@
    * barely show on it.
    */
   --color-code-ring: #1f5f4f; /* light brand.solid */
+  /*
+   * The app's segmented control (app @ b4c6118, color.ts surface.track and surface.thumb): a
+   * groove and the neutral pill raised on it, in the hero's Tempel sheet.
+   */
+  --color-surface-track: #efece5; /* sand.100 */
+  --color-surface-thumb: #fffefb; /* sand.0 */
+  /*
+   * Placeholders in the legal drafts, where a fact the owner has not given yet will stand: the
+   * app's warning pair, so they are found at a glance and never read as settled text.
+   */
+  --color-placeholder-text: var(--color-warning-text);
+  --color-placeholder-bg: var(--color-warning-subtle);
 }
 
 @media (min-width: 600px) {
@@ -313,6 +325,9 @@
 
     /* Web-only: the hero's phone, darker than the night stage it stands on. */
     --color-device: #0f100e;
+    /* The segmented control, dark (app @ b4c6118). */
+    --color-surface-track: #1c1e1b; /* night.800 */
+    --color-surface-thumb: #30332f; /* night.600 */
     --color-device-edge: rgb(255 255 255 / 0.1);
 
     /* ---- elevation.ts, dark: raised surfaces rely on their lighter tone instead ---- */

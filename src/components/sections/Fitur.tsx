@@ -47,6 +47,15 @@ const leftOut = [
     reason:
       'Patepang bukan aplikasi kencan dan bukan tempat berkenalan dengan orang yang belum pernah kamu temui.',
   },
+  {
+    term: 'Angka belum dibaca.',
+    reason: 'Yang baru ditandai dengan titik, tanpa angka yang memancing untuk kembali.',
+  },
+  {
+    term: 'Iklan.',
+    reason:
+      'Tidak ada iklan dan tidak ada alat analitik di aplikasi. Pemasukan Patepang hanya dari langganan dan tip.',
+  },
 ] as const;
 
 /**
@@ -62,12 +71,20 @@ export function Fitur() {
             Setelah bertemu, hubungan tetap terjaga.
           </h2>
           <p className="type-body-large tone-secondary">
-            Patepang punya empat tab: Tempel, Kabar, Orang, dan Momen. Semuanya hanya berisi orang
-            yang pernah kamu temui.
+            Ada empat tab: Kabar, Orang, Pesan, dan Notifikasi, dengan tombol Tempel di sampingnya.
+            Kabar dan koneksimu hanya berisi orang yang pernah kamu temui.
           </p>
         </div>
 
         <div className={styles.exhibits}>
+          {/*
+           * Said before the first picture, so it is read before them on a phone; on wide screens
+           * the grid sets it under the stage. The exhibits are counted by type (nth-of-type), so
+           * this paragraph does not move them.
+           */}
+          <p className={`type-body-small ${styles.sample}`}>
+            Contoh tampilan, dengan orang dan tempat rekaan.
+          </p>
           <Exhibit title="Kabar yang punya akhir" preview={<KabarEndPreview />}>
             <p className="type-body-large tone-secondary">
               Kabar hanya datang dari orang yang pernah kamu temui, urut waktu. Kamu memilih siapa
@@ -78,8 +95,8 @@ export function Fitur() {
 
           <Exhibit title="Momen dari setiap pertemuan" preview={<MomenPreview />}>
             <p className="type-body-large tone-secondary">
-              Setiap tempel mencatat momen untuk kalian berdua: kapan, tempat yang kalian tulis
-              sendiri, dan siapa yang hadir. Foto boleh ditambahkan, boleh juga tidak.
+              Setiap tempel mencatat momen di HP kalian berdua: kapan dan dengan siapa. Nama
+              tempatnya kamu tulis sendiri; Patepang tidak membaca lokasi HP.
             </p>
           </Exhibit>
 

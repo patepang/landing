@@ -1,0 +1,116 @@
+/*
+ * Each card is one link, a whole surface to press: what it is, an optional detail line in the
+ * brand's ink, and what it is for, on the raised surface, like the app's list rows.
+ */
+.list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3);
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  min-height: var(--touch-target);
+  padding: var(--space-5);
+  border: var(--border-hairline) solid var(--color-border-subtle);
+  border-radius: var(--shape-card);
+  background: var(--color-surface-raised);
+  box-shadow: var(--elevation-raised);
+  color: var(--color-text-primary);
+  text-decoration: none;
+  transition:
+    background-color var(--duration-press) var(--ease-out),
+    scale var(--duration-press) var(--ease-out);
+}
+
+/* As tall as the title's line, so the icon sits on its middle. */
+.icon {
+  display: flex;
+  align-items: center;
+  height: var(--type-headline-line);
+  color: var(--color-brand-text);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+}
+
+/* The app's Badge: a short, non-interactive label on the warning pair, for a document's state. */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--space-6);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--shape-chip);
+  background: var(--color-warning-subtle);
+  color: var(--color-warning-text);
+  font-size: var(--type-caption-size);
+  line-height: var(--type-caption-line);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--type-caption-tracking);
+}
+
+.words {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.title {
+  font-size: var(--type-headline-size);
+  line-height: var(--type-headline-line);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--type-headline-tracking);
+}
+
+.detail {
+  color: var(--color-brand-text);
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
+  font-weight: var(--weight-semibold);
+  overflow-wrap: anywhere;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+.text {
+  color: var(--color-text-secondary);
+  font-size: var(--type-body-small-size);
+  line-height: var(--type-body-small-line);
+}
+
+.card:active {
+  background: var(--color-surface-pressed);
+  scale: var(--motion-press-scale);
+}
+
+@media (hover: hover) {
+  .card:hover {
+    background: var(--color-surface-pressed);
+  }
+}
+
+@media (min-width: 48em) {
+  .list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+
+  .card:active {
+    scale: none;
+  }
+}

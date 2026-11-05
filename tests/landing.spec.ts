@@ -1,6 +1,9 @@
 import { expect, test, type Browser, type Page } from '@playwright/test';
 
+import { sitePages } from '../src/content/pages';
+
 import { openWithBrowserSetting } from './browser-settings';
+import { built } from './built';
 import { openLanding, watchProblems } from './helpers';
 
 const HERO = 'section[aria-labelledby="judul-utama"]';
@@ -90,8 +93,9 @@ async function shownLinks(page: Page, scope: string) {
 /**
  * Where the opening's phone and notes stand: how far the phone's bottom is from the stage's, and
  * for each note (in page order) how far its leader line is from the phone's frame and from the
- * line of the screen it is about: the card's title, the title "sebelum pamit, tempel dulu", and
- * the middle of the code's top corner squares. Also how much of the stage stays below the note.
+ * line of the screen it is about: the heading "Sebelum pamit, tempel dulu", the middle of the
+ * code, and the first line of the unborn account's block. Also how much of the stage stays below
+ * the note.
  */
 async function measureStage(page: Page) {
   return page.locator(HERO).evaluate((section) => {
@@ -103,12 +107,11 @@ async function measureStage(page: Page) {
       if (!el) throw new Error('No target');
       return el.getBoundingClientRect().top + parseFloat(getComputedStyle(el).lineHeight) / 2;
     };
-    // The corner squares are 7 modules tall, after a 2-module margin, of the pattern's 29.
     const pattern = code.getBoundingClientRect();
     const aims: Record<string, number> = {
-      born: firstLine(section.querySelector('[data-target="born"] .type-headline')),
       face: firstLine(section.querySelector('[data-target="face"]')),
-      code: pattern.top + (pattern.height * 5.5) / 29,
+      code: pattern.top + pattern.height / 2,
+      born: firstLine(section.querySelector('[data-target="born"] .type-body-strong')),
     };
     const phone = device.getBoundingClientRect();
     const edge = stage.getBoundingClientRect().bottom;
@@ -136,7 +139,7 @@ async function measureStage(page: Page) {
 function expectNotesInPlace(stage: Awaited<ReturnType<typeof measureStage>>) {
   expect(stage.flush).toBeLessThan(0.5);
   // In the order of the screen.
-  expect(stage.notes.map(({ id }) => id)).toEqual(['born', 'face', 'code']);
+  expect(stage.notes.map(({ id }) => id)).toEqual(['face', 'code', 'born']);
   for (const note of stage.notes) {
     expect(note.reach, note.id).toBeLessThan(0.5);
     expect(note.aim, note.id).toBeLessThan(1);
@@ -218,8 +221,9 @@ test.describe('landing', () => {
       'Sebelum pamit, tempel dulu.',
       'Setelah bertemu, hubungan tetap terjaga.',
       'Dibuat untuk pertemuan seperti ini.',
+      'Semua fitur gratis.',
       'Tanya jawab',
-      'Patepang sudah hadir.',
+      built.closing.title,
     ]) {
       await expect(page.getByRole('heading', { level: 2, name })).toBeVisible();
     }
@@ -239,10 +243,9 @@ test.describe('landing', () => {
   test('metadata describes the page without inventing assets', async ({ page }) => {
     await openLanding(page);
     const head = page.locator('head');
-    await expect(head.locator('meta[name="description"]')).toHaveAttribute(
-      'content',
-      /Sudah bisa diunduh/,
-    );
+    // The description ends with the launch status the build was made with.
+    const description = await head.locator('meta[name="description"]').getAttribute('content');
+    expect(description?.endsWith(built.descriptionStatus)).toBe(true);
     await expect(head.locator('link[rel="canonical"]')).toHaveAttribute(
       'href',
       'https://patepang.com',
@@ -253,20 +256,35 @@ test.describe('landing', () => {
     await expect(head.locator('link[rel="icon"]')).toHaveAttribute('href', 'data:,');
   });
 
-  test('says it is out, and makes no claims or offers it cannot keep', async ({ page }) => {
+  test('says plainly whether it can be installed, and makes no claims or offers it cannot keep', async ({
+    page,
+  }) => {
     await openLanding(page);
-    // The opening offers Patepang itself first; the closing section says it is out.
-    await expect(page.locator(HERO).getByRole('link', { name: 'Unduh Patepang' })).toHaveAttribute(
-      'href',
-      '#unduh',
-    );
-    await expect(page.getByRole('heading', { name: 'Patepang sudah hadir.' })).toBeVisible();
+    const hero = page.locator(HERO);
+    if (built.released) {
+      // The opening offers Patepang itself first; the closing section holds the store links.
+      await expect(hero.getByRole('link', { name: 'Unduh Patepang' })).toHaveAttribute(
+        'href',
+        '#unduh',
+      );
+    } else {
+      // Nothing to download yet: the opening's main action is to see how it works, and it says
+      // so right under it.
+      await expect(hero.getByRole('link', { name: /Unduh/ })).toHaveCount(0);
+      await expect(hero.getByText(built.heroStatus ?? '')).toBeVisible();
+      await expect(
+        page.locator('a[href*="apps.apple.com"], a[href*="play.google.com"]'),
+      ).toHaveCount(0);
+    }
+    await expect(page.getByRole('heading', { name: built.closing.title })).toBeVisible();
     for (const image of await page.locator('[role="img"]').all()) {
       await expect(image).toHaveAttribute('aria-label', /\S/);
     }
-    // No forms, waitlists, store badges, ratings, security promises, and no quotes: the
-    // situations in "Cerita" are examples told to the reader, not testimonials. The store links
-    // are not in yet, so no store is named either.
+    // The pictures with made-up people and places say so where everyone can see it.
+    await expect(page.getByText('Contoh tampilan, dengan orang dan tempat rekaan.')).toBeVisible();
+    await expect(page.getByText('Gambar ilustrasi, dengan orang rekaan.')).toBeVisible();
+    // No forms, waitlists, ratings or quotes: the situations in "Cerita" are examples told to the
+    // reader, not testimonials.
     await expect(page.locator('form, input, textarea, select')).toHaveCount(0);
     await expect(page.locator('blockquote, q, cite')).toHaveCount(0);
     // Everything a reader or a screen reader can meet: closed FAQ answers, labels and metadata too.
@@ -283,46 +301,50 @@ test.describe('landing', () => {
     });
     expect(text, 'the scan reaches closed FAQ answers').toContain('titik lahir');
     for (const banned of [
-      // The pre-launch wording is gone everywhere.
-      'segera hadir',
-      'belum bisa diunduh',
-      'belum tersedia',
-      'enkripsi',
-      'terenkripsi',
-      'keamanan',
-      'privasi',
+      // Not true of the product, or not true yet (fakta-produk, 4 November 2026).
+      'kapan pun itu',
+      'tidak ada batas waktu',
+      'tidak bisa diretas',
+      'paling aman',
       'jamin',
-      'app store',
-      'google play',
-      'play store',
-      'android',
-      'iphone',
+      'sudah diaudit',
+      'bug bounty',
       'testimoni',
       'rating',
-      'pengguna',
-      'harga',
-      'gratis',
       'daftar tunggu',
       'waitlist',
       'unduh sekarang',
+      // The launch status, both ways.
+      ...(built.released
+        ? ['segera hadir', 'belum bisa diunduh']
+        : ['sudah hadir', 'sudah bisa diunduh', 'tersedia untuk diunduh']),
     ]) {
       expect(text, banned).not.toContain(banned);
     }
-    // Platform names as whole words ("ios" also hides inside ordinary words).
-    expect(text).not.toMatch(/\bios\b/);
   });
 
-  test('every link is real: anchors land on this page, nothing points to "#" or off-site', async ({
+  test('every link is real: anchors land on this page, pages exist, nothing points to "#"', async ({
     page,
+    request,
   }) => {
     await openLanding(page);
     const hrefs = await page
       .locator('a[href]')
       .evaluateAll((links) => links.map((link) => link.getAttribute('href') ?? ''));
     expect(hrefs.length).toBeGreaterThan(10);
-    for (const href of hrefs) {
-      expect(href).toMatch(/^#[a-z-]+$/);
-      await expect(page.locator(href), href).toHaveCount(1);
+    const pages = new Set<string>(sitePages.map((entry) => entry.path));
+    const stores = new Set(built.stores.map((store) => store.href));
+    for (const href of new Set(hrefs)) {
+      if (href.startsWith('#')) {
+        expect(href).toMatch(/^#[a-z-]+$/);
+        await expect(page.locator(href), href).toHaveCount(1);
+      } else if (href.startsWith('/')) {
+        expect(pages.has(href), href).toBe(true);
+        expect((await request.get(href)).status(), href).toBe(200);
+      } else {
+        // Off-site, only the stores' own pages, and only once Patepang is in them.
+        expect(stores.has(href), href).toBe(true);
+      }
     }
   });
 
@@ -342,34 +364,37 @@ test.describe('landing', () => {
       expect(covered, id).toBe(false);
     };
 
-    // The opening's two actions: see how it works, or go straight to getting it.
+    // The opening's actions: see how it works, and once Patepang is out, get it.
     const hero = page.locator(HERO);
     await hero.getByRole('link', { name: 'Lihat cara kerja' }).click();
     await lands('cara-kerja');
-    await hero.getByRole('link', { name: 'Unduh Patepang' }).click();
-    await lands('unduh');
+    if (built.released) {
+      await hero.getByRole('link', { name: 'Unduh Patepang' }).click();
+      await lands('unduh');
+    }
 
-    // The closing section leads back into the page.
-    await page.getByRole('link', { name: 'Jelajahi fitur' }).click();
-    await lands('fitur');
-    await page.getByRole('link', { name: 'Lihat cara kerja' }).last().click();
-    await lands('cara-kerja');
-
-    // The header's download action leads to the closing section too.
+    // The header's action leads to the closing section, which says when, or holds the stores.
     await page
       .getByRole('navigation', { name: 'Utama' })
-      .getByRole('link', { name: 'Unduh Patepang' })
+      .getByRole('link', { name: built.headerAction.name })
       .click();
     await lands('unduh');
+
+    // The pricing section's details are a page of their own.
+    await expect(page.getByRole('link', { name: 'Rincian langganan' })).toHaveAttribute(
+      'href',
+      '/langganan',
+    );
   });
 
   test('the header shows the section links from 768px and a working menu below that', async ({
     browser,
     baseURL,
   }) => {
-    const all = ['Cara kerja', 'Fitur', 'Cerita', 'Tanya jawab'];
-    // On screen the action reads "Unduh"; its accessible name is "Unduh Patepang".
-    const action = 'Unduh';
+    const all = ['Cara kerja', 'Fitur', 'Harga', 'Tanya jawab'];
+    // On screen the action is short ("Segera hadir", or "Unduh" once out); its name says it in
+    // full.
+    const action = built.headerAction.label;
     const nav = 'nav[aria-label="Utama"]';
 
     const wide = await newPage(browser, baseURL, { viewport: { width: 768, height: 900 } });
@@ -397,7 +422,7 @@ test.describe('landing', () => {
     const menu = page.locator(`${nav} details`);
     const button = menu.locator('summary');
     await expect(button).toHaveText('Menu');
-    // The download action stays in reach; the section links wait behind the menu.
+    // The action stays in reach; the section links wait behind the menu.
     expect(await shownLinks(page, nav)).toEqual([action]);
 
     // Choosing a link closes the menu and lands on the section, with focus on its heading.
@@ -432,7 +457,7 @@ test.describe('landing', () => {
 
     for (const [id, name] of [
       ['fitur', 'Fitur'],
-      ['cerita', 'Cerita'],
+      ['harga', 'Harga'],
       ['cara-kerja', 'Cara kerja'],
     ] as const) {
       await page.locator(`#${id}`).evaluate((heading) => {
@@ -573,13 +598,13 @@ test.describe('landing', () => {
             : ['none', 'none', 'none'],
         );
       }
-      // In the order of the screen: the card, the line "sebelum pamit, tempel dulu", the code.
+      // In the order of the screen: the heading, the code, the unborn account's block.
       expect(motion.targets, label).toEqual(
         notes
           ? [
-              expect.stringContaining('target-rings'),
               expect.stringContaining('target-inks'),
               expect.stringContaining('target-rings'),
+              expect.stringContaining('target-inks'),
             ]
           : ['none', 'none', 'none'],
       );
@@ -606,9 +631,9 @@ test.describe('landing', () => {
       // The stage's forest; the code card stays light in both themes, and so does its ring.
       const forest = rgb(colorScheme === 'light' ? '#1f5f4f' : '#7fcdb4');
       const lit = [
-        ['born', 'box-shadow', `${forest} 0px 0px 0px 2px inset`],
         ['face', 'color', forest],
         ['code', 'box-shadow', `${rgb('#1f5f4f')} 0px 0px 0px 2px inset`],
+        ['born', 'color', forest],
       ] as const;
       for (const [id, property, value] of lit) {
         const target = hero.locator(`[data-target="${id}"]`);
@@ -761,8 +786,8 @@ test.describe('landing', () => {
     await openLanding(desk.page);
     const nav = desk.page.getByRole('navigation', { name: 'Utama' });
     for (const target of [
-      nav.getByRole('link', { name: 'Cerita' }),
-      nav.getByRole('link', { name: 'Unduh Patepang' }),
+      nav.getByRole('link', { name: 'Harga' }),
+      nav.getByRole('link', { name: built.headerAction.name }),
       desk.page.locator(`${FAQ} summary`).first(),
       desk.page.getByRole('button', { name: /^Putar/ }),
       desk.page.getByRole('link', { name: 'Kembali ke atas' }),
@@ -912,20 +937,21 @@ test.describe('landing', () => {
       expect(focus.ring, focus.name).toBe('solid 2px rgb(36, 92, 143)');
       stops.push(focus.name);
     }
-    expect(stops.slice(0, 9)).toEqual([
+    const opening = built.released ? ['Unduh Patepang', 'Lihat cara kerja'] : ['Lihat cara kerja'];
+    expect(stops.slice(0, 7 + opening.length)).toEqual([
       'Langsung ke isi',
       'Patepang',
       'Cara kerja',
       'Fitur',
-      'Cerita',
+      'Harga',
       'Tanya jawab',
-      'Unduh Patepang',
-      // The opening's two actions.
-      'Unduh Patepang',
-      'Lihat cara kerja',
+      // Names are cut to 40 characters above.
+      built.headerAction.name.slice(0, 40),
+      // The opening's actions.
+      ...opening,
     ]);
     // Then the walk-through's button: "Putar", or "Putar lagi" once it has played by itself.
-    expect(stops[9]).toMatch(/^Putar/);
+    expect(stops[7 + opening.length]).toMatch(/^Putar/);
   });
 
   for (const width of [360, 1440]) {
@@ -1090,9 +1116,10 @@ test.describe('landing', () => {
     await page.keyboard.press('Space');
     await expect(first).not.toHaveAttribute('open', '');
 
+    // The last answer says when, as the build's launch status has it.
     const last = page.locator(`${FAQ} details`).last();
     await last.locator('summary').click();
-    await expect(last.locator('p')).toContainText('sudah bisa diunduh');
+    await expect(last.locator('p')).toHaveText(built.whenAnswer);
   });
 
   test('the theme follows the operating system, and so does the browser colour', async ({
@@ -1186,6 +1213,14 @@ test.describe('landing', () => {
       'href',
       '/',
     );
+    // It offers the pages people most often look for, the legal ones first.
+    const more = page.getByRole('navigation', { name: 'Mungkin yang kamu cari' });
+    await expect(
+      more.getByRole('link', { name: 'Kebijakan privasi', exact: true }),
+    ).toHaveAttribute('href', '/kebijakan-privasi');
+    await expect(
+      more.getByRole('link', { name: 'Syarat dan ketentuan', exact: true }),
+    ).toHaveAttribute('href', '/syarat-ketentuan');
     // Its header leads back into the landing's sections.
     await page
       .getByRole('navigation', { name: 'Utama' })

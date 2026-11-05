@@ -5,9 +5,9 @@
  * the stage, so the phone reads as rising from it.
  *
  * The screen is the app's canvas at phone width with the compact gutter (20px), its parts in one
- * column 16px apart. Heights follow the content; only the code pattern is cropped, so no text is
- * ever cut. When the phone is given more height than its content (the notes beside it can be
- * taller), the screen shows more of the code below.
+ * column 16px apart, and 32px of screen below the last one before the stage cuts the phone. When
+ * the phone is given more height than its content (the notes beside it can be taller), the screen
+ * simply continues below.
  */
 .device {
   --bezel: var(--space-3);
@@ -19,6 +19,7 @@
   width: 100%;
   max-width: calc(var(--content-message) + 2 * var(--bezel));
   padding-inline: var(--gutter-compact);
+  padding-bottom: var(--space-8);
   border: var(--bezel) solid var(--color-device);
   border-bottom: 0;
   border-radius: var(--corner) var(--corner) 0 0;
@@ -73,87 +74,87 @@
   gap: var(--space-1);
 }
 
-/* AppHeader: title on the left, two raised icon buttons on the right. */
-.appHeader {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--space-1);
-  min-height: calc(var(--touch-target) + var(--space-2));
-  padding-bottom: var(--space-2);
-}
-
-.appTitle {
-  padding-top: var(--space-2);
-}
-
-.headerActions {
-  display: flex;
-  gap: var(--space-1);
-}
-
-/* IconButton variant="raised", visual 40px inside a 48px hit area. */
-.iconButton {
+/*
+ * SegmentedControl: the two sides of the sheet, "Pindai" and "QR-mu", the code's side chosen. A
+ * neutral pill raised on a ringed groove, in both themes; never the brand fill, which belongs to
+ * a main action. The chosen side also has a ring and a heavier label, so tone is not alone.
+ */
+.sides {
   display: grid;
-  place-items: center;
-  width: var(--space-10);
-  height: var(--space-10);
-  margin: var(--space-1);
-  border: var(--border-hairline) solid var(--color-border-subtle);
-  border-radius: var(--shape-button);
-  background: var(--color-surface-raised);
-  box-shadow: var(--elevation-raised);
-  color: var(--color-text-primary);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding: var(--space-1);
+  border-radius: var(--radius-full);
+  background: var(--color-surface-track);
+  box-shadow: inset 0 0 0 var(--border-thin) var(--color-border-subtle);
 }
 
-/* Surface variant="brand" padding={5}: the unborn-account invitation. */
-.unborn {
+.side {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: var(--space-2);
-  padding: var(--space-5);
-  border-radius: var(--shape-card);
-  background: var(--color-brand-subtle);
-  color: var(--color-brand-on-subtle);
+  min-height: calc(var(--touch-target) - 2 * var(--space-1));
+  border-radius: var(--radius-full);
+  color: var(--color-text-secondary);
+  font-size: var(--type-body-small-size);
+  line-height: var(--type-body-small-line);
 }
 
-.unbornIcon {
-  color: var(--color-brand-text);
+.side[data-selected] {
+  border: var(--border-thin) solid var(--color-border-strong);
+  background: var(--color-surface-thumb);
+  color: var(--color-text-primary);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--type-label-small-tracking);
 }
 
-/* The title and the dots stand centred in the column, whether it is a flex or a grid column. */
+/* The heading stands centred in the column, whether it is a flex or a grid column. */
 .codeTitle {
   margin-inline: auto;
   text-align: center;
-  /* Balanced so a short last word ("dulu") never hangs alone on the web. */
   text-wrap: balance;
 }
 
-.codeDots {
-  margin-inline: auto;
+/* What to do with the code, and how it renews, centred under it. */
+.under {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  text-align: center;
 }
 
-.unbornTitle {
+/* Balanced, as in the app: "Tunjukkan kode ini / ke orang yang kamu temui.", never "temui." alone. */
+.balanced {
   text-wrap: balance;
 }
 
 /*
- * The picture ends here: about the top half of the code card shows above the stage edge. Size
- * containment keeps the card out of the crop's own height, so the crop asks for 152px and takes
- * whatever more the phone is given.
+ * The account that is not born yet: the sparkle hangs before the promise, and the words under it
+ * start where the promise's words start, one left edge for the block.
  */
-.codeCrop {
-  flex: 1 0 auto;
-  display: block;
-  width: 100%;
-  min-height: calc(var(--space-16) * 2 + var(--space-6));
-  overflow: hidden;
-  contain: size;
+.unborn {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+/* As tall as the promise's line, the sparkle centred on it. */
+.unbornIcon {
+  height: var(--type-body-line);
+  color: var(--color-brand-text);
+}
+
+.unbornWords {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
 }
 
 /* QrCodeView: dark on light in both themes, on a card with a hairline. */
 .codeCard {
   display: block;
+  align-self: start;
   width: fit-content;
   max-width: calc(100% - var(--space-8) * 2);
   margin-inline: auto;
@@ -163,9 +164,10 @@
   background: var(--color-code-surface);
 }
 
+/* 192px across, so its middle is 96px down: the note about the code aims there. */
 .codeSvg {
   display: block;
-  width: calc(var(--space-16) * 3 + var(--space-12));
+  width: calc(var(--space-16) * 3);
   max-width: 100%;
   height: auto;
   aspect-ratio: 1;

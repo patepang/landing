@@ -20,7 +20,6 @@ export const fiction = {
     shortDate: '3 Mar 2025',
     /** Typed by the people who were there; Patepang never records a location. */
     place: 'kedai kopi dekat stasiun',
-    note: 'Ngobrol soal buku sampai kedainya hampir tutup.',
   },
   meetings: 3,
   /** formatRelativePast for a meeting 341 days ago. */

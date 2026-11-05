@@ -1,0 +1,381 @@
+/*
+ * A page to read. The frame is Patepang's (the header, the footer, the hero's title step, the
+ * forest numbers of the contents); the reading column inside it stays calm: one family, the
+ * body-large step (18/28) at no more than 680px, the app's ink on the canvas, and hairlines
+ * between sections instead of boxes.
+ */
+
+.main {
+  padding-block: var(--space-8) var(--space-section);
+}
+
+/* ---- Masthead ---- */
+
+.masthead {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+  padding-bottom: var(--space-10);
+}
+
+.title {
+  max-width: 20ch;
+  margin-bottom: var(--space-2);
+}
+
+.lede {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-width: var(--content-reading);
+}
+
+/*
+ * Notices, as banners: an icon, then the words. The draft notice uses the app's warning pair, so
+ * it reads as "not settled" at a glance; the launch note is quieter, on the sunken surface.
+ */
+.draft,
+.appNote,
+.pending {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  max-width: var(--content-reading);
+  margin-top: var(--space-2);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--shape-banner);
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
+}
+
+.draft {
+  background: var(--color-warning-subtle);
+  color: var(--color-warning-text);
+}
+
+.appNote,
+.pending {
+  background: var(--color-surface-sunken);
+  color: var(--color-text-secondary);
+}
+
+/* The brackets explained on a page in force, only while the page holds a placeholder. */
+.pending {
+  display: none;
+}
+
+article:has([data-placeholder]) .pending {
+  display: flex;
+}
+
+.draftTitle {
+  font-weight: var(--weight-semibold);
+}
+
+/* As tall as the notice's first line, so the icon sits on its middle. */
+.noticeIcon {
+  height: var(--type-body-line);
+}
+
+/* How a placeholder looks, shown inside the draft notice itself. */
+.sample {
+  white-space: nowrap;
+  font-weight: var(--weight-semibold);
+}
+
+/* ---- Body: contents and reading column ---- */
+
+.body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-8);
+  padding-top: var(--space-10);
+  border-top: var(--border-hairline) solid var(--color-border-subtle);
+}
+
+/*
+ * The contents. On phones a native disclosure, closed, above the text: a 48px row that opens to
+ * the list. From 64em a rail beside the text that stays in view, always open. Only one of the two
+ * is displayed at a time.
+ */
+.tocFolded,
+.tocRail {
+  min-width: 0;
+}
+
+.tocRail {
+  display: none;
+}
+
+/* The rail's name, quiet over its list, like the footer's group names. */
+.tocHeading {
+  padding-bottom: var(--space-2);
+  color: var(--color-text-tertiary);
+  font-size: var(--type-label-small-size);
+  line-height: var(--type-label-small-line);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--type-label-small-tracking);
+}
+
+.tocDetails {
+  border-block: var(--border-hairline) solid var(--color-border-subtle);
+}
+
+.tocSummary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  min-height: calc(var(--touch-target) + var(--space-2));
+  margin-inline: calc(-1 * var(--space-3));
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-lg);
+  color: var(--color-text-primary);
+  font-size: var(--type-label-size);
+  line-height: var(--type-label-line);
+  font-weight: var(--weight-semibold);
+  list-style: none;
+  cursor: pointer;
+  transition: background-color var(--duration-press) var(--ease-out);
+}
+
+.tocSummary::-webkit-details-marker {
+  display: none;
+}
+
+.tocCaret {
+  color: var(--color-text-secondary);
+  transition: transform var(--duration-selection) var(--ease-out);
+}
+
+.tocDetails[open] .tocCaret {
+  transform: rotate(180deg);
+}
+
+.tocList {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: var(--space-3);
+  list-style: none;
+}
+
+/* Rows a whole target tall, curved like the menu's, the number in the brand's ink. */
+.tocLink {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  min-height: var(--touch-target);
+  margin-inline: calc(-1 * var(--space-3));
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  font-size: var(--type-body-small-size);
+  line-height: var(--type-body-small-line);
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+  transition:
+    background-color var(--duration-press) var(--ease-out),
+    color var(--duration-press) var(--ease-out);
+}
+
+.tocNumber {
+  min-width: 1.5em;
+  color: var(--color-brand-text);
+  font-weight: var(--weight-semibold);
+  font-variant-numeric: tabular-nums;
+}
+
+.tocLink:active,
+.tocSummary:active {
+  background: var(--color-surface-pressed);
+  color: var(--color-text-primary);
+}
+
+@media (hover: hover) {
+  .tocLink:hover,
+  .tocSummary:hover {
+    background: var(--color-surface-pressed);
+    color: var(--color-text-primary);
+  }
+}
+
+/* ---- The reading column ---- */
+
+.prose {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  min-width: 0;
+  max-width: var(--content-reading);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.sectionTitle {
+  font-size: var(--type-title-large-size);
+  line-height: var(--type-title-large-line);
+  letter-spacing: var(--type-title-large-tracking);
+  text-wrap: balance;
+}
+
+/*
+ * The text itself. Sections hold paragraphs, lists, small headings, tables and fact lists, set
+ * here so every page reads the same.
+ */
+.prose p,
+.prose li,
+.prose dd {
+  font-size: var(--type-body-large-size);
+  line-height: var(--type-body-large-line);
+}
+
+/* Tables are looked up rather than read through: the body step, so columns fit a phone. */
+.prose td,
+.prose th {
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
+}
+
+.prose h3 {
+  margin-top: var(--space-4);
+  font-size: var(--type-headline-size);
+  line-height: var(--type-headline-line);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--type-headline-tracking);
+}
+
+/* Lists in the text have bullets or numbers; a list marked role="list" is a layout of its own. */
+.prose ul:not([role='list']),
+.prose ol:not([role='list']) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-left: 1.25em;
+}
+
+.prose li::marker {
+  color: var(--color-text-tertiary);
+}
+
+.prose strong {
+  font-weight: var(--weight-semibold);
+}
+
+/* Tables: a hairline under each row, the first column in the stronger weight. */
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.prose caption {
+  padding-bottom: var(--space-2);
+  color: var(--color-text-secondary);
+  font-size: var(--type-body-small-size);
+  line-height: var(--type-body-small-line);
+  text-align: left;
+}
+
+/*
+ * Words break only when one alone is wider than its column (break-word), never mid-word to make a
+ * column narrower than its longest word ("Penangguhan" stays whole), as `anywhere` would.
+ */
+.prose th,
+.prose td {
+  padding: var(--space-3) var(--space-4) var(--space-3) 0;
+  border-bottom: var(--border-hairline) solid var(--color-border-subtle);
+  vertical-align: top;
+  overflow-wrap: break-word;
+}
+
+.prose th:last-child,
+.prose td:last-child {
+  padding-right: 0;
+}
+
+.prose thead th {
+  color: var(--color-text-secondary);
+  font-size: var(--type-body-small-size);
+  line-height: var(--type-body-small-line);
+  font-weight: var(--weight-semibold);
+}
+
+.prose tbody th {
+  font-weight: var(--weight-semibold);
+}
+
+/* Fact lists (dl): a term over its explanation, rows divided by hairlines. */
+.prose dl {
+  display: flex;
+  flex-direction: column;
+  border-top: var(--border-hairline) solid var(--color-border-subtle);
+}
+
+.prose dl > div {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding-block: var(--space-3);
+  border-bottom: var(--border-hairline) solid var(--color-border-subtle);
+}
+
+.prose dt {
+  font-weight: var(--weight-semibold);
+}
+
+.prose dd {
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+
+/*
+ * From 64em: the contents become a rail on the left that stays in view under the floating header,
+ * always open (its disclosure's summary is not needed there), and the text takes the columns
+ * beside it. Fact lists set the term beside its explanation.
+ */
+@media (min-width: 64em) {
+  .body[data-toc] {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--space-8);
+    align-items: start;
+  }
+
+  .body[data-toc] .tocFolded {
+    display: none;
+  }
+
+  .body[data-toc] .tocRail {
+    display: block;
+    grid-column: 1 / span 3;
+    position: sticky;
+    top: calc(var(--header-capsule-top) + var(--header-capsule) + var(--space-6));
+    max-height: calc(
+      100dvh - var(--header-capsule-top) - var(--header-capsule) - var(--space-6) * 2
+    );
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+
+  .body[data-toc] .prose {
+    grid-column: 5 / span 8;
+  }
+
+  .prose dl > div {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    column-gap: var(--space-6);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tocSummary,
+  .tocCaret,
+  .tocLink {
+    transition: none;
+  }
+}
