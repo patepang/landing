@@ -372,16 +372,20 @@ const sections: DocSection[] = [
           sah.
         </p>
 
-        <h3>4.14 Pemeriksaan pembaruan aplikasi</h3>
+        {/* app ADR 0110: expo-updates is off in production builds (updates.enabled false) */}
+        <h3>4.14 Pembaruan aplikasi</h3>
         <p>
-          Setiap kali dibuka, aplikasi menanyakan pembaruan ke layanan Expo (EAS Update). Permintaan
-          itu membawa alamat IP HP, pengenal acak untuk pemasangan aplikasi itu, platform, dan
-          versi.{' '}
-          <Placeholder>
-            Keputusan pemilik: fitur ini tetap dipakai dan diungkapkan di sini, atau dimatikan di
-            versi rilis
-          </Placeholder>{' '}
-          Dasar: kepentingan yang sah untuk mengirim perbaikan.
+          Aplikasi yang kamu pasang dari App Store atau Google Play tidak memeriksa pembaruan
+          sendiri, baik ke Expo, ke server kami, maupun ke server lain. Versi baru hanya datang
+          lewat toko itu, yang memprosesnya menurut kebijakannya sendiri (bagian 8). Hanya bila kamu
+          membuka layar Periksa versi, aplikasi mengambil daftar rilis bertanda tangan dari server
+          kami untuk mencocokkan versimu dengan daftar itu.
+        </p>
+        <p>
+          Versi uji yang dibagikan langsung kepada penguji, di luar toko, masih menanyakan pembaruan
+          ke layanan Expo (EAS Update) setiap kali dibuka. Permintaan itu membawa alamat IP HP,
+          pengenal acak untuk pemasangan aplikasi itu, platform, dan versi. Dasar: kepentingan yang
+          sah untuk mengirim perbaikan kepada penguji.
         </p>
       </>
     ),
@@ -661,8 +665,9 @@ const sections: DocSection[] = [
           <div>
             <dt>Expo (EAS Update)</dt>
             <dd>
-              Pemeriksaan pembaruan aplikasi (bagian 4.14). Melihat alamat IP, pengenal acak per
-              pemasangan, platform, dan versi. Lokasi:{' '}
+              Pemeriksaan pembaruan, hanya untuk versi uji yang dibagikan kepada penguji di luar
+              toko (bagian 4.14); aplikasi dari App Store dan Google Play tidak menghubungi Expo.
+              Melihat alamat IP, pengenal acak per pemasangan, platform, dan versi. Lokasi:{' '}
               <Placeholder>Lokasi pemrosesan Expo: belum dikonfirmasi</Placeholder>
             </dd>
           </div>
@@ -711,10 +716,10 @@ const sections: DocSection[] = [
         <p>
           Data server dari pengguna di Indonesia diproses di luar Indonesia: di Singapura (server
           utama), di pusat data Cloudflare terdekat, di Asia-Pasifik (media terenkripsi), di Uni
-          Eropa (cadangan basis data terenkripsi), di Amerika Serikat atau secara global (Apple,
-          Google, dan Expo; Zoho Mail untuk surel yang kamu kirim ke kami), dan di lokasi Vercel
-          serta penyedia halaman status (bagian 8). Saat ini hanya ada satu wilayah server,
-          Singapura, dan akun belum bisa dipindahkan ke wilayah lain.
+          Eropa (cadangan basis data terenkripsi), di Amerika Serikat atau secara global (Apple dan
+          Google; Expo hanya untuk versi uji para penguji; Zoho Mail untuk surel yang kamu kirim ke
+          kami), dan di lokasi Vercel serta penyedia halaman status (bagian 8). Saat ini hanya ada
+          satu wilayah server, Singapura, dan akun belum bisa dipindahkan ke wilayah lain.
         </p>
         <p>
           Isi yang kamu kirim terenkripsi ujung ke ujung, dan data di server serta cadangannya

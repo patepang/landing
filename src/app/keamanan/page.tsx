@@ -113,9 +113,9 @@ const sections: DocSection[] = [
           </li>
           <li>
             Apple dan Google melihat alamat IP dan waktu notifikasi, pembelian, dan pemeriksaan
-            keaslian aplikasi. Expo melihat alamat IP dan pengenal acak pemasangan setiap kali
-            aplikasi memeriksa pembaruan (lihat Kebijakan privasi bagian 4.14), dan Vercel mencatat
-            alamat IP pengunjung situs ini.
+            keaslian aplikasi, dan Vercel mencatat alamat IP pengunjung situs ini. Aplikasi dari App
+            Store dan Google Play tidak memeriksa pembaruan sendiri; hanya versi uji untuk penguji
+            yang bertanya ke Expo (lihat Kebijakan privasi bagian 4.14).
           </li>
           <li>
             Tempel membuktikan bahwa dua HP digoyang bersama, atau bahwa dua orang sengaja bekerja

@@ -869,7 +869,9 @@ pemberitahuan kebocoran 3 × 24 jam (Pasal 46), perubahan, dan kontak serta peja
 data (placeholder). Hal yang jujur tetapi tidak enak juga ditulis: server tahu siapa tempel dengan
 siapa sampai ke menit, keanggotaan grup tidak terenkripsi, rantai kunci (termasuk id penjaga)
 publik, token push bisa dibaca server, amplop yang belum diambil tidak kedaluwarsa, cadangan basis
-data sampai 40 hari, entri log transparansi kunci permanen, dan pemeriksaan pembaruan Expo.
+data sampai 40 hari, dan entri log transparansi kunci permanen. Pemeriksaan pembaruan Expo kini
+mati di build produksi (ADR aplikasi 0110, 2026-11-05): §4.14 menyatakan aplikasi dari toko tidak
+menanyakan pembaruan ke server mana pun, dan hanya versi uji untuk penguji yang bertanya ke Expo.
 
 **Syarat dan ketentuan**: kelayakan 18+, akun (kunci di HP, PIN, penjaga, dan pernyataan tegas
 bahwa akun tanpa perangkat dan tanpa penjaga tidak bisa dipulihkan), penggunaan, isi (tetap milik
@@ -886,8 +888,7 @@ lewat musyawarah lalu BPSK atau pengadilan, bahasa Indonesia yang berlaku, dan k
 | Cara memverifikasi permintaan lewat surel; cara meminta penghapusan tanpa aplikasi | Privasi §10, hapus akun | Pemilik (proses belum ada: `fakta-data` §8.6) |
 | Hak penghapusan bagi akun yang diblokir | Hapus akun | Penasihat hukum (`fakta-data` §8.1, FLAG) |
 | Cara aplikasi menanyakan umur, dan langkah untuk pengguna di bawah 18 | Privasi §12 | Penasihat hukum; gerbang umur belum dibangun |
-| Pemeriksaan pembaruan Expo: diungkapkan atau dimatikan | Privasi §4.14 | Pemilik (`fakta-data` §6.3, FLAG) |
-| Lokasi Expo; lokasi dan retensi log Vercel; penyedia halaman status; lama penyimpanan surel; aturan retensi log audit | Privasi §4.12, §8, §15 | Pemilik |
+| Lokasi Expo (hanya versi uji penguji, ADR aplikasi 0110); lokasi dan retensi log Vercel; penyedia halaman status; lama penyimpanan surel; aturan retensi log audit | Privasi §4.12, §8, §15 | Pemilik |
 | Jangka waktu pemberitahuan bila layanan berhenti; batas jumlah tanggung jawab | Syarat §8, §10 | Penasihat hukum |
 | Target waktu peninjauan laporan; penanganan konten seksual anak dan pelaporan ke pihak berwenang | Pedoman komunitas | Pemilik dan penasihat hukum |
 | Kebijakan tertulis untuk permintaan aparat dan pemberitahuan kepada pengguna | Transparansi | Pemilik dan penasihat hukum |
@@ -1003,8 +1004,7 @@ tetap di-commit. Tes walk-through di `tests/screenshots.spec.ts` kini menunggu f
 3. **Tinjauan penasihat hukum** atas kebijakan privasi, syarat dan ketentuan, pedoman komunitas,
    langganan, keamanan (safe harbour), dan transparansi, termasuk placeholder bagian hukum di §9.4.
    Setelah itu, ubah `draft` menjadi `false` di `src/content/pages.ts` dan perbarui `updated`.
-4. **Keputusan terbuka**: pemeriksaan pembaruan Expo (ungkapkan atau matikan), proses
-   permintaan data lewat surel, penghapusan untuk akun yang diblokir, kebijakan permintaan aparat,
+4. **Keputusan terbuka**: proses permintaan data lewat surel, penghapusan untuk akun yang diblokir, kebijakan permintaan aparat,
    penyedia halaman status, lama penyimpanan surel, `preload` HSTS. Penghalang rilis yang baru ditemukan, dan
    yang harus dibangun di aplikasi atau server sebelum peluncuran, ada di §10.3.
 5. **Membalik ketersediaan** saat kedua toko sudah menayangkan Patepang: isi
