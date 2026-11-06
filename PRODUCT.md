@@ -11,7 +11,7 @@ web
 Keputusan pengguna (brief landing): Next.js dan TypeScript dengan fondasi sederhana, dan static
 export bila kebutuhan halaman memungkinkan. Tanpa backend, database, auth, server actions, layanan
 formulir, atau fitur server lain. Versi dipilih saat implementasi (stabil, bukan prarilis) dan
-dicatat di `docs/superpowers/specs/2026-10-22-landing-design.md`.
+dicatat di `docs/landing-implementation.md` §3.
 
 ## Users
 
@@ -141,8 +141,8 @@ Komitmen berikut mengikat menurut brief pengguna:
 - Lembar fakta koordinator per 4 November 2026: `fakta-produk.md` (fakta produk dan daftar teks
   dummy) dan `fakta-data.md` (praktik data untuk kebijakan privasi). Keduanya berada di luar repo;
   ringkasan dan pemakaiannya di `docs/landing-implementation.md` §9.
-- Kode dan dokumen prototipe di `patepang/app` @ `262202f` (pemahaman lama, 22 Oktober). Rujukan
-  path ada di `docs/product-understanding.md`.
+- Kode dan dokumen prototipe di `patepang/app` @ `262202f` (pemahaman lama, 22 Oktober; catatannya
+  dihapus 2026-11-06, ada di riwayat git).
 - Copy produk asli: "Hanya orang yang pernah kamu temui.", "sebelum pamit, tempel dulu", "Selesai
   untuk hari ini", serta FAQ di layar Bantuan dan tentang.
 - **Tidak ada:** pengguna sungguhan, testimoni, logo pelanggan, mitra, liputan pers, rating, angka,

@@ -5,6 +5,7 @@ kerja tempel, fitur setelah bertemu, skenario pemakaian, harga, tanya jawab, dan
 bisa dipakai) ditambah halaman kebijakan privasi, syarat dan ketentuan, pedoman komunitas,
 keamanan, transparansi, hapus akun, langganan, kontak, tentang, dan lisensi. Patepang belum ada di
 App Store maupun Google Play; satu sakelar mengubah seluruh situs saat sudah ada (lihat di bawah).
+Keadaan, aturan, dan yang menunggu pemilik: `docs/SUMBER-KEBENARAN.md`.
 
 Dibangun dengan Next.js (App Router, static export) dan TypeScript. Tidak ada backend, formulir,
 analytics, cookie, atau pengumpulan data. Cabang `main` di-deploy otomatis oleh Vercel ke produksi.

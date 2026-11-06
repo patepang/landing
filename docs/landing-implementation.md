@@ -9,14 +9,15 @@
   otomatis oleh Vercel. Tanpa analytics, cookie, atau pengumpulan data. Bagian §1 sampai §8
   adalah catatan putaran sebelumnya; yang berubah sejak itu ada di §9.
 - **Arah:** versi pertama memakai arah A, Tur prototipe
-  (`docs/superpowers/specs/2026-10-22-landing-design.md` §8; commit `35b4e47`). Pada 22 Oktober 2026
+  (spesifikasi desain 22 Oktober, dihapus 2026-11-06; commit `35b4e47`). Pada 22 Oktober 2026
   pemilik meminta halaman tampil "seakan-akan produksi", dengan section header, hero, masalah,
   solusi, fitur, testimoni, tanya jawab, CTA, dan footer. Keputusan pemilik atas hal yang tidak bisa
   dikarang:
   - testimoni diganti skenario pemakaian;
   - CTA "Segera hadir" tanpa formulir;
   - footer berisi navigasi dan hak cipta.
-- **Sumber kebenaran:** `PRODUCT.md`, `DESIGN.md`, `docs/product-understanding.md`, dan kode
+- **Sumber kebenaran:** `PRODUCT.md`, `DESIGN.md`, catatan pemahaman produk 22 Oktober (dihapus
+  2026-11-06), dan kode
   `patepang/app` @ `262202f` (dibaca saja, lewat clone terpisah di luar repo ini; tidak ada
   install, build, atau perubahan di app).
 
